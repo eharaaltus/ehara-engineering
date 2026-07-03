@@ -1,0 +1,481 @@
+"use client";
+import * as React from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useTransition } from "react";
+import * as Popover from "@radix-ui/react-popover";
+import { DayPicker, type DateRange } from "react-day-picker";
+import { format, parseISO } from "date-fns";
+import {
+  Calendar,
+  User,
+  Users,
+  Bookmark,
+  X,
+  Loader2,
+  FileText,
+  FileSpreadsheet,
+  Upload,
+  MoreHorizontal,
+  CopyMinus,
+} from "lucide-react";
+import Link from "next/link";
+import type { Route } from "next";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { motion } from "motion/react";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { PRIORITY_LABELS, type TaskPriority } from "@/db/enums";
+import { DepartmentFilter } from "./filters/department-filter";
+import { PriorityFilter } from "./filters/priority-filter";
+import { StatusFilter } from "./filters/status-filter";
+import { SubjectFilter } from "./filters/subject-filter";
+import { ClientFilter } from "./filters/client-filter";
+import { FilterPill, summarizeSelection } from "./filters/filter-pill";
+
+type AssigneeMode = "default" | "all" | "specific";
+
+interface Props {
+  employees: { value: string; label: string }[];
+  initial: {
+    start: string;
+    end: string;
+    emp: string[];
+    view: "doer" | "initiator";
+    dept: string[];
+    prio: string[];
+    subj: string[];
+    status?: string[];
+    client?: string[];
+  };
+  subjects?: string[];
+  statusOptions?: { value: string; label: string }[];
+  clients?: string[];
+  me?: { id: string; isAdmin: boolean };
+  assigneeMode?: AssigneeMode;
+  /** Number of tasks matching the current filters (shown in the summary row). */
+  taskCount?: number;
+}
+
+const ONE_DAY = 24 * 60 * 60 * 1000;
+
+/** Accent dot/badge colors per filter family (A A Tech palette). */
+const TINT = {
+  status: "#16a34a",
+  priority: "#f59e0b",
+  assignee: "var(--color-brand-blue)",
+  client: "#3b82f6",
+  department: "#8b5cf6",
+  subject: "#0ea5e9",
+  view: "#64748b",
+} as const;
+
+export function FilterBar({
+  employees,
+  initial,
+  subjects,
+  statusOptions,
+  clients,
+  me,
+  assigneeMode: initialAssigneeMode = "all",
+  taskCount,
+}: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
+
+  const showScopeChip = Boolean(me && !me.isAdmin);
+
+  const [start, setStart] = React.useState(initial.start);
+  const [end, setEnd] = React.useState(initial.end);
+  const [emp, setEmp] = React.useState<string[]>(
+    showScopeChip && initialAssigneeMode === "default" ? [] : initial.emp,
+  );
+  const [assigneeMode, setAssigneeMode] = React.useState<AssigneeMode>(initialAssigneeMode);
+  const [view, setView] = React.useState<"doer" | "initiator">(initial.view);
+  const [dept, setDept] = React.useState<string[]>(initial.dept);
+  const [prio, setPrio] = React.useState<string[]>(initial.prio);
+  const [subj, setSubj] = React.useState<string[]>(initial.subj);
+  const [status, setStatus] = React.useState<string[]>(initial.status ?? []);
+  const [client, setClient] = React.useState<string[]>(initial.client ?? []);
+
+  const range: DateRange | undefined = React.useMemo(() => {
+    try {
+      return { from: parseISO(start), to: parseISO(end) };
+    } catch {
+      return undefined;
+    }
+  }, [start, end]);
+
+  function handleRange(r: DateRange | undefined) {
+    if (!r?.from) return;
+    setStart(format(r.from, "yyyy-MM-dd"));
+    setEnd(format(r.to ?? r.from, "yyyy-MM-dd"));
+  }
+
+  function apply() {
+    const sp = new URLSearchParams(searchParams.toString());
+    sp.set("start", start);
+    sp.set("end", end);
+    sp.set("view", view);
+    if (emp.length > 0) {
+      sp.set("emp", emp.join(","));
+    } else if (showScopeChip && assigneeMode === "all") {
+      sp.set("emp", "all");
+    } else {
+      sp.delete("emp");
+    }
+    if (dept.length > 0) sp.set("dept", dept.join(",")); else sp.delete("dept");
+    if (prio.length > 0) sp.set("prio", prio.join(",")); else sp.delete("prio");
+    if (subj.length > 0) sp.set("subj", subj.join(",")); else sp.delete("subj");
+    if (status.length > 0) sp.set("status", status.join(",")); else sp.delete("status");
+    if (client.length > 0) sp.set("client", client.join(",")); else sp.delete("client");
+    startTransition(() => router.replace(`${pathname}?${sp.toString()}` as Route));
+  }
+
+  const didMount = React.useRef(false);
+  React.useEffect(() => {
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    const t = setTimeout(apply, 200);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [start, end, view, emp, assigneeMode, dept, prio, subj, status, client]);
+
+  function reset() {
+    const today = new Date();
+    setStart(format(new Date(today.getTime() - 30 * ONE_DAY), "yyyy-MM-dd"));
+    setEnd(format(today, "yyyy-MM-dd"));
+    setEmp([]);
+    setAssigneeMode(showScopeChip ? "default" : "all");
+    setView("doer");
+    setDept([]);
+    setPrio([]);
+    setSubj([]);
+    setStatus([]);
+    setClient([]);
+  }
+
+  const fmt = (s: string) => {
+    try {
+      return format(parseISO(s), "MMM d");
+    } catch {
+      return s;
+    }
+  };
+  const formattedRange = `${fmt(start)} – ${fmt(end)}`;
+
+  function handleEmpChange(next: string[]) {
+    setEmp(next);
+    if (showScopeChip) setAssigneeMode(next.length > 0 ? "specific" : "default");
+  }
+
+  const empLabel = (id: string) => employees.find((e) => e.value === id)?.label ?? id;
+  const statusLabel = (v: string) =>
+    statusOptions?.find((o) => o.value === v)?.label ?? v;
+
+  const assigneeValue =
+    emp.length > 0
+      ? summarizeSelection(emp.map(empLabel), "All Employees")
+      : showScopeChip && assigneeMode === "default"
+        ? "My tasks"
+        : "All Employees";
+  const assigneeActive = emp.length > 0 || (showScopeChip && assigneeMode === "all");
+
+  // ── Active-filter chips (the summary row) ──────────────────────────────
+  type ActivePill = { key: string; label: string; color: string; remove: () => void };
+  const activePills: ActivePill[] = [];
+  for (const s of status)
+    activePills.push({ key: `s-${s}`, label: statusLabel(s), color: TINT.status, remove: () => setStatus(status.filter((x) => x !== s)) });
+  for (const p of prio)
+    activePills.push({ key: `p-${p}`, label: PRIORITY_LABELS[p as TaskPriority] ?? p, color: TINT.priority, remove: () => setPrio(prio.filter((x) => x !== p)) });
+  for (const id of emp)
+    activePills.push({ key: `e-${id}`, label: empLabel(id), color: TINT.assignee, remove: () => handleEmpChange(emp.filter((x) => x !== id)) });
+  if (showScopeChip && assigneeMode === "all" && emp.length === 0)
+    activePills.push({ key: "scope-all", label: "All tasks", color: TINT.assignee, remove: () => setAssigneeMode("default") });
+  for (const c of client)
+    activePills.push({ key: `c-${c}`, label: c, color: TINT.client, remove: () => setClient(client.filter((x) => x !== c)) });
+  for (const d of dept)
+    activePills.push({ key: `d-${d}`, label: d, color: TINT.department, remove: () => setDept(dept.filter((x) => x !== d)) });
+  for (const s of subj)
+    activePills.push({ key: `subj-${s}`, label: s, color: TINT.subject, remove: () => setSubj(subj.filter((x) => x !== s)) });
+  if (view !== "doer")
+    activePills.push({ key: "view", label: "Initiator view", color: TINT.view, remove: () => setView("doer") });
+
+  return (
+    <div
+      className="sticky top-[64px] max-md:top-[60px] z-40 border-b border-hairline"
+      style={{
+        backgroundColor: "rgba(250, 251, 252, 0.82)",
+        backdropFilter: "blur(20px) saturate(150%)",
+        WebkitBackdropFilter: "blur(20px) saturate(150%)",
+      }}
+    >
+      <div className="mx-auto max-w-[1600px] px-12 py-3 max-md:px-4 flex flex-col gap-2.5">
+        {/* Row 1 — filter pill-cards */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Date range */}
+          <Popover.Root>
+            <Popover.Trigger asChild>
+              <FilterPill
+                icon={<Calendar size={16} strokeWidth={2} />}
+                value={formattedRange}
+                tint="var(--color-brand-blue)"
+                active
+              />
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Content
+                align="start"
+                sideOffset={10}
+                collisionPadding={12}
+                className="z-[100] bg-surface-card border border-hairline-strong rounded-chip p-3 max-h-[var(--radix-popover-content-available-height)] overflow-y-auto"
+                style={{ boxShadow: "0 16px 40px rgba(15, 23, 42, 0.14)" }}
+              >
+                <DayPicker
+                  mode="range"
+                  selected={range}
+                  onSelect={handleRange}
+                  numberOfMonths={2}
+                  showOutsideDays
+                  weekStartsOn={1}
+                />
+                <Popover.Arrow className="fill-white" />
+              </Popover.Content>
+            </Popover.Portal>
+          </Popover.Root>
+
+          {/* Assignee */}
+          <MultiSelect
+            options={employees}
+            selected={emp}
+            onChange={handleEmpChange}
+            renderTrigger={() => (
+              <FilterPill
+                icon={<User size={16} strokeWidth={2} />}
+                name="Assignee"
+                value={assigneeValue}
+                tint={TINT.assignee}
+                active={assigneeActive}
+              />
+            )}
+          />
+
+          {statusOptions && statusOptions.length > 0 && (
+            <StatusFilter options={statusOptions} selected={status} onChange={setStatus} />
+          )}
+          <PriorityFilter selected={prio} onChange={setPrio} />
+          {clients && clients.length > 0 && (
+            <ClientFilter options={clients.map((c) => ({ value: c, label: c }))} selected={client} onChange={setClient} />
+          )}
+          <DepartmentFilter selected={dept} onChange={setDept} />
+
+          {/* Subject — always shown */}
+          {subjects && subjects.length > 0 && (
+            <SubjectFilter options={subjects} selected={subj} onChange={setSubj} />
+          )}
+
+          {/* Scope (non-admins) + View — always shown */}
+          {showScopeChip && (
+            <SegGroup label="Scope">
+              <SegButton active={assigneeMode === "default" && emp.length === 0} onClick={() => { setAssigneeMode("default"); setEmp([]); }}>My tasks</SegButton>
+              <SegButton active={assigneeMode === "all" && emp.length === 0} onClick={() => { setAssigneeMode("all"); setEmp([]); }}>All tasks</SegButton>
+            </SegGroup>
+          )}
+          <SegGroup label="View">
+            <SegButton layoutId="view-seg-active" active={view === "doer"} onClick={() => setView("doer")}>Doer</SegButton>
+            <SegButton layoutId="view-seg-active" active={view === "initiator"} onClick={() => setView("initiator")}>Initiator</SegButton>
+          </SegGroup>
+
+          {/* Right-pinned actions */}
+          <div className="flex items-center gap-2 ml-auto">
+            {(pathname === "/tasks" || pathname === "/archived") && me?.isAdmin && (() => {
+              const buildExportHref = (path: string) => {
+                const exportSp = new URLSearchParams(searchParams.toString());
+                if (pathname === "/archived") exportSp.set("archived", "1");
+                return `${path}?${exportSp.toString()}`;
+              };
+              return (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Import and export"
+                      title="Import / export"
+                      className="inline-flex items-center justify-center h-10 w-10 rounded-2xl border border-hairline bg-surface-card text-ink-soft hover:text-ink-strong hover:border-brand-blue transition-colors"
+                      style={{ boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}
+                    >
+                      <MoreHorizontal size={16} strokeWidth={2.4} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href={"/tasks/import" as Route}>
+                        <Upload size={14} strokeWidth={2} style={{ color: "var(--color-brand-blue)" }} />
+                        Import tasks
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href={"/tasks/duplicates" as Route}>
+                        <CopyMinus size={14} strokeWidth={2} style={{ color: "var(--color-amber-deep, #b45309)" }} />
+                        Find duplicates
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a href={buildExportHref("/tasks/export.xlsx")} download>
+                        <FileSpreadsheet size={14} strokeWidth={2} style={{ color: "var(--color-success, #16a34a)" }} />
+                        Export XLS
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a href={buildExportHref("/tasks/export.pdf")} download>
+                        <FileText size={14} strokeWidth={2} style={{ color: "var(--color-brand-blue, #dc2626)" }} />
+                        Export PDF
+                      </a>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            })()}
+
+            {/* Saved views (on-brand button) */}
+            <Popover.Root>
+              <Popover.Trigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-2.5 text-[14px] font-semibold border border-hairline bg-surface-card text-ink-strong hover:border-hairline-strong transition-colors"
+                  style={{ boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}
+                >
+                  <Bookmark size={15} strokeWidth={2} className="text-ink-subtle" />
+                  Saved views
+                </button>
+              </Popover.Trigger>
+              <Popover.Portal>
+                <Popover.Content
+                  align="end"
+                  sideOffset={8}
+                  className="z-[100] w-60 bg-surface-card border border-hairline-strong rounded-chip p-3 text-[13px] text-ink-subtle"
+                  style={{ boxShadow: "0 16px 40px rgba(15, 23, 42, 0.14)" }}
+                >
+                  Saving named filter views is coming soon.
+                </Popover.Content>
+              </Popover.Portal>
+            </Popover.Root>
+          </div>
+        </div>
+
+        {/* Row 2 — active filter chips + result count */}
+        <div className="flex items-center gap-2.5 flex-wrap min-h-[28px]">
+          {activePills.map((p) => (
+            <span
+              key={p.key}
+              className="inline-flex items-center gap-1.5 rounded-full pl-2.5 pr-1.5 py-1 text-[13px] font-medium"
+              style={{
+                background: `color-mix(in srgb, ${p.color} 12%, transparent)`,
+                color: "var(--color-ink-strong)",
+              }}
+            >
+              <span className="size-2 rounded-full" style={{ background: p.color }} />
+              {p.label}
+              <button
+                type="button"
+                onClick={p.remove}
+                aria-label={`Remove ${p.label}`}
+                className="inline-flex items-center justify-center rounded-full size-4 text-ink-subtle hover:text-ink-strong hover:bg-black/5 transition-colors"
+              >
+                <X size={12} strokeWidth={2.4} />
+              </button>
+            </span>
+          ))}
+
+          {activePills.length > 0 && (
+            <button
+              type="button"
+              onClick={reset}
+              className="text-[13px] font-semibold transition-colors hover:underline"
+              style={{ color: "var(--color-brand-blue)" }}
+            >
+              Clear all
+            </button>
+          )}
+
+          <div className="ml-auto inline-flex items-center gap-2">
+            <span
+              aria-live="polite"
+              className="inline-flex items-center gap-1.5 text-[13px] text-ink-subtle transition-opacity"
+              style={{ opacity: isPending ? 1 : 0 }}
+            >
+              <Loader2 size={13} strokeWidth={2.2} className="animate-spin" />
+              Updating…
+            </span>
+            {typeof taskCount === "number" && (
+              <span className="text-[13px] font-semibold tabular-nums" style={{ color: "var(--color-ink-soft)" }}>
+                {taskCount.toLocaleString()} task{taskCount === 1 ? "" : "s"} found
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SegGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="inline-flex items-center gap-2">
+      <span className="text-[11.5px] font-semibold uppercase tracking-wide" style={{ color: "var(--color-ink-subtle)" }}>
+        {label}
+      </span>
+      <div
+        className="inline-flex items-center bg-surface-card border border-hairline rounded-chip relative"
+        style={{ padding: 4, boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function SegButton({
+  active,
+  onClick,
+  children,
+  layoutId = "scope-seg-active",
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+  layoutId?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="relative text-[14px] px-2.5 py-1.5 rounded-pill transition-colors"
+      style={{
+        color: active ? "var(--color-ink-strong)" : "var(--color-ink-subtle)",
+        fontWeight: active ? 600 : 500,
+      }}
+    >
+      {active && (
+        <motion.span
+          layoutId={layoutId}
+          aria-hidden
+          className="absolute inset-0 rounded-pill"
+          style={{
+            background: "var(--color-surface-card)",
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04)",
+          }}
+          transition={{ type: "spring", stiffness: 380, damping: 32 }}
+        />
+      )}
+      <span className="relative">{children}</span>
+    </button>
+  );
+}

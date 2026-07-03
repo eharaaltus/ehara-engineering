@@ -20,8 +20,8 @@
   --color-hairline:        rgba(15, 23, 42, 0.06);
   --color-hairline-strong: rgba(15, 23, 42, 0.10);
 
-  /* A A Tech accent red — token name kept (--color-brand-blue) for back-compat
-     with ~50 component refs; value now matches the A A Tech logo. */
+  /* Ehara Engineering accent red — token name kept (--color-brand-blue) for back-compat
+     with ~50 component refs; value now matches the Ehara Engineering logo. */
   --color-brand-blue:       #1e40af;
   --color-brand-blue-deep:  #14245c;
 
@@ -106,7 +106,7 @@
   --heat-3: linear-gradient(135deg, #fb923c, #ea580c);
   --heat-4: linear-gradient(135deg, #fca5a5, #ef4444);
 
-  /* Profile v2 — accent. Defaults to the A A Tech red; the root layout
+  /* Profile v2 — accent. Defaults to the Ehara Engineering red; the root layout
      overrides via inline style="--user-accent: <hex>" once the user
      sets their pref. Components can opt in with var(--user-accent). */
   --user-accent: #1e40af;
@@ -169,7 +169,7 @@
   body * { visibility: hidden !important; }
   .q-print, .q-print * { visibility: visible !important; }
   .q-print { position: absolute !important; left: 0; top: 0; width: 100%; }
-  /* keep the AA Tech brand colours/gradients when printing */
+  /* keep the Ehara Engineering brand colours/gradients when printing */
   .q-print, .q-print * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 
@@ -1278,7 +1278,7 @@ html[data-density="compact"] body {
 /* Per-status neon palette. RGB triplets so we can use them in
    rgba()/color-mix() consumers without breaking. */
 :root {
-  --kpi-neon-total:        30 64 175;   /* #1e40af — A A Tech red */
+  --kpi-neon-total:        30 64 175;   /* #1e40af — Ehara Engineering red */
   --kpi-neon-need-help:    248 113 113; /* red-400   */
   --kpi-neon-not-approved: 244 114 182; /* pink-400  */
   --kpi-neon-done:         163 230 53;  /* lime-400  */
@@ -1288,17 +1288,17 @@ html[data-density="compact"] body {
   /* Deep companions — used for label text on a white tile so each
      channel stays colour-coded but high-contrast (the bright neon
      above is reserved for the dot, sparkline, and shadow accents). */
-  --kpi-neon-total-deep:        20 36 92;   /* #14245c — A A Tech red deep */
+  --kpi-neon-total-deep:        20 36 92;   /* #14245c — Ehara Engineering red deep */
   --kpi-neon-need-help-deep:    153 27 27;   /* red-800    */
   --kpi-neon-not-approved-deep: 157 23 77;   /* pink-800   */
   --kpi-neon-done-deep:         63 98 18;    /* lime-800   */
   --kpi-neon-pending-deep:      146 64 14;   /* amber-800  */
   --kpi-neon-not-started-deep:  91 33 182;   /* violet-800 */
 
-  /* A A Tech brand indigo — primary accent across the dashboard
+  /* Ehara Engineering brand indigo — primary accent across the dashboard
      surface. RGB triplets compose with rgba()/color-mix() the same way
      the neon palette does. Token names kept (--vp-cyan*) for back-compat
-     with ~50 component refs; values now match the A A Tech logo. */
+     with ~50 component refs; values now match the Ehara Engineering logo. */
   --vp-cyan:        30 64 175;   /* #1e40af */
   --vp-cyan-bright: 225 29 47; /* #e11d2f */
   --vp-cyan-deep:   20 36 92;   /* #14245c */

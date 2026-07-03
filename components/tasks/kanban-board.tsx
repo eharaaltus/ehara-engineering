@@ -538,7 +538,7 @@ function KanbanCard({
 
 // ── Weekly-goal card (design §10) ───────────────────────────────────────────
 // A read-only, non-draggable card surfaced inside its status column. Visually
-// distinct (A A Tech accent + "Weekly Goal" badge) and links out to the Weekly
+// distinct (Ehara Engineering accent + "Weekly Goal" badge) and links out to the Weekly
 // Goals workspace — the single edit/review surface. Never a real task.
 function KanbanGoalCard({ g }: { g: VirtualTaskRow }) {
   const meta = [g.client?.trim(), g.subject?.trim(), g.doerName?.trim()].filter(

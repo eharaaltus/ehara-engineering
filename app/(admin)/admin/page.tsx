@@ -137,7 +137,7 @@ export default async function AdminOverviewPage() {
         </h1>
         <p className="text-body-lg text-ink-subtle mt-2 max-w-2xl">
           A snapshot of headcount, pending work, and the most recent
-          activity across A A Tech.
+          activity across Ehara Engineering.
         </p>
       </header>
 

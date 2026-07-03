@@ -205,7 +205,7 @@ export async function sendIntegrationTestAction(
     await notify({
       userId: me.id,
       kind: "task_assigned",
-      title: "A A Tech integration test",
+      title: "Ehara Engineering integration test",
       body: `This is a test message sent through the ${channel} channel from /admin/settings.`,
       actorId: me.id,
       forceChannels: [channel],

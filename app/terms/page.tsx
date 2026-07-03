@@ -2,47 +2,47 @@ import type { Metadata } from "next";
 import { LegalShell } from "@/components/legal/legal-shell";
 
 export const metadata: Metadata = {
-  title: "Terms of Service · A A Tech Dashboard",
+  title: "Terms of Service · Ehara Engineering Dashboard",
   description:
-    "Terms governing access to the A A Tech operations dashboard.",
+    "Terms governing access to the Ehara Engineering operations dashboard.",
 };
 
 export default function TermsPage() {
   return (
     <LegalShell
-      eyebrow="A A Tech · Legal"
+      eyebrow="Ehara Engineering · Legal"
       title="Terms of Service"
       lastUpdated="2026-05-14"
-      intro="These terms govern your access to the A A Tech operations dashboard. The platform is for the exclusive use of A A Tech and the staff they authorise."
+      intro="These terms govern your access to the Ehara Engineering operations dashboard. The platform is for the exclusive use of Ehara Engineering and the staff they authorise."
     >
       <h2>1 · The short version</h2>
       <p>
         The dashboard is an internal operations tool. You only get access if a
-        A A Tech administrator invites you. You agree to use it for
-        A A Tech's business purposes, to keep client information
+        Ehara Engineering administrator invites you. You agree to use it for
+        Ehara Engineering's business purposes, to keep client information
         confidential, and to not share your password with anyone.
       </p>
 
       <h2>2 · Who's behind this</h2>
       <p>
-        <strong>The platform owner:</strong> A A Tech. A A Tech
+        <strong>The platform owner:</strong> Ehara Engineering. Ehara Engineering
         builds and maintains the dashboard software and owns the operational
         data captured in it.
       </p>
       <p>
         When you sign in, you accept these terms: you agree to abide by
-        A A Tech's platform rules and to handle A A Tech's
+        Ehara Engineering's platform rules and to handle Ehara Engineering's
         operational data responsibly.
       </p>
 
       <h2>3 · Eligibility &amp; accounts</h2>
       <p>
-        Access is invite-only. Public sign-up is disabled. A A A Tech
+        Access is invite-only. Public sign-up is disabled. A Ehara Engineering
         administrator must create an account on your behalf. By accepting an
         invite you confirm that:
       </p>
       <ul>
-        <li>You are a A A Tech employee, director, or contractor with a written engagement.</li>
+        <li>You are a Ehara Engineering employee, director, or contractor with a written engagement.</li>
         <li>The email address tied to your invite is your work email and remains under your sole control.</li>
         <li>You are at least 18 years old.</li>
         <li>You will not let anyone else use your credentials.</li>
@@ -58,7 +58,7 @@ export default function TermsPage() {
       <ul>
         <li>
           Use the dashboard to view, copy, or share client data
-          for any purpose outside your role at A A Tech.
+          for any purpose outside your role at Ehara Engineering.
         </li>
         <li>
           Attempt to access tasks, employees, or settings that fall outside
@@ -88,7 +88,7 @@ export default function TermsPage() {
       <p>
         Client communications, internal notes, and the operational task data
         captured in the dashboard are confidential business information of
-        A A Tech. You will treat them as such — no screenshots in public
+        Ehara Engineering. You will treat them as such — no screenshots in public
         channels, no forwarding outside the organisation, no public
         commentary on identifiable clients.
       </p>
@@ -100,9 +100,9 @@ export default function TermsPage() {
       <h2>6 · Intellectual property</h2>
       <p>
         The dashboard software, its design, brand marks, and all derivative
-        analytics are owned by A A Tech. The operational data you
+        analytics are owned by Ehara Engineering. The operational data you
         generate using the dashboard — tasks, comments, status history,
-        attached notes — belongs to A A Tech.
+        attached notes — belongs to Ehara Engineering.
       </p>
 
       <h2>7 · Service availability</h2>
@@ -118,7 +118,7 @@ export default function TermsPage() {
 
       <h2>8 · Termination</h2>
       <p>
-        A A A Tech administrator may deactivate your account at any time
+        A Ehara Engineering administrator may deactivate your account at any time
         — immediately on separation from the organisation, or sooner if
         these terms are violated. Deactivation revokes your Firebase session
         and prevents further sign-in; your historical task contributions
@@ -128,14 +128,14 @@ export default function TermsPage() {
       <h2>9 · Disclaimers &amp; liability</h2>
       <p>
         The dashboard is provided <strong>"AS IS"</strong>, without warranties
-        of any kind. A A Tech does not warrant that the software is free
+        of any kind. Ehara Engineering does not warrant that the software is free
         of defects, that data will never be lost, or that the analytics
         derived from it are accurate enough for regulatory or legal
         decisions. You will not rely on the dashboard as the sole record of
         any operational decision.
       </p>
       <p>
-        To the maximum extent permitted by Indian law, A A Tech is not
+        To the maximum extent permitted by Indian law, Ehara Engineering is not
         liable for any indirect, incidental, special, or consequential
         damages arising from your use of the dashboard.
       </p>

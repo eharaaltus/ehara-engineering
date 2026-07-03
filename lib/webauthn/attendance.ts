@@ -21,7 +21,7 @@ import { webauthnCredentials } from "@/db/schema";
  */
 
 const CHALLENGE_COOKIE = "att_wa_chal";
-const RP_NAME = "A A Tech WMS";
+const RP_NAME = "Ehara Engineering WMS";
 
 async function rpContext(): Promise<{ rpID: string; origin: string }> {
   const h = await headers();

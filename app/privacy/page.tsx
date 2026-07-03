@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 import { LegalShell } from "@/components/legal/legal-shell";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy · A A Tech Dashboard",
+  title: "Privacy Policy · Ehara Engineering Dashboard",
   description:
-    "How the A A Tech operations dashboard collects, stores, and shares personal data — written for the staff and contractors who use it daily.",
+    "How the Ehara Engineering operations dashboard collects, stores, and shares personal data — written for the staff and contractors who use it daily.",
 };
 
 export default function PrivacyPage() {
   return (
     <LegalShell
-      eyebrow="A A Tech · Legal"
+      eyebrow="Ehara Engineering · Legal"
       title="Privacy Policy"
       lastUpdated="2026-05-14"
-      intro="This policy explains what personal data flows through the A A Tech dashboard, why it's collected, where it sits, and what controls you have. Written plainly so you can read it once and trust what's happening behind the chrome."
+      intro="This policy explains what personal data flows through the Ehara Engineering dashboard, why it's collected, where it sits, and what controls you have. Written plainly so you can read it once and trust what's happening behind the chrome."
     >
       <h2>1 · The short version</h2>
       <p>
@@ -22,18 +22,18 @@ export default function PrivacyPage() {
         (Singapore) and Firebase Auth (US). We send you email notifications via
         Resend and — if your admin enables it — Slack DMs, WhatsApp messages,
         and Web Push notifications. We do not sell, rent, or share your data
-        with anyone outside A A Tech's narrow list of operational
+        with anyone outside Ehara Engineering's narrow list of operational
         sub-processors. You can request a copy of your data or have it
         deactivated by writing to your administrator.
       </p>
 
       <h2>2 · Who controls the data</h2>
       <p>
-        <strong>Data controller:</strong> A A Tech — the operational data
+        <strong>Data controller:</strong> Ehara Engineering — the operational data
         (tasks, comments, assignments, statuses) is theirs.
       </p>
       <p>
-        A A Tech operates the dashboard for internal use only. We do not
+        Ehara Engineering operates the dashboard for internal use only. We do not
         use your data for any purpose other than running the dashboard.
       </p>
 
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
         <li><strong>To let you sign in.</strong> Email + Firebase UID; nothing more.</li>
         <li><strong>To run the operations workflow.</strong> Tasks, assignments, status transitions, approvals — the dashboard's core purpose.</li>
         <li><strong>To notify the right people at the right time.</strong> The fan-out matrix is locked in code; you don't get notifications for events you aren't a participant in.</li>
-        <li><strong>To audit who did what, when.</strong> Every task event is logged for A A Tech's internal compliance.</li>
+        <li><strong>To audit who did what, when.</strong> Every task event is logged for Ehara Engineering's internal compliance.</li>
         <li><strong>To deliver on the channels you've consented to.</strong> Email is on by default; Slack auto-discovers via email; WhatsApp requires explicit admin-recorded consent; Web Push requires your browser permission.</li>
       </ul>
 
@@ -139,9 +139,9 @@ export default function PrivacyPage() {
         Active accounts: indefinitely, while the engagement is live. Deactivated
         accounts: the row is preserved with{" "}
         <code>is_active = false</code> so historical attributions on tasks
-        remain accurate — A A Tech's audit needs require this. Hard
+        remain accurate — Ehara Engineering's audit needs require this. Hard
         deletion is not exposed in the dashboard; if you want a row purged,
-        that becomes a manual ops runbook with A A Tech's legal point of
+        that becomes a manual ops runbook with Ehara Engineering's legal point of
         contact.
       </p>
       <p>
@@ -156,7 +156,7 @@ export default function PrivacyPage() {
       </p>
       <ul>
         <li>
-          <strong>The right to know.</strong> Ask your A A Tech
+          <strong>The right to know.</strong> Ask your Ehara Engineering
           administrator for a copy of the data the dashboard holds about you.
           We support CSV exports on the employees + tasks tables out of the
           box.
@@ -217,7 +217,7 @@ export default function PrivacyPage() {
         Privacy questions:{" "}
         <a href="mailto:danyalsayyed.altuscorp@gmail.com">danyalsayyed.altuscorp@gmail.com</a>.
         Operational data requests (export your row, deactivate your account,
-        correct a record): your A A Tech administrator.
+        correct a record): your Ehara Engineering administrator.
       </p>
     </LegalShell>
   );

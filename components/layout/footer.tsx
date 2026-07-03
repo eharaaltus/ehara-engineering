@@ -21,9 +21,9 @@ export function DashboardFooter() {
       />
 
       <div className="relative z-10 mx-auto flex max-w-[1600px] flex-col items-center gap-3 px-6 py-10 text-center">
-        {/* TOP — A A Tech logo */}
+        {/* TOP — Ehara Engineering logo */}
         <div className={`${tile} px-3 py-2`} style={tileShadow}>
-          <img src="/logo.png" alt="A A Tech" style={{ height: 36, width: "auto", display: "block" }} />
+          <img src="/logo.png" alt="Ehara Engineering" style={{ height: 36, width: "auto", display: "block" }} />
         </div>
 
         {/* MIDDLE — Powered by */}
@@ -40,7 +40,7 @@ export function DashboardFooter() {
         </div>
 
         <p className="mt-2 text-xs" style={{ color: "rgba(255, 255, 255, 0.5)" }}>
-          © A A Tech 2025–2035 · All rights reserved
+          © Ehara Engineering 2025–2035 · All rights reserved
         </p>
       </div>
     </footer>

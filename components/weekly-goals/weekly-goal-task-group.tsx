@@ -8,7 +8,7 @@ import { WeeklyGoalBadge } from "@/components/weekly-goals/weekly-goal-badge";
 /**
  * Pinned "This week's goals" group, surfaced ABOVE the regular task table on
  * the Tasks list and My Day (design §10). Each row is a read-only projection of
- * a weekly goal — badged "Weekly Goal", visually distinct (A A Tech accent), and a
+ * a weekly goal — badged "Weekly Goal", visually distinct (Ehara Engineering accent), and a
  * deep link into the Weekly Goals workspace (the single edit/review surface).
  *
  * These rows are NEVER counted in the task stat cards / dashboard KPIs — they

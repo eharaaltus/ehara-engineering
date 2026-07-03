@@ -62,7 +62,7 @@ interface Props {
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
-/** Accent dot/badge colors per filter family (A A Tech palette). */
+/** Accent dot/badge colors per filter family (Ehara Engineering palette). */
 const TINT = {
   status: "#16a34a",
   priority: "#f59e0b",

@@ -3,8 +3,8 @@
 /**
  * Cinematic brand backdrop for /login. (rev 3)
  *
- * Two elements loop a slow ballet across the viewport: the A A Tech
- * brand-mark on the LEFT, the italic "A A Tech." display wordmark
+ * Two elements loop a slow ballet across the viewport: the Ehara Engineering
+ * brand-mark on the LEFT, the italic "Ehara Engineering." display wordmark
  * on the RIGHT. Both fade in at centre, slide apart, park at the
  * edges, then drift back and fade out. Designed to read as ambient
  * video — the form card is the hero.
@@ -15,7 +15,7 @@
  * coloured for a dark canvas, we render it as a single image with
  * no masking overlay — simpler, sharper, no compositing tricks.
  *
- * The right lane stacks "A A Tech" / "Corp." on two lines so neither
+ * The right lane stacks "Ehara Engineering" / "Corp." on two lines so neither
  * word gets clipped at the viewport edge. The left lane parks at
  * 40vw (further than the right's 28vw) to read as the dominant
  * brand presence behind the form card.
@@ -74,8 +74,8 @@ export function AnimatedBrandBackdrop() {
             }}
           >
             {/* Stacked so the wordmark never spills past the viewport
-                edge — "A A Tech" on top, "Corp." below. */}
-            <div>A A Tech</div>
+                edge — "Ehara Engineering" on top, "Corp." below. */}
+            <div>Ehara Engineering</div>
             <div
               style={{
                 background:

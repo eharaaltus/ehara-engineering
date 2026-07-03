@@ -11,7 +11,7 @@ import { getCurrentEmployee } from "@/lib/auth/current";
  * Command-center application header.
  *
  *  1. HERO CARD (scrolls away): a wide, fully-rounded glass card with a
- *     dark-blue→green gradient and a soft outer glow. AA Tech mark in a glass
+ *     dark-blue→green gradient and a soft outer glow. Ehara Engineering mark in a glass
  *     tile on the left; the "Anant Avinya Technologies" wordmark + tagline +
  *     a live status-pill bar (date · time · system · modules) in the center;
  *     the "Powered by Altus Corp" partner mark on the right.
@@ -59,11 +59,11 @@ export async function DashboardHeader({
               {/* LEFT — logo (no tile) */}
               <a
                 href="/"
-                aria-label="A A Tech home"
+                aria-label="Ehara Engineering home"
                 className="group relative flex shrink-0 flex-col items-center justify-center transition-transform hover:scale-[1.05]"
               >
-                <img src="/logo-mark.png?v=3" alt="A A Tech" className="relative h-16 w-auto max-md:h-12" style={{ display: "block", filter: "drop-shadow(0 6px 14px rgba(1,128,207,0.3))" }} />
-                <span className="relative mt-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-slate-700 max-md:text-[9px]">AA Tech</span>
+                <img src="/logo-mark.png?v=3" alt="Ehara Engineering" className="relative h-16 w-auto max-md:h-12" style={{ display: "block", filter: "drop-shadow(0 6px 14px rgba(1,128,207,0.3))" }} />
+                <span className="relative mt-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-slate-700 max-md:text-[9px]">Ehara Engineering</span>
               </a>
 
               {/* CENTER — wordmark + tagline + status pills */}

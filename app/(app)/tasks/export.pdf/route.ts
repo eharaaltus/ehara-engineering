@@ -11,7 +11,7 @@ import type { TaskStatus, TaskPriority, ApprovalStatus } from "@/db/enums";
  * GET /tasks/export.pdf
  *
  * Admin-only landscape A4 PDF export of the current /tasks view. The
- * renderer is intentionally publication-grade — a thin A A Tech-red top
+ * renderer is intentionally publication-grade — a thin Ehara Engineering-red top
  * stripe, an editorial masthead, a four-up KPI band, then a tightly
  * typeset table with status pills, priority dots, and an overdue
  * marker rail down the left edge. Pagination is bottom-anchored with
@@ -72,7 +72,7 @@ const COLORS = {
   paper: "#FFFFFF",
   hairline: "#E5E5E5",
   hairlineSoft: "#F4F4F5",
-  brand: "#0180cf", // A A Tech red (matches --color-brand-blue in globals.css)
+  brand: "#0180cf", // Ehara Engineering red (matches --color-brand-blue in globals.css)
   brandDeep: "#B00500",
 } as const;
 
@@ -143,8 +143,8 @@ async function renderPdf(
     // breathe without crowding the first table row.
     margin: 40,
     info: {
-      Title: meta.archived ? "A A Tech — Archived Tasks" : "A A Tech — Tasks",
-      Author: "A A Tech Dashboard",
+      Title: meta.archived ? "Ehara Engineering — Archived Tasks" : "Ehara Engineering — Tasks",
+      Author: "Ehara Engineering Dashboard",
       Subject: "Internal Task Report",
     },
     bufferPages: true, // required for the "Page X of Y" pass at the end
@@ -272,7 +272,7 @@ function drawMasthead(
     .font("Helvetica-Bold")
     .fontSize(20)
     .fillColor(COLORS.ink)
-    .text("A A TECH", left, top, {
+    .text("EHARA ENGINEERING", left, top, {
       characterSpacing: 2.2,
       lineBreak: false,
     });
@@ -490,7 +490,7 @@ function drawContinuationHeader(
     .font("Helvetica-Bold")
     .fontSize(8)
     .fillColor(COLORS.ink)
-    .text("A A TECH", left, doc.page.margins.top + 8, {
+    .text("EHARA ENGINEERING", left, doc.page.margins.top + 8, {
       characterSpacing: 1.8,
       lineBreak: false,
     });
@@ -514,7 +514,7 @@ function drawFooter(
 ): void {
   const y = doc.page.height - doc.page.margins.bottom + 8;
   // Brand red triangle glyph on the far left — mirrors the dashboard's
-  // header mark and gives the page a recognisable A A Tech stamp.
+  // header mark and gives the page a recognisable Ehara Engineering stamp.
   doc
     .save()
     .moveTo(left, y + 8)
@@ -527,7 +527,7 @@ function drawFooter(
     .font("Helvetica-Bold")
     .fontSize(6.5)
     .fillColor(COLORS.inkMuted)
-    .text("A A TECH · CONFIDENTIAL", left + 12, y + 2, {
+    .text("EHARA ENGINEERING · CONFIDENTIAL", left + 12, y + 2, {
       characterSpacing: 1.4,
       lineBreak: false,
     });

@@ -46,7 +46,7 @@ const EXPENSE_HEAD = [
 ];
 
 const TALLY_ENTITY = [
-  "A A Tech",
+  "Ehara Engineering",
   "Colour Graphics",
   "Dharav",
   "JSV HUF",

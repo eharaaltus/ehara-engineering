@@ -239,7 +239,7 @@ function buildColumns(
       accessorKey: "client",
       header: "Client",
       meta: { narrow: true },
-      // Sort nulls last and case-insensitively so "aatech" and "A A Tech" cluster.
+      // Sort nulls last and case-insensitively so "aatech" and "Ehara Engineering" cluster.
       sortingFn: (a, b) =>
         (a.original.client ?? "￿").localeCompare(b.original.client ?? "￿", undefined, {
           sensitivity: "base",

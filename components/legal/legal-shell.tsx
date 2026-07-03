@@ -27,7 +27,7 @@ export function LegalShell({ eyebrow, title, lastUpdated, intro, children }: Pro
 
   return (
     <div className="min-h-screen bg-[var(--color-canvas-base)]">
-      {/* Top chrome — A A Tech brand + back-to-sign-in */}
+      {/* Top chrome — Ehara Engineering brand + back-to-sign-in */}
       <header className="sticky top-0 z-40 border-b border-hairline bg-[rgba(250,251,252,0.85)] backdrop-blur-xl">
         <div className="mx-auto max-w-[1200px] flex items-center justify-between px-8 py-4 max-md:px-4">
           <Link
@@ -47,7 +47,7 @@ export function LegalShell({ eyebrow, title, lastUpdated, intro, children }: Pro
               className="font-serif text-[22px] leading-none whitespace-nowrap text-ink-strong"
               style={{ fontStyle: "italic", letterSpacing: "-0.01em" }}
             >
-              A A Tech{" "}
+              Ehara Engineering{" "}
               <span
                 style={{
                   display: "inline-block",

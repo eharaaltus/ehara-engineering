@@ -7,7 +7,7 @@
  * RGB-triplet family used by nav pills, hover rails, focus glows). Setting
  * these on <html> (server-rendered) cascades everywhere.
  *
- * For the default A A Tech red (#0180cf) this reproduces the exact values
+ * For the default Ehara Engineering red (#0180cf) this reproduces the exact values
  * hard-coded in globals.css, so default users see no change.
  */
 
@@ -54,7 +54,7 @@ export function accentVars(hex: string): Record<string, string> {
   };
 }
 
-/** The default A A Tech-red accent, used when the user hasn't set one. */
+/** The default Ehara Engineering-red accent, used when the user hasn't set one. */
 export const DEFAULT_ACCENT = "#0180cf";
 
 /** Normalises a stored value to a valid accent hex (falls back to default). */

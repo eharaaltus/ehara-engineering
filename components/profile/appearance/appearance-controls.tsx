@@ -30,7 +30,7 @@ function applyAppearanceLive(patch: { density?: Density; accent?: string }) {
 type Density = "cozy" | "compact";
 
 const ACCENT_PRESETS = [
-  { label: "A A Tech red", value: "#0180cf" },
+  { label: "Ehara Engineering red", value: "#0180cf" },
   { label: "Forest", value: "#16A34A" },
   { label: "Royal", value: "#2563EB" },
   { label: "Sunset", value: "#D97706" },

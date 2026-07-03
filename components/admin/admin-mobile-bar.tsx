@@ -226,7 +226,7 @@ export function AdminMobileBar({ adminName, adminEmail }: Props) {
       >
         <img
           src="/logo.png"
-          alt="A A Tech"
+          alt="Ehara Engineering"
           style={{ height: 28, width: "auto", display: "block" }}
         />
       </div>

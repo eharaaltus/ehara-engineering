@@ -10,12 +10,12 @@ export function AdminResetPasswordEmail({ recipientName }: Props) {
     ? `Hi ${recipientName.split(" ")[0]},`
     : "Your password was reset";
   return (
-    <EmailLayout preview="An administrator reset your A A Tech password">
+    <EmailLayout preview="An administrator reset your Ehara Engineering password">
       <Heading style={{ fontSize: 20, color: "#0F172A", margin: "0 0 16px" }}>
         {greeting}
       </Heading>
       <Text style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, margin: "0 0 16px" }}>
-        An administrator has reset the password for your A A Tech Dashboard
+        An administrator has reset the password for your Ehara Engineering Dashboard
         account. For your security, you've been signed out of all devices.
       </Text>
       <Text style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, margin: "0 0 16px" }}>

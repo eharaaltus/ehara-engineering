@@ -150,13 +150,13 @@ export function PortalLauncher({
               style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)", backgroundSize: "22px 22px" }}
             />
 
-            {/* AA Tech logo — left */}
-            <Link href={"/" as Route} className="group relative flex items-center gap-3 shrink-0" aria-label="A A Tech">
+            {/* Ehara Engineering logo — left */}
+            <Link href={"/" as Route} className="group relative flex items-center gap-3 shrink-0" aria-label="Ehara Engineering">
               <span className="inline-flex items-center justify-center rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-white/25 transition-transform group-hover:scale-105">
-                <img src="/logo-mark.png?v=3" alt="A A Tech" className="h-9 w-auto" />
+                <img src="/logo-mark.png?v=3" alt="Ehara Engineering" className="h-9 w-auto" />
               </span>
               <span className="flex flex-col leading-none">
-                <span className="text-[16px] font-black tracking-[-0.01em] text-white">A A Tech</span>
+                <span className="text-[16px] font-black tracking-[-0.01em] text-white">Ehara Engineering</span>
                 <span className="text-[9px] font-black uppercase tracking-[0.24em] text-[#7ed957]">Workspaces</span>
               </span>
             </Link>
@@ -190,7 +190,7 @@ export function PortalLauncher({
         {/* welcome */}
         <div className="mb-8 max-md:mb-6">
           <div className="text-[12px] font-black uppercase tracking-[0.2em] text-[#5cc0f5]">
-            A A Tech <span className="text-white/30">/</span> Workspaces
+            Ehara Engineering <span className="text-white/30">/</span> Workspaces
           </div>
           <h1
             className="mt-1.5 text-white"

@@ -85,12 +85,12 @@ export function WorkspaceHub({
           >
             <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: "linear-gradient(90deg, #0180cf, #0069b3 45%, #63b81e)", backgroundSize: "200% auto", animation: "headerTextShimmer 7s linear infinite" }} />
 
-            <Link href={"/portal" as Route} className="group relative flex items-center gap-3 shrink-0" aria-label="A A Tech workspaces">
+            <Link href={"/portal" as Route} className="group relative flex items-center gap-3 shrink-0" aria-label="Ehara Engineering workspaces">
               <span className="inline-flex items-center justify-center rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-white/25 transition-transform group-hover:scale-105">
-                <img src="/logo-mark.png?v=3" alt="A A Tech" className="h-9 w-auto" />
+                <img src="/logo-mark.png?v=3" alt="Ehara Engineering" className="h-9 w-auto" />
               </span>
               <span className="flex flex-col leading-none">
-                <span className="text-[16px] font-black tracking-[-0.01em] text-white">A A Tech</span>
+                <span className="text-[16px] font-black tracking-[-0.01em] text-white">Ehara Engineering</span>
                 <span className="text-[9px] font-black uppercase tracking-[0.24em] text-[#7ed957]">Workspaces</span>
               </span>
             </Link>
@@ -125,7 +125,7 @@ export function WorkspaceHub({
       <main className="relative z-10 mx-auto max-w-[1180px] px-8 pb-20 pt-4 max-md:px-4">
         <div className="mb-8 max-md:mb-6">
           <div className="text-[12px] font-black uppercase tracking-[0.2em] text-[#5cc0f5]">
-            A A Tech <span className="text-white/30">/</span> {title}
+            Ehara Engineering <span className="text-white/30">/</span> {title}
           </div>
           <h1
             className="mt-1.5 text-white"

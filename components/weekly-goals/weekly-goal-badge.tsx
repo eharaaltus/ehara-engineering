@@ -1,7 +1,7 @@
 import { Target } from "lucide-react";
 
 /**
- * Small "Weekly Goal" chip in the A A Tech accent, used wherever a weekly goal is
+ * Small "Weekly Goal" chip in the Ehara Engineering accent, used wherever a weekly goal is
  * surfaced inside the Tasks views (list group, kanban card, My Day) so goals
  * are always visually distinct from real tasks. Presentational only.
  */

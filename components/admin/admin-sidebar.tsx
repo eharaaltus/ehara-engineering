@@ -116,7 +116,7 @@ export function AdminSidebar({ adminName, adminEmail, avatarUrl }: Props) {
           >
             <img
               src="/logo.png"
-              alt="A A Tech"
+              alt="Ehara Engineering"
               style={{ height: 48, width: "auto", display: "block" }}
             />
             <span

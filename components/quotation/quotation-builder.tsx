@@ -441,7 +441,7 @@ function QuotationPrint({
   const FOOT_SPAN = 17;
   return (
     <div className={`${active ? "q-print print:block" : ""} hidden bg-white text-slate-900`} style={{ fontSize: 8 }}>
-      {/* ── AA Tech branded header ── */}
+      {/* ── Ehara Engineering branded header ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "3px solid #0180cf", paddingBottom: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src="/logo-mark.png?v=3" alt="" style={{ height: 44, width: "auto" }} />

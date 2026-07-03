@@ -25,7 +25,7 @@ export default async function UserManualPage() {
         <PageHero
           eyebrow="Help"
           title="User Manual"
-          subtitle="Guides, walkthroughs, photos & videos for the A A Tech WMS."
+          subtitle="Guides, walkthroughs, photos & videos for the Ehara Engineering WMS."
           Icon={BookOpen}
         />
 

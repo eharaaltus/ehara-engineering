@@ -89,7 +89,7 @@ export function LoginFormGlass() {
         const code = (err as { code?: string })?.code;
         if ((err as Error)?.message === "not-enrolled") {
           setError(
-            "This email isn't enrolled in A A Tech. Ask your admin to invite you.",
+            "This email isn't enrolled in Ehara Engineering. Ask your admin to invite you.",
           );
           try {
             await firebaseSignOut(getFirebaseAuth());
@@ -167,7 +167,7 @@ export function LoginFormGlass() {
               backgroundClip: "text",
             }}
           >
-            A A Tech
+            Ehara Engineering
           </span>
           .
         </h1>

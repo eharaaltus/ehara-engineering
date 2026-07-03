@@ -14,7 +14,7 @@ import type { ReactNode } from "react";
  * Shared shell for every M2.3 notification email. Lives alongside
  * `emails/_layout.tsx` (the auth-flow shell) but adds:
  *  - a multi-color accent stripe at the top of the card,
- *  - a slightly richer header (A A Tech pill + "A A Tech" wordmark
+ *  - a slightly richer header (Ehara Engineering pill + "Ehara Engineering" wordmark
  *    in a serif fallback),
  *  - a footer with the inbox "manage preferences" link.
  *
@@ -61,7 +61,7 @@ export function NotificationEmailLayout({
         }}
       >
         <Container style={{ maxWidth: 580, margin: "0 auto", padding: 0 }}>
-          {/* Header — A A Tech pill + serif wordmark */}
+          {/* Header — Ehara Engineering pill + serif wordmark */}
           <div
             style={{
               marginBottom: 20,
@@ -83,7 +83,7 @@ export function NotificationEmailLayout({
                 textTransform: "uppercase",
               }}
             >
-              A A Tech
+              Ehara Engineering
             </span>
             <span
               style={{
@@ -95,7 +95,7 @@ export function NotificationEmailLayout({
                 letterSpacing: "-0.01em",
               }}
             >
-              A A Tech
+              Ehara Engineering
             </span>
           </div>
 
@@ -163,7 +163,7 @@ export function NotificationEmailLayout({
               margin: 0,
             }}
           >
-            A A Tech Dashboard
+            Ehara Engineering Dashboard
           </Text>
         </Container>
       </Body>

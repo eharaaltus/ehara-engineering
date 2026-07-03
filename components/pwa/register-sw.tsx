@@ -20,7 +20,7 @@ export function RegisterSW() {
       .register("/sw.js")
       .catch((err) => {
         // Logging only — failure to register the SW must not crash the app.
-        console.error("[A A Tech] SW register failed", err);
+        console.error("[Ehara Engineering] SW register failed", err);
       });
   }, []);
   return null;

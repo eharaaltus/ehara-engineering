@@ -1,6 +1,6 @@
 /**
  * Tall brand stack for the auth surface — mirrors the dashboard header's
- * A A Tech wordmark + brand pill treatment but stacked vertically
+ * Ehara Engineering wordmark + brand pill treatment but stacked vertically
  * and right-sized for centered card layouts.
  */
 export function BrandStack({
@@ -20,7 +20,7 @@ export function BrandStack({
       <div className="mb-6 flex items-center justify-center">
         <img
           src="/logo.png"
-          alt="A A Tech"
+          alt="Ehara Engineering"
           style={{ height: 110, width: "auto", display: "block" }}
         />
       </div>

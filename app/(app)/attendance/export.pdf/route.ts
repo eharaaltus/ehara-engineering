@@ -91,8 +91,8 @@ async function renderPdf(
     layout: "landscape",
     margin: 40,
     info: {
-      Title: `A A Tech — Attendance ${meta.title}`,
-      Author: "A A Tech Dashboard",
+      Title: `Ehara Engineering — Attendance ${meta.title}`,
+      Author: "Ehara Engineering Dashboard",
       Subject: "Monthly Attendance Report",
     },
     bufferPages: true,
@@ -192,7 +192,7 @@ function drawMasthead(
     .font("Helvetica-Bold")
     .fontSize(20)
     .fillColor(COLORS.ink)
-    .text("A A TECH", left, top, { characterSpacing: 2.2, lineBreak: false });
+    .text("EHARA ENGINEERING", left, top, { characterSpacing: 2.2, lineBreak: false });
 
   const subY = top + 26;
   doc.save().circle(left + 3, subY + 4, 2.2).fill(COLORS.brand).restore();
@@ -373,7 +373,7 @@ function drawContinuationHeader(
     .font("Helvetica-Bold")
     .fontSize(8)
     .fillColor(COLORS.ink)
-    .text("A A TECH", left, doc.page.margins.top + 8, {
+    .text("EHARA ENGINEERING", left, doc.page.margins.top + 8, {
       characterSpacing: 1.8,
       lineBreak: false,
     });
@@ -408,7 +408,7 @@ function drawFooter(
     .font("Helvetica-Bold")
     .fontSize(6.5)
     .fillColor(COLORS.inkMuted)
-    .text("A A TECH · CONFIDENTIAL", left + 12, y + 2, {
+    .text("EHARA ENGINEERING · CONFIDENTIAL", left + 12, y + 2, {
       characterSpacing: 1.4,
       lineBreak: false,
     });

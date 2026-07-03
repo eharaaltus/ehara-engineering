@@ -13,7 +13,7 @@ interface Props {
 /**
  * Presentational circular progress ring for the Weekly Goals board: a hairline
  * track with a proportional arc and a star centred inside. The arc + star turn
- * A A Tech-red once the score is strong (>= 60), otherwise a quiet grey — matching
+ * Ehara Engineering-red once the score is strong (>= 60), otherwise a quiet grey — matching
  * the editorial palette. Server-safe (no client hooks / handlers).
  */
 export function ScoreRing({ value, size = 72, label }: Props) {

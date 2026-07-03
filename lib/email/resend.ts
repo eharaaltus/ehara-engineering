@@ -74,7 +74,7 @@ function getResend(): Resend | null {
   return cached;
 }
 
-const FROM = process.env.RESEND_FROM_EMAIL || "A A Tech Dashboard <onboarding@resend.dev>";
+const FROM = process.env.RESEND_FROM_EMAIL || "Ehara Engineering Dashboard <onboarding@resend.dev>";
 
 const SUBJECT_MAX = 80;
 
@@ -86,10 +86,10 @@ function clampSubject(s: string): string {
 
 export function digestSubject(pendingCount: number): string {
   if (pendingCount === 0) {
-    return "You're all clear — no pending tasks — A A Tech Dashboard";
+    return "You're all clear — no pending tasks — Ehara Engineering Dashboard";
   }
   const noun = pendingCount === 1 ? "task" : "tasks";
-  return `You have ${pendingCount} pending ${noun} — A A Tech Dashboard`;
+  return `You have ${pendingCount} pending ${noun} — Ehara Engineering Dashboard`;
 }
 
 function errorMessage(err: unknown): string {
@@ -137,7 +137,7 @@ export async function sendInviteEmail(args: {
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: args.email,
-      subject: `You've been invited to A A Tech Dashboard`,
+      subject: `You've been invited to Ehara Engineering Dashboard`,
       react: InviteEmail({
         inviteeName: args.inviteeName,
         inviterName: args.inviterName,
@@ -162,7 +162,7 @@ export async function sendResetPasswordEmail(args: {
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: args.email,
-      subject: `Reset your A A Tech password`,
+      subject: `Reset your Ehara Engineering password`,
       react: ResetPasswordEmail({
         link: args.resetLink,
         recipientName: args.recipientName,
@@ -188,7 +188,7 @@ export async function sendCredentialsEmail(args: {
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: args.email,
-      subject: `Your A A Tech Dashboard login details`,
+      subject: `Your Ehara Engineering Dashboard login details`,
       react: CredentialsInviteEmail({
         inviteeName: args.inviteeName,
         inviterName: args.inviterName,
@@ -214,7 +214,7 @@ export async function sendPasswordChangedByAdminEmail(args: {
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: args.email,
-      subject: `Your A A Tech password was reset by an administrator`,
+      subject: `Your Ehara Engineering password was reset by an administrator`,
       react: AdminResetPasswordEmail({ recipientName: args.recipientName }),
     });
     if (error) return { id: null, error: error.message };
@@ -368,8 +368,8 @@ export async function sendWeeklyGoalsMondayEmail(args: {
       to: args.recipient.email,
       subject: clampSubject(
         args.goals.length > 0
-          ? `Your ${args.goals.length} priorities for the week — A A Tech`
-          : `Set your weekly priorities — A A Tech`,
+          ? `Your ${args.goals.length} priorities for the week — Ehara Engineering`
+          : `Set your weekly priorities — Ehara Engineering`,
       ),
       react: WeeklyGoalsMondayEmail({
         recipientName: args.recipient.name,
@@ -398,7 +398,7 @@ export async function sendWeeklyGoalsFillReminderEmail(args: {
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: args.recipient.email,
-      subject: clampSubject("Update your % done before the week closes — A A Tech"),
+      subject: clampSubject("Update your % done before the week closes — Ehara Engineering"),
       react: WeeklyGoalsFillReminderEmail({
         recipientName: args.recipient.name,
         weekLabel: args.weekLabel,
@@ -427,7 +427,7 @@ export async function sendWeeklyGoalsIncompleteEmail(args: {
       from: FROM,
       to: args.recipient.email,
       subject: clampSubject(
-        `${args.unmarkedCount} weekly ${args.unmarkedCount === 1 ? "goal" : "goals"} still unmarked — A A Tech`,
+        `${args.unmarkedCount} weekly ${args.unmarkedCount === 1 ? "goal" : "goals"} still unmarked — Ehara Engineering`,
       ),
       react: WeeklyGoalsIncompleteEmail({
         recipientName: args.recipient.name,

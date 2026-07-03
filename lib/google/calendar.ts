@@ -182,7 +182,7 @@ export function taskToEvent(task: CalendarTask): Record<string, unknown> {
     description: meta,
     start,
     end,
-    source: { title: "A A Tech WMS", url: `${APP_URL}/tasks/${task.id}` },
+    source: { title: "Ehara Engineering WMS", url: `${APP_URL}/tasks/${task.id}` },
   };
   if (task.recurrenceRule) {
     body.recurrence = toGoogleRecurrence(task.recurrenceRule, !timed);

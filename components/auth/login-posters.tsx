@@ -3,10 +3,10 @@ import type { ReactNode } from "react";
 
 /**
  * The login mosaic's tile library — a Canva-style wall of distinct "posters",
- * all on-brand for A A Tech. Hand-built SVG/CSS tiles that evoke the app
+ * all on-brand for Ehara Engineering. Hand-built SVG/CSS tiles that evoke the app
  * itself: Kanban boards, task lists, KPI cards, charts, attendance grids, and
- * the A A Tech brand mark. Pure markup (no external images, no third-party
- * marketing) so the wall is 100% A A Tech.
+ * the Ehara Engineering brand mark. Pure markup (no external images, no third-party
+ * marketing) so the wall is 100% Ehara Engineering.
  *
  * `POSTER_TILES` is consumed by `login-mosaic.tsx`, which distributes them into
  * drifting columns. Each entry carries a base `h` (px) so the columns build a
@@ -55,7 +55,7 @@ function Tile({
   );
 }
 
-/** The A A Tech logo mark (transparent PNG), sized to taste. */
+/** The Ehara Engineering logo mark (transparent PNG), sized to taste. */
 function Mark({ size = 40, glow = true }: { size?: number; glow?: boolean }) {
   return (
     <Image
@@ -95,7 +95,7 @@ function Pill({ tone, children }: { tone: string; children: ReactNode }) {
   );
 }
 
-// ── A A Tech brand / slogan posters ──────────────────────────────────────
+// ── Ehara Engineering brand / slogan posters ──────────────────────────────────────
 
 function SloganOrganize() {
   return (

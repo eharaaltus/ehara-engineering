@@ -32,9 +32,9 @@ export function EmailLayout({
               fontSize: 11,
               fontWeight: 600,
               letterSpacing: "0.05em",
-            }}>A A TECH</span>
+            }}>EHARA ENGINEERING</span>
             <span style={{ color: "#0F172A", fontWeight: 600, fontSize: 16 }}>
-              A A Tech Dashboard
+              Ehara Engineering Dashboard
             </span>
           </div>
           <div style={{
@@ -47,7 +47,7 @@ export function EmailLayout({
           </div>
           <Hr style={{ borderColor: "#E2E8F0", margin: "24px 0 16px" }} />
           <Text style={{ fontSize: 12, color: "#64748B", textAlign: "center", margin: 0 }}>
-            A A Tech Dashboard · Mumbai
+            Ehara Engineering Dashboard · Mumbai
           </Text>
           <Text style={{ fontSize: 11, color: "#94A3B8", textAlign: "center", margin: "4px 0 0" }}>
             Operational notifications. To stop receiving them, deactivate your account.

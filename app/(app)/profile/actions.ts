@@ -171,7 +171,7 @@ const IdentityPatchSchema = z
       .enum(["available", "focused", "heads_down", "away"])
       .optional(),
     availabilityAutoRevertAt: z.coerce.date().nullable().optional(),
-    // theme intentionally omitted — A A Tech dashboard is light-only.
+    // theme intentionally omitted — Ehara Engineering dashboard is light-only.
     density: z.enum(["cozy", "compact"]).optional(),
     accent: z
       .string()

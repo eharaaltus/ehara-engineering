@@ -1,4 +1,4 @@
-/* A A Tech Service Worker — M4 Commit 3c
+/* Ehara Engineering Service Worker — M4 Commit 3c
  *
  * Receives Web Push events from the server (see lib/web-push/client.ts)
  * and renders a native browser notification.  Clicking the notification

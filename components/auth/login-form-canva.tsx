@@ -16,7 +16,7 @@ import { wasPasswordResetByAdmin } from "@/app/(auth)/login/actions";
 /**
  * Canva-style login: a compact dark card form. Same Firebase email/password +
  * session-exchange auth as the glass form — only the chrome differs (dark
- * "jump back in" modal over the poster mosaic, A A Tech-red CTA). Kept separate
+ * "jump back in" modal over the poster mosaic, Ehara Engineering-red CTA). Kept separate
  * so the other auth surfaces keep their own styling.
  */
 function translateFirebaseError(code: string | undefined): string {
@@ -84,7 +84,7 @@ export function LoginFormCanva() {
       } catch (err: unknown) {
         const code = (err as { code?: string })?.code;
         if ((err as Error)?.message === "not-enrolled") {
-          setError("This email isn't enrolled in A A Tech. Ask your admin to invite you.");
+          setError("This email isn't enrolled in Ehara Engineering. Ask your admin to invite you.");
           try {
             await firebaseSignOut(getFirebaseAuth());
           } catch {
@@ -107,11 +107,11 @@ export function LoginFormCanva() {
 
   return (
     <form onSubmit={onSubmit} className="w-full" noValidate>
-      {/* Brand mark — the real A A Tech logo */}
+      {/* Brand mark — the real Ehara Engineering logo */}
       <div className="flex justify-center">
         <Image
           src="/logo-mark.png"
-          alt="A A Tech"
+          alt="Ehara Engineering"
           width={48}
           height={55}
           priority
@@ -126,7 +126,7 @@ export function LoginFormCanva() {
         Welcome back
       </h1>
       <p className="mt-2 text-center" style={{ fontSize: 14.5, color: "rgba(255,255,255,0.55)" }}>
-        Sign in to your A A Tech workspace.
+        Sign in to your Ehara Engineering workspace.
       </p>
 
       <div className="mt-7 space-y-4">
@@ -198,7 +198,7 @@ export function LoginFormCanva() {
 
       <div className="mt-7 flex items-center gap-3" aria-hidden>
         <span className="h-px flex-1" style={{ background: "rgba(255,255,255,0.1)" }} />
-        <span style={{ fontSize: 11, letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-mono-display), monospace" }}>A A TECH</span>
+        <span style={{ fontSize: 11, letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-mono-display), monospace" }}>EHARA ENGINEERING</span>
         <span className="h-px flex-1" style={{ background: "rgba(255,255,255,0.1)" }} />
       </div>
 

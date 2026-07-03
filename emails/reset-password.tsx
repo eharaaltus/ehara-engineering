@@ -10,12 +10,12 @@ type Props = {
 export function ResetPasswordEmail({ link, recipientName }: Props) {
   const greeting = recipientName ? `Hi ${recipientName.split(" ")[0]},` : "Reset your password";
   return (
-    <EmailLayout preview="Reset your A A Tech password">
+    <EmailLayout preview="Reset your Ehara Engineering password">
       <Heading style={{ fontSize: 20, color: "#0F172A", margin: "0 0 16px" }}>
         {greeting}
       </Heading>
       <Text style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, margin: "0 0 16px" }}>
-        Someone — likely you — asked to reset the password for your A A Tech Dashboard account.
+        Someone — likely you — asked to reset the password for your Ehara Engineering Dashboard account.
         Click the button below to choose a new one.
       </Text>
       <Text style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, margin: "0 0 24px" }}>

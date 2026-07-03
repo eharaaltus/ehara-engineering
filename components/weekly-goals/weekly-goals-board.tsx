@@ -29,7 +29,7 @@ import { deleteWeeklyGoal } from "@/app/(app)/weekly-goals/actions";
 import { fireToast } from "@/lib/toast";
 
 /* Editorial design tokens (scoped to this board — a warm cream canvas with
- * near-black warm ink; A A Tech red used only as the goal-card accent + score
+ * near-black warm ink; Ehara Engineering red used only as the goal-card accent + score
  * ring). Kept local so the rest of the app's cooler palette is untouched. */
 const EDITORIAL = {
   canvas: "#F6F3EC",

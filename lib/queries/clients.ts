@@ -23,7 +23,7 @@ export const listActiveClientNames = unstable_cache(
       .where(eq(clients.isActive, true))
       .orderBy(asc(clients.name));
     // Postgres `order by name` is byte-order (uppercase before lowercase);
-    // re-sort with a locale-aware collator so "app" and "AA Tech" land where
+    // re-sort with a locale-aware collator so "app" and "Ehara Engineering" land where
     // a human expects.
     return rows
       .map((r) => r.name)

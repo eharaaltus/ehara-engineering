@@ -11,12 +11,12 @@ type Props = {
 export function InviteEmail({ inviteeName, inviterName, link }: Props) {
   const firstName = inviteeName.split(" ")[0] ?? inviteeName;
   return (
-    <EmailLayout preview={`${inviterName} invited you to A A Tech Dashboard`}>
+    <EmailLayout preview={`${inviterName} invited you to Ehara Engineering Dashboard`}>
       <Heading style={{ fontSize: 20, color: "#0F172A", margin: "0 0 16px" }}>
         Hi {firstName},
       </Heading>
       <Text style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, margin: "0 0 16px" }}>
-        <strong>{inviterName}</strong> has invited you to the A A Tech Dashboard —
+        <strong>{inviterName}</strong> has invited you to the Ehara Engineering Dashboard —
         the work-management tool the team uses to track tasks day-to-day.
       </Text>
       <Text style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, margin: "0 0 24px" }}>

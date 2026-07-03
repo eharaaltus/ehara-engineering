@@ -16,7 +16,7 @@ export const FilterPill = React.forwardRef<
     name?: string;
     /** The current value summary (e.g. "High & Medium", "All Clients"). */
     value: string;
-    /** Accent for the badge + value when a selection is active. Defaults to A A Tech red. */
+    /** Accent for the badge + value when a selection is active. Defaults to Ehara Engineering red. */
     tint?: string;
     /** True when this filter has a non-default selection. */
     active?: boolean;

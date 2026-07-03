@@ -134,7 +134,7 @@ export function GoalCard({
         opacity: goal.archived ? 0.72 : 1,
       }}
     >
-      {/* A A Tech-red accent rail */}
+      {/* Ehara Engineering-red accent rail */}
       <span
         aria-hidden
         className="absolute inset-y-0 left-0 w-1"

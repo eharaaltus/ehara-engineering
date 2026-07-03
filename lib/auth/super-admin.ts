@@ -6,8 +6,9 @@
  * the UI hides the admin toggle for non-super-admins.
  */
 export const SUPER_ADMIN_EMAILS = [
-  "support@unleashed.in",
-  "manan@unleashed.in",
+  "ehara.altus@gmail.com",
+  "chintangada@eharaengineering.com",
+  "sachindhumale.ehara@gmail.com",
 ] as const;
 
 export function isSuperAdmin(email: string | null | undefined): boolean {

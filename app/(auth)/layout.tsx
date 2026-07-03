@@ -101,7 +101,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           color: "rgba(15, 23, 42, 0.32)",
         }}
       >
-        A A Tech
+        Ehara Engineering
       </div>
     </div>
   );

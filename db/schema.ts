@@ -2167,3 +2167,65 @@ export type FormConfig = typeof formConfigs.$inferSelect;
 export type NewFormConfig = typeof formConfigs.$inferInsert;
 export type ProductOption = typeof productOptions.$inferSelect;
 export type NewProductOption = typeof productOptions.$inferInsert;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EHARA NPD (New Product Development) — 6-stage / 36-activity tracker.
+// Ehara-specific module added on top of the shared WMS.
+// ═══════════════════════════════════════════════════════════════════════════
+export const npdStageEnum = pgEnum("npd_stage", [
+  "TECHNICAL",
+  "COMMERCIAL",
+  "TOOL DEVELOPMENT",
+  "PART SUBMISSION",
+  "PPAP & PTR DOCUMENT",
+  "PRE PRODUCTION HANDOVER",
+]);
+export const npdResolutionEnum = pgEnum("npd_resolution", ["Open", "Done", "On Hold"]);
+export const npdApplicabilityEnum = pgEnum("npd_applicability", ["Applicable", "N/A", "On Hold"]);
+export const npdProductStatusEnum = pgEnum("npd_product_status", [
+  "Active",
+  "On Hold",
+  "Completed",
+  "Cancelled",
+]);
+
+export const npdProducts = pgTable("npd_products", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  srNo: integer("sr_no"),
+  customer: text("customer"),
+  partName: text("part_name").notNull(),
+  partNo: text("part_no"),
+  startDate: date("start_date"),
+  targetEndDate: date("target_end_date"),
+  defaultDoerId: uuid("default_doer_id").references(() => employees.id, { onDelete: "set null" }),
+  defaultSupervisorId: uuid("default_supervisor_id").references(() => employees.id, { onDelete: "set null" }),
+  status: npdProductStatusEnum("status").notNull().default("Active"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const npdTasks = pgTable(
+  "npd_tasks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => npdProducts.id, { onDelete: "cascade" }),
+    stage: npdStageEnum("stage").notNull(),
+    code: text("code").notNull(),
+    activityPlan: text("activity_plan").notNull(),
+    doerId: uuid("doer_id").references(() => employees.id, { onDelete: "set null" }),
+    supervisorId: uuid("supervisor_id").references(() => employees.id, { onDelete: "set null" }),
+    plannedDate: date("planned_date"),
+    resolution: npdResolutionEnum("resolution").notNull().default("Open"),
+    completionDate: date("completion_date"),
+    drawingLink: text("drawing_link"),
+    applicability: npdApplicabilityEnum("applicability").notNull().default("Applicable"),
+    reasons: text("reasons"),
+    sortOrder: integer("sort_order").notNull().default(0),
+  },
+  (t) => [index("npd_tasks_product_idx").on(t.productId)],
+);
+
+export type NpdProduct = typeof npdProducts.$inferSelect;
+export type NpdTask = typeof npdTasks.$inferSelect;

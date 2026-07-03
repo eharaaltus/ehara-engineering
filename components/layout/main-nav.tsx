@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ListTodo, CalendarDays, FolderKanban, SquareKanban, Target, CalendarCheck, CalendarRange, IndianRupee, Compass, Receipt, Sparkles, BookMarked, FileSpreadsheet, Database } from "lucide-react";
+import { LayoutDashboard, ListTodo, CalendarDays, FolderKanban, SquareKanban, Target, CalendarCheck, CalendarRange, IndianRupee, Compass, Receipt, Sparkles, BookMarked, FileSpreadsheet, Database, Factory } from "lucide-react";
 import type { Route } from "next";
 import { MainNavPill } from "./main-nav-pill";
 
@@ -60,6 +60,14 @@ export function MainNav({ activeTasks, isAdmin, variant }: Props) {
           variant={variant}
         />
       )}
+      {/* Ehara NPD — New Product Development stage tracker */}
+      <MainNavPill
+        href={"/npd" as Route}
+        label="NPD"
+        Icon={Factory}
+        active={pathname.startsWith("/npd")}
+        variant={variant}
+      />
       {/* Projects / Production / Masters / Attendance removed from the top nav —
           they're reached via the portal workspaces now. */}
     </nav>

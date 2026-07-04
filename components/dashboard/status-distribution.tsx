@@ -80,7 +80,7 @@ export function StatusDistributionChart({
       className="premium-card rounded-section bg-surface-card border border-hairline p-7 max-md:p-5"
       style={{
         opacity: 0,
-        animation: "fadeUp 500ms ease-out 500ms forwards",
+        animation: "fadeUp 380ms ease-out 120ms forwards",
       }}
     >
       <Header isAdmin={isAdmin} />

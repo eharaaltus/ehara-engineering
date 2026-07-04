@@ -72,8 +72,8 @@ function GlassTile({
           "--kpi-neon": neon,
           outlineColor: `rgb(${neon})`,
           opacity: 0,
-          animation: `kpiTileEnter 720ms cubic-bezier(0.2, 0.7, 0.3, 1) ${
-            index * 90
+          animation: `kpiTileEnter 420ms cubic-bezier(0.2, 0.7, 0.3, 1) ${
+            index * 35
           }ms forwards`,
         } as React.CSSProperties
       }

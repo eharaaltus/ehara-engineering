@@ -84,7 +84,7 @@ export function AgingHeatmap({
       className="mx-auto max-w-[1600px] px-12 max-md:px-4 mt-8 mb-12"
       style={{
         opacity: 0,
-        animation: "fadeUp 500ms ease-out 900ms forwards",
+        animation: "fadeUp 380ms ease-out 210ms forwards",
       }}
     >
       <div
@@ -374,7 +374,7 @@ function Lane({
         background: "var(--color-surface-card)",
         border: "1px solid var(--color-hairline)",
         opacity: 0,
-        animation: `fadeUp 420ms ease-out ${index * 50 + 200}ms forwards`,
+        animation: `fadeUp 340ms ease-out ${Math.min(index * 25, 200) + 90}ms forwards`,
         cursor: "pointer",
       }}
     >

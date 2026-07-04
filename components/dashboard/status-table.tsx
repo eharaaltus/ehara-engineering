@@ -185,7 +185,7 @@ export function StatusTable({
       className="mx-auto max-w-[1600px] px-12 max-md:px-4 mt-8"
       style={{
         opacity: 0,
-        animation: "fadeUp 500ms ease-out 700ms forwards",
+        animation: "fadeUp 380ms ease-out 180ms forwards",
       }}
     >
       <header className="mb-5 flex items-end justify-between gap-4 flex-wrap">

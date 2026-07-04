@@ -132,7 +132,7 @@ export function TopPerformersSection({ performers }: { performers: TopPerformer[
   return (
     <section
       className="premium-card rounded-section bg-surface-card border border-hairline p-7 max-md:p-5 flex flex-col"
-      style={{ opacity: 0, animation: "fadeUp 500ms ease-out 500ms forwards" }}
+      style={{ opacity: 0, animation: "fadeUp 380ms ease-out 150ms forwards" }}
     >
       <header className="mb-5 flex items-start gap-3">
         <span

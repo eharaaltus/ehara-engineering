@@ -48,16 +48,6 @@ const WORKSPACES: WorkspaceDef[] = [
     to: "#14245c",
   },
   {
-    key: "pre-production",
-    title: "Pre Production",
-    desc: "Quotations, BOMs, PI & the production floor.",
-    href: "/sales" as Route,
-    icon: Database,
-    logo: "/portal/masters.png",
-    from: "#e11d2f",
-    to: "#4a9616",
-  },
-  {
     key: "admin",
     title: "Admin",
     desc: "Control room, master data & departments.",
@@ -152,12 +142,10 @@ export function PortalLauncher({
 
             {/* Ehara Engineering logo — left */}
             <Link href={"/" as Route} className="group relative flex items-center gap-3 shrink-0" aria-label="Ehara Engineering">
-              <span className="inline-flex items-center justify-center rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-white/25 transition-transform group-hover:scale-105">
-                <img src="/logo-mark.png?v=5" alt="Ehara Engineering" className="h-9 w-auto" />
-              </span>
+              <img src="/logo-mark.png?v=6" alt="Ehara Engineering" className="h-12 w-12 transition-transform group-hover:scale-105" />
               <span className="flex flex-col leading-none">
                 <span className="text-[16px] font-black tracking-[-0.01em] text-white">Ehara Engineering</span>
-                <span className="text-[9px] font-black uppercase tracking-[0.24em] text-[#7ed957]">Workspaces</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.24em] text-[#f4485a]">Workspaces</span>
               </span>
             </Link>
 
@@ -176,9 +164,7 @@ export function PortalLauncher({
               <span className="h-8 w-px bg-white/15 max-lg:hidden" aria-hidden />
               <span className="flex flex-col items-center gap-1 leading-none max-lg:hidden" aria-label="Powered by Altus Corp">
                 <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-white/50">Powered by</span>
-                <span className="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-lg ring-1 ring-white/40">
-                  <img src="/altus-corp-logo.png?v=5" alt="Altus Corp" className="h-11 w-auto" />
-                </span>
+                <img src="/altus-corp-logo-white.png?v=6" alt="Altus Corp" className="h-12 w-auto" />
               </span>
             </div>
           </header>

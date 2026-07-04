@@ -444,7 +444,7 @@ function QuotationPrint({
       {/* ── Ehara Engineering branded header ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "3px solid #1e40af", paddingBottom: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/logo-mark.png?v=5" alt="" style={{ height: 44, width: "auto" }} />
+          <img src="/logo-mark.png?v=6" alt="" style={{ height: 44, width: "auto" }} />
           <div>
             <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em", color: "#0a0a0a" }}>Ehara Engineering</div>
             <div style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: "0.22em", color: "#e11d2f" }}>WORK &amp; PRODUCT MANAGEMENT SYSTEM</div>

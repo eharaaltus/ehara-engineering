@@ -65,7 +65,7 @@ export function DashboardHero({
       <div
         className="relative overflow-hidden rounded-[26px] border border-white/80 px-8 py-6 max-md:px-5 max-md:py-6"
         style={{
-          background: "linear-gradient(120deg, #e9f3fd 0%, #ffffff 46%, #edf7e3 100%)",
+          background: "linear-gradient(120deg, #e9f3fd 0%, #ffffff 46%, #fdecef 100%)",
           boxShadow: "0 30px 70px -38px rgba(15,60,100,0.30), inset 0 1px 0 rgba(255,255,255,0.9)",
         }}
       >

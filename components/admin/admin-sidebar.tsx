@@ -104,20 +104,13 @@ export function AdminSidebar({ adminName, adminEmail, avatarUrl }: Props) {
           footer is pinned via flex; the nav area scrolls if it ever grows
           beyond the available height. */}
       <div className="relative flex flex-col h-full overflow-hidden">
-        {/* Brand block — logo on a white panel so the indigo block in the
-            logo stays visible against the dark sidebar surface. */}
+        {/* Brand block — transparent circular Ehara mark (no tile). */}
         <div className="px-6 pt-8 pb-6 shrink-0">
-          <div
-            className="inline-flex items-center gap-2.5 rounded-xl bg-white px-3 py-2"
-            style={{
-              boxShadow:
-                "0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6)",
-            }}
-          >
+          <div className="inline-flex items-center gap-2.5">
             <img
-              src="/logo.png"
+              src="/logo-mark.png?v=6"
               alt="Ehara Engineering"
-              style={{ height: 48, width: "auto", display: "block" }}
+              style={{ height: 44, width: 44, display: "block" }}
             />
             <span
               className="inline-flex items-center text-[10px] font-bold uppercase text-white px-2 py-0.5 rounded-full"

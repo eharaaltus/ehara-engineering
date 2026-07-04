@@ -220,14 +220,11 @@ export function AdminMobileBar({ adminName, adminEmail }: Props) {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-      <div
-        className="inline-flex items-center rounded-lg bg-white px-2 py-1"
-        style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)" }}
-      >
+      <div className="inline-flex items-center">
         <img
-          src="/logo.png"
+          src="/logo-mark.png?v=6"
           alt="Ehara Engineering"
-          style={{ height: 28, width: "auto", display: "block" }}
+          style={{ height: 36, width: 36, display: "block" }}
         />
       </div>
       <div className="w-8" /> {/* spacer to balance the hamburger */}

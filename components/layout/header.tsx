@@ -62,7 +62,7 @@ export async function DashboardHeader({
                 aria-label="Ehara Engineering home"
                 className="group relative flex shrink-0 flex-col items-center justify-center transition-transform hover:scale-[1.05]"
               >
-                <img src="/logo-mark.png?v=4" alt="Ehara Engineering" className="relative h-16 w-auto max-md:h-12" style={{ display: "block", filter: "drop-shadow(0 6px 14px rgba(30, 64, 175,0.3))" }} />
+                <img src="/logo-mark.png?v=5" alt="Ehara Engineering" className="relative h-16 w-auto max-md:h-12" style={{ display: "block", filter: "drop-shadow(0 6px 14px rgba(30, 64, 175,0.3))" }} />
                 <span className="relative mt-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-slate-700 max-md:text-[9px]">Ehara Engineering</span>
               </a>
 
@@ -96,7 +96,7 @@ export async function DashboardHeader({
               <div className="flex shrink-0 flex-col items-center gap-1.5 max-lg:hidden" aria-label="Powered by Altus Corp">
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Powered by</span>
                 <img
-                  src="/altus-corp-logo.png?v=4"
+                  src="/altus-corp-logo.png?v=5"
                   alt="Altus Corp"
                   className="h-[68px] w-auto max-md:h-14"
                   style={{ display: "block", filter: "drop-shadow(0 6px 14px rgba(0,0,0,0.18))" }}

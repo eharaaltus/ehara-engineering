@@ -87,7 +87,7 @@ export function WorkspaceHub({
 
             <Link href={"/portal" as Route} className="group relative flex items-center gap-3 shrink-0" aria-label="Ehara Engineering workspaces">
               <span className="inline-flex items-center justify-center rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-white/25 transition-transform group-hover:scale-105">
-                <img src="/logo-mark.png?v=4" alt="Ehara Engineering" className="h-9 w-auto" />
+                <img src="/logo-mark.png?v=5" alt="Ehara Engineering" className="h-9 w-auto" />
               </span>
               <span className="flex flex-col leading-none">
                 <span className="text-[16px] font-black tracking-[-0.01em] text-white">Ehara Engineering</span>
@@ -113,7 +113,7 @@ export function WorkspaceHub({
               <span className="flex flex-col items-center gap-1 leading-none max-lg:hidden" aria-label="Powered by Altus Corp">
                 <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-white/50">Powered by</span>
                 <span className="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-lg ring-1 ring-white/40">
-                  <img src="/altus-corp-logo.png?v=4" alt="Altus Corp" className="h-11 w-auto" />
+                  <img src="/altus-corp-logo.png?v=5" alt="Altus Corp" className="h-11 w-auto" />
                 </span>
               </span>
             </div>

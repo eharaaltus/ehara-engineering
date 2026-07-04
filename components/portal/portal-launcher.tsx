@@ -18,7 +18,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { LoginMosaic } from "@/components/auth/login-mosaic";
-import { NavArrows } from "@/components/layout/nav-arrows";
 
 interface WorkspaceDef {
   key: string;
@@ -102,7 +101,6 @@ export function PortalLauncher({
 
   return (
     <div className="relative isolate min-h-screen overflow-hidden bg-[#0c0807]">
-      <NavArrows />
       {/* poster-wall backdrop — same drifting mosaic as the sign-in screen.
           z-0 (not -z-10) so it paints above the root background, below content. */}
       <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">

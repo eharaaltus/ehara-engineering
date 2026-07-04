@@ -9,7 +9,7 @@ import {
   useReactTable,
   type ColumnDef,
 } from "@tanstack/react-table";
-import { Search, X, Users, ChevronRight, ChevronsDown } from "lucide-react";
+import { Search, X, Users, ChevronRight } from "lucide-react";
 import type { EmployeeStatusRow, ViewMode } from "@/lib/types";
 import { CriticalBadge } from "@/components/ui/critical-badge";
 import { EmployeeAvatar } from "@/components/ui/employee-avatar";
@@ -266,8 +266,10 @@ export function StatusTable({
         </div>
       ) : (
         <div className="premium-card overflow-hidden rounded-[22px] border border-hairline bg-surface-card">
-          {/* 5-row viewport — the rest scrolls (sticky header, thin brand scrollbar) */}
-          <div className="thin-scroll overflow-auto" style={{ maxHeight: 372 }}>
+          {/* All rows render inline (no inner vertical scroll → no second
+              scrollbar). Only horizontal overflow is allowed so the wide table
+              stays usable on narrow screens. */}
+          <div className="thin-scroll overflow-x-auto">
             <table className="w-full min-w-[720px]">
               <thead>
                 {table.getHeaderGroups().map((hg) => (
@@ -340,15 +342,11 @@ export function StatusTable({
             </tbody>
           </table>
           </div>
-          {filtered.length > 5 && (
-            <div className="flex items-center justify-between gap-3 border-t border-hairline bg-[#f8fbfe] px-5 py-2.5">
+          {filtered.length > 0 && (
+            <div className="flex items-center justify-end gap-3 border-t border-hairline bg-[#f8fbfe] px-5 py-2.5">
               <span className="text-[12.5px] font-semibold text-ink-soft">
-                Showing <b className="text-ink-strong">5</b> of{" "}
                 <b className="text-ink-strong tabular-nums">{filtered.length}</b>{" "}
                 {filtered.length === 1 ? "employee" : "employees"}
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-ink-subtle">
-                <ChevronsDown size={13} strokeWidth={2.6} className="animate-bounce" /> Scroll to view more
               </span>
             </div>
           )}

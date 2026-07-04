@@ -5,7 +5,6 @@ import { WeeklyGoalsFillView } from "@/components/weekly-goals/weekly-goals-fill
 import { getOrgSettings } from "@/lib/queries/org-settings";
 import { IdleTimerClient } from "@/components/auth/idle-timer-client";
 import { KeyboardShortcuts } from "@/components/layout/keyboard-shortcuts";
-import { NavArrows } from "@/components/layout/nav-arrows";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const me = await requireUser();
@@ -42,7 +41,6 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     <>
       <IdleTimerClient timeoutMinutes={settings.idleTimeoutMinutes} />
       <KeyboardShortcuts />
-      <NavArrows />
 
       {/* ── Premium ambient backdrop (fixed, behind all app content) ──
           A soft brand-tinted wash + faint dotted grid + two blurred colour

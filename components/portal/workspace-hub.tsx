@@ -19,7 +19,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { LoginMosaic } from "@/components/auth/login-mosaic";
-import { NavArrows } from "@/components/layout/nav-arrows";
 
 // Icons are referenced by string key so a server page can pass plain data.
 const ICONS: Record<string, LucideIcon> = {
@@ -65,7 +64,6 @@ export function WorkspaceHub({
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0c0807]">
-      <NavArrows />
       {/* poster-wall backdrop — same as the portal / sign-in */}
       <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <LoginMosaic overlay="soft" />

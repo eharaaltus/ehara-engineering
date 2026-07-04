@@ -45,7 +45,13 @@ const client =
     // no-op. The aggressive recycling above + postgres-js's default TCP
     // keep_alive (60s) are what actually bound the dead-socket case.
     max: 10,
-    idle_timeout: 10,
+    // idle_timeout 10→60: on the TRANSACTION pooler (6543) an idle CLIENT
+    // connection does not pin a server connection, so holding it open a bit
+    // longer is cheap — and it keeps the socket warm between clicks so we don't
+    // pay a full TLS handshake to ap-south-1 on every page load (the main source
+    // of "Dashboard is taking longer than usual"). max_lifetime still recycles
+    // every 10 min, so a socket orphaned by a pooler bounce can't linger.
+    idle_timeout: 60,
     max_lifetime: 60 * 10,
     connect_timeout: 10,
   });

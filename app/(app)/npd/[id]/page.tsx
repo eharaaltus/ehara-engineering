@@ -7,6 +7,8 @@ import { npdProducts, npdTasks, employees } from "@/db/schema";
 import { requireUser } from "@/lib/auth/current";
 import { computeHealth, computeNpd, NPD_STAGES, addDaysISO, fmtDate } from "@/lib/npd/status";
 import { NpdTaskRow } from "@/components/npd/npd-task-row";
+import { DashboardHeader } from "@/components/layout/header";
+import { DashboardFooter } from "@/components/layout/footer";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +36,9 @@ export default async function NpdDetailPage({ params }: { params: Promise<{ id: 
   );
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <>
+      <DashboardHeader generatedAt={new Date()} />
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-[var(--color-ink)]">{prod.partName}</h1>
@@ -92,6 +96,8 @@ export default async function NpdDetailPage({ params }: { params: Promise<{ id: 
           );
         })}
       </div>
-    </div>
+      </main>
+      <DashboardFooter />
+    </>
   );
 }

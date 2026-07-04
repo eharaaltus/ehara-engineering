@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { npdProducts, npdTasks } from "@/db/schema";
 import { requireUser } from "@/lib/auth/current";
 import { computeHealth, computeNpd, NPD_STAGES, STAGE_SHORT, fmtDate } from "@/lib/npd/status";
+import { DashboardHeader } from "@/components/layout/header";
+import { DashboardFooter } from "@/components/layout/footer";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +26,9 @@ export default async function NpdListPage() {
   const healthColor = { Good: "#16a34a", "At Risk": "#d97706", Critical: "#e11d2f" } as const;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <>
+      <DashboardHeader generatedAt={new Date()} />
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-[var(--color-ink)]">NPD Products</h1>
@@ -130,6 +134,8 @@ export default async function NpdListPage() {
           })}
         </div>
       )}
-    </div>
+      </main>
+      <DashboardFooter />
+    </>
   );
 }

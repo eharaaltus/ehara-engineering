@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { employees } from "@/db/schema";
 import { requireUser } from "@/lib/auth/current";
 import { createNpdProduct } from "../actions";
+import { DashboardHeader } from "@/components/layout/header";
+import { DashboardFooter } from "@/components/layout/footer";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +22,9 @@ export default async function NewNpdProductPage() {
     "w-full rounded-xl border border-[var(--color-hairline-strong)] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1e40af]";
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+    <>
+      <DashboardHeader generatedAt={new Date()} />
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
       <div className="mb-6 flex items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-[var(--color-ink)]">New Product</h1>
@@ -83,6 +87,8 @@ export default async function NewNpdProductPage() {
           </Link>
         </div>
       </form>
-    </div>
+      </main>
+      <DashboardFooter />
+    </>
   );
 }

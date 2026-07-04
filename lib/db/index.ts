@@ -3,7 +3,6 @@ import postgres from "postgres";
 import { env } from "@/lib/env";
 import * as schema from "@/db/schema";
 import { withSlowQueryLog } from "./slow-query";
-import { withQueryTimeout } from "./query-timeout";
 
 // Cache the postgres client on globalThis so Next.js HMR doesn't leak
 // connections on every save. In production this just runs once.
@@ -75,17 +74,7 @@ const slowMs = slowEnvVar
   : process.env.NODE_ENV === "development"
     ? 300
     : NaN;
-// Hard per-query timeout is ALWAYS on (not opt-in): it's the safety net that
-// stops a single wedged pooler connection from starving the pool and hanging
-// every page for minutes. Cap is overridable via DB_QUERY_TIMEOUT_MS. It sits
-// closest to the real client so it wraps the actual postgres-js query object
-// (whose `.cancel()` we call); the optional slow-query logger layers on top.
-const timeoutEnv = Number(process.env.DB_QUERY_TIMEOUT_MS);
-const cappedClient = withQueryTimeout(
-  client,
-  Number.isFinite(timeoutEnv) && timeoutEnv > 0 ? timeoutEnv : 15_000,
-);
-const tracedClient = Number.isFinite(slowMs) ? withSlowQueryLog(cappedClient, slowMs) : cappedClient;
+const tracedClient = Number.isFinite(slowMs) ? withSlowQueryLog(client, slowMs) : client;
 
 export const db = drizzle(tracedClient, { schema });
 export * from "@/db/schema";

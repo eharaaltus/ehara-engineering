@@ -169,7 +169,7 @@ export function WeeklyGoalsBoard(props: Props) {
             style={{
               background:
                 "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-              boxShadow: "0 6px 18px -6px rgba(1, 128, 207, 0.55)",
+              boxShadow: "0 6px 18px -6px rgba(30, 64, 175, 0.55)",
             }}
           >
             <BarChart3 size={16} strokeWidth={2.4} />

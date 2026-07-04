@@ -37,11 +37,11 @@ function DepartmentCell({
           className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold ring-1 ring-inset"
           style={{
             background: m.isPrimary ? "#FEF2F2" : "#F1F5F9",
-            color: m.isPrimary ? "#0069b3" : "#334155",
+            color: m.isPrimary ? "#14245c" : "#334155",
             boxShadow: `inset 0 0 0 1px ${m.isPrimary ? "#FECACA" : "#CBD5E1"}`,
           }}
         >
-          {m.isPrimary && <Star size={11} strokeWidth={2.4} fill="#0069b3" />}
+          {m.isPrimary && <Star size={11} strokeWidth={2.4} fill="#14245c" />}
           {m.name}
         </span>
       ))}
@@ -79,7 +79,7 @@ function AdminCell({ isAdmin }: { isAdmin: boolean }) {
       className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold text-white"
       style={{
         background: "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-        boxShadow: "0 1px 4px rgba(1, 128, 207, 0.30)",
+        boxShadow: "0 1px 4px rgba(30, 64, 175, 0.30)",
       }}
     >
       <Crown size={12} strokeWidth={2.4} />

@@ -44,8 +44,8 @@ const WORKSPACES: WorkspaceDef[] = [
     href: "/" as Route,
     icon: LayoutDashboard,
     logo: "/portal/wms.png",
-    from: "#0180cf",
-    to: "#0069b3",
+    from: "#1e40af",
+    to: "#14245c",
   },
   {
     key: "pre-production",
@@ -54,7 +54,7 @@ const WORKSPACES: WorkspaceDef[] = [
     href: "/sales" as Route,
     icon: Database,
     logo: "/portal/masters.png",
-    from: "#63b81e",
+    from: "#e11d2f",
     to: "#4a9616",
   },
   {
@@ -75,7 +75,7 @@ const WORKSPACES: WorkspaceDef[] = [
     href: "/portal/employees" as Route,
     icon: Users,
     logo: "/portal/employees.png",
-    from: "#0069b3",
+    from: "#14245c",
     to: "#024a7d",
   },
   {
@@ -126,7 +126,7 @@ export function PortalLauncher({
           <div
             aria-hidden
             className="absolute -inset-[3px] rounded-[26px] opacity-45 blur-2xl"
-            style={{ background: "linear-gradient(110deg, #0180cf, #0a7d8a 52%, #63b81e)" }}
+            style={{ background: "linear-gradient(110deg, #1e40af, #0a7d8a 52%, #e11d2f)" }}
           />
           <header
             className="relative flex items-center justify-between gap-4 overflow-hidden rounded-[22px] px-6 py-4 backdrop-blur-2xl max-md:px-4"
@@ -134,14 +134,14 @@ export function PortalLauncher({
               background: "linear-gradient(180deg, rgba(26,21,20,0.90), rgba(14,11,10,0.95))",
               border: "1px solid rgba(255,255,255,0.10)",
               boxShadow:
-                "0 34px 80px -34px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -40px 70px -55px rgba(1,128,207,0.5)",
+                "0 34px 80px -34px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -40px 70px -55px rgba(30, 64, 175,0.5)",
             }}
           >
             {/* animated top accent strip */}
             <span
               aria-hidden
               className="absolute inset-x-0 top-0 h-[3px]"
-              style={{ background: "linear-gradient(90deg, #0180cf, #0069b3 45%, #63b81e)", backgroundSize: "200% auto", animation: "headerTextShimmer 7s linear infinite" }}
+              style={{ background: "linear-gradient(90deg, #1e40af, #14245c 45%, #e11d2f)", backgroundSize: "200% auto", animation: "headerTextShimmer 7s linear infinite" }}
             />
             {/* faint dotted texture */}
             <span

@@ -31,13 +31,13 @@ export function MyDayCard({ firstName, counts }: Props) {
         <div
           aria-hidden
           className="absolute -inset-0.5 rounded-[20px] opacity-0 blur-lg transition-opacity duration-500 group-hover:opacity-40"
-          style={{ background: "linear-gradient(120deg, #0180cf, #63b81e)" }}
+          style={{ background: "linear-gradient(120deg, #1e40af, #e11d2f)" }}
         />
         <Link
           href={"/tasks/agenda" as Route}
           className="relative block overflow-hidden rounded-[18px] border border-white/70 px-6 py-4 backdrop-blur-xl transition-all duration-300 group-hover:-translate-y-0.5"
           style={{
-            background: "linear-gradient(120deg, rgba(1,128,207,0.07), rgba(255,255,255,0.85) 45%, rgba(99,184,30,0.07))",
+            background: "linear-gradient(120deg, rgba(30, 64, 175,0.07), rgba(255,255,255,0.85) 45%, rgba(225, 29, 47,0.07))",
             boxShadow: "0 10px 30px -18px rgba(15,40,80,0.35), 0 1px 3px rgba(15,23,42,0.04)",
           }}
         >
@@ -51,7 +51,7 @@ export function MyDayCard({ firstName, counts }: Props) {
               <div className="flex items-center gap-3">
                 <span
                   className="inline-flex size-11 items-center justify-center rounded-2xl text-white shadow-lg"
-                  style={{ background: "linear-gradient(135deg, #0180cf, #63b81e)", boxShadow: "0 10px 22px -10px #0180cfcc" }}
+                  style={{ background: "linear-gradient(135deg, #1e40af, #e11d2f)", boxShadow: "0 10px 22px -10px #1e40afcc" }}
                 >
                   <Sparkles size={20} strokeWidth={2.3} />
                 </span>

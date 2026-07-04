@@ -34,8 +34,8 @@ const TABS: TabDef[] = [
     addLabel: "Product",
     desc: "Finished-goods catalogue — groups, specs, insulation & pricing",
     icon: Package,
-    from: "#0180cf",
-    to: "#0069b3",
+    from: "#1e40af",
+    to: "#14245c",
     columns: PRODUCT_COLUMNS,
     primaryKey: "typeOfFinishedGood",
   },
@@ -45,8 +45,8 @@ const TABS: TabDef[] = [
     addLabel: "Master",
     desc: "Hardware & component masters — make, model, rates & images",
     icon: Wrench,
-    from: "#63b81e",
-    to: "#0069b3",
+    from: "#e11d2f",
+    to: "#14245c",
     columns: HARDWARE_COLUMNS,
     primaryKey: "model",
   },
@@ -113,7 +113,7 @@ export function MastersTabs({
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10 opacity-[0.5]"
-        style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(1,128,207,0.07) 1px, transparent 0)", backgroundSize: "26px 26px" }}
+        style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(30, 64, 175,0.07) 1px, transparent 0)", backgroundSize: "26px 26px" }}
       />
 
       <PageHero
@@ -133,7 +133,7 @@ export function MastersTabs({
             <Link
               href={"/quotation" as Route}
               className="group inline-flex h-11 items-center gap-2 rounded-xl px-5 text-[14px] font-extrabold text-white shadow-lg transition-all hover:-translate-y-0.5"
-              style={{ background: "linear-gradient(135deg, #0180cf, #63b81e)", boxShadow: "0 14px 30px -14px rgba(1,128,207,0.6)" }}
+              style={{ background: "linear-gradient(135deg, #1e40af, #e11d2f)", boxShadow: "0 14px 30px -14px rgba(30, 64, 175,0.6)" }}
             >
               <Receipt size={16} strokeWidth={2.4} /> Go to Quotation
               <ArrowRight size={15} strokeWidth={2.6} className="transition-transform group-hover:translate-x-0.5" />
@@ -141,8 +141,8 @@ export function MastersTabs({
           </div>
         }
         stats={[
-          { label: "Products", value: rowsByKind.product.length, icon: Package, from: "#0180cf", to: "#0069b3" },
-          { label: "Masters", value: rowsByKind.hardware.length, icon: Wrench, from: "#63b81e", to: "#0069b3" },
+          { label: "Products", value: rowsByKind.product.length, icon: Package, from: "#1e40af", to: "#14245c" },
+          { label: "Masters", value: rowsByKind.hardware.length, icon: Wrench, from: "#e11d2f", to: "#14245c" },
         ]}
       />
 

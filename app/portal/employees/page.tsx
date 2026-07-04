@@ -13,7 +13,7 @@ export default async function EmployeesHubPage() {
     <WorkspaceHub
       title="Employees"
       subtitle="Attendance, leave, salary & the team roster."
-      from="#0069b3"
+      from="#14245c"
       to="#024a7d"
       options={[
         { label: "Attendance", desc: "Daily attendance, check-in & check-out.", href: "/attendance", icon: "attendance" },

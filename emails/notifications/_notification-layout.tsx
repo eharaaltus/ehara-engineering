@@ -25,7 +25,7 @@ import type { ReactNode } from "react";
  */
 
 const STRIPE_COLORS = [
-  "#0180cf", // aatech red
+  "#1e40af", // aatech red
   "#F43F5E", // rose
   "#A855F7", // purple
   "#3B82F6", // blue
@@ -75,7 +75,7 @@ export function NotificationEmailLayout({
                 display: "inline-block",
                 padding: "4px 10px",
                 borderRadius: 999,
-                backgroundColor: "#0180cf",
+                backgroundColor: "#1e40af",
                 color: "#ffffff",
                 fontSize: 11,
                 fontWeight: 600,
@@ -230,7 +230,7 @@ export function NotificationCTA({
         href={href}
         style={{
           display: "inline-block",
-          backgroundColor: "#0180cf",
+          backgroundColor: "#1e40af",
           color: "#ffffff",
           padding: "12px 24px",
           borderRadius: 8,

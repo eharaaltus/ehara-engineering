@@ -74,16 +74,16 @@ export function WorkspaceHub({
       {/* ── header (premium dark glass) ── */}
       <div className="relative z-10 px-6 pt-6 max-md:px-3">
         <div className="relative mx-auto max-w-[1180px]">
-          <div aria-hidden className="absolute -inset-[3px] rounded-[26px] opacity-45 blur-2xl" style={{ background: "linear-gradient(110deg, #0180cf, #0a7d8a 52%, #63b81e)" }} />
+          <div aria-hidden className="absolute -inset-[3px] rounded-[26px] opacity-45 blur-2xl" style={{ background: "linear-gradient(110deg, #1e40af, #0a7d8a 52%, #e11d2f)" }} />
           <header
             className="relative flex items-center justify-between gap-4 overflow-hidden rounded-[22px] px-6 py-4 backdrop-blur-2xl max-md:px-4"
             style={{
               background: "linear-gradient(180deg, rgba(26,21,20,0.90), rgba(14,11,10,0.95))",
               border: "1px solid rgba(255,255,255,0.10)",
-              boxShadow: "0 34px 80px -34px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -40px 70px -55px rgba(1,128,207,0.5)",
+              boxShadow: "0 34px 80px -34px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -40px 70px -55px rgba(30, 64, 175,0.5)",
             }}
           >
-            <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: "linear-gradient(90deg, #0180cf, #0069b3 45%, #63b81e)", backgroundSize: "200% auto", animation: "headerTextShimmer 7s linear infinite" }} />
+            <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: "linear-gradient(90deg, #1e40af, #14245c 45%, #e11d2f)", backgroundSize: "200% auto", animation: "headerTextShimmer 7s linear infinite" }} />
 
             <Link href={"/portal" as Route} className="group relative flex items-center gap-3 shrink-0" aria-label="Ehara Engineering workspaces">
               <span className="inline-flex items-center justify-center rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-white/25 transition-transform group-hover:scale-105">

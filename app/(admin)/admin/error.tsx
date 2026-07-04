@@ -20,7 +20,7 @@ export default function AdminErrorBoundary({
 
   const washRgba = isForbidden
     ? "rgba(245, 158, 11, 0.10)"
-    : "rgba(1, 128, 207, 0.10)";
+    : "rgba(30, 64, 175, 0.10)";
 
   return (
     <section
@@ -71,7 +71,7 @@ export default function AdminErrorBoundary({
           style={{
             background:
               "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-            boxShadow: "0 4px 12px rgba(1, 128, 207, 0.25)",
+            boxShadow: "0 4px 12px rgba(30, 64, 175, 0.25)",
           }}
         >
           Go to dashboard →

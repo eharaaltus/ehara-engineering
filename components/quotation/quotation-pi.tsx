@@ -19,7 +19,7 @@ import {
 } from "@/lib/quotation/types";
 
 const inp =
-  "h-9 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-[13px] text-slate-800 outline-none transition-all focus:border-[#0180cf] focus:ring-2 focus:ring-[#0180cf]/15";
+  "h-9 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-[13px] text-slate-800 outline-none transition-all focus:border-[#1e40af] focus:ring-2 focus:ring-[#1e40af]/15";
 
 function L({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -89,17 +89,17 @@ export function QuotationPi({
             <ArrowLeft size={15} strokeWidth={2.6} /> Back to Quotation
           </button>
           <div className="flex items-center gap-2.5">
-            <button type="button" onClick={() => window.print()} className="inline-flex h-10 items-center gap-2 rounded-xl border border-[#0180cf]/40 bg-[#0180cf]/8 px-4 text-[13.5px] font-bold text-[#0069b3] shadow-sm transition-all hover:-translate-y-0.5">
+            <button type="button" onClick={() => window.print()} className="inline-flex h-10 items-center gap-2 rounded-xl border border-[#1e40af]/40 bg-[#1e40af]/8 px-4 text-[13.5px] font-bold text-[#14245c] shadow-sm transition-all hover:-translate-y-0.5">
               <Printer size={16} /> Print PI
             </button>
-            <button type="button" onClick={save} disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl px-5 text-[14px] font-extrabold text-white shadow-lg transition-all hover:-translate-y-0.5 disabled:opacity-60" style={{ background: "linear-gradient(135deg, #63b81e, #0180cf)", boxShadow: "0 12px 26px -10px rgba(1,128,207,0.6)" }}>
+            <button type="button" onClick={save} disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl px-5 text-[14px] font-extrabold text-white shadow-lg transition-all hover:-translate-y-0.5 disabled:opacity-60" style={{ background: "linear-gradient(135deg, #e11d2f, #1e40af)", boxShadow: "0 12px 26px -10px rgba(30, 64, 175,0.6)" }}>
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} strokeWidth={2.4} />} Save
             </button>
           </div>
         </div>
 
         <div className="flex items-center gap-2.5">
-          <span className="inline-flex size-10 items-center justify-center rounded-xl text-white shadow" style={{ background: "linear-gradient(135deg, #0069b3, #0180cf)" }}><ReceiptText size={20} /></span>
+          <span className="inline-flex size-10 items-center justify-center rounded-xl text-white shadow" style={{ background: "linear-gradient(135deg, #14245c, #1e40af)" }}><ReceiptText size={20} /></span>
           <div>
             <h1 className="text-[20px] font-black text-slate-800">Proforma Invoice</h1>
             <p className="text-[12.5px] text-slate-500">Autofilled from the quotation — fill the invoice details, then Print PI.</p>
@@ -128,7 +128,7 @@ export function QuotationPi({
         <div className="mt-5 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
           <table className="w-full min-w-[900px] text-[13px]">
             <thead>
-              <tr className="text-left text-[11px] font-extrabold uppercase tracking-[0.04em] text-white" style={{ background: "linear-gradient(180deg, #0069b3, #00598f)" }}>
+              <tr className="text-left text-[11px] font-extrabold uppercase tracking-[0.04em] text-white" style={{ background: "linear-gradient(180deg, #14245c, #00598f)" }}>
                 <th className="px-3 py-2.5">#</th>
                 <th className="px-3 py-2.5">Door Code</th>
                 <th className="px-3 py-2.5">Location</th>
@@ -158,7 +158,7 @@ export function QuotationPi({
                       <td className="border-b border-[#e7eff6] px-2 py-1.5"><input type="number" className={`${inp} h-8 w-16 text-right`} value={d.qty || ""} onChange={(e) => patchDoor(d.id, { qty: Number(e.target.value) })} /></td>
                       <td className="border-b border-[#e7eff6] px-3 py-1.5 text-right font-semibold tabular-nums text-slate-700">{inr(p.rate)}</td>
                       <td className="border-b border-[#e7eff6] px-2 py-1.5"><input type="number" className={`${inp} h-8 w-24 text-right`} value={d.piInstall || ""} onChange={(e) => patchDoor(d.id, { piInstall: Number(e.target.value) })} placeholder="0" /></td>
-                      <td className="border-b border-[#e7eff6] px-3 py-1.5 text-right font-black tabular-nums text-[#0069b3]">{inr(p.amount)}</td>
+                      <td className="border-b border-[#e7eff6] px-3 py-1.5 text-right font-black tabular-nums text-[#14245c]">{inr(p.amount)}</td>
                     </tr>
                   );
                 })
@@ -174,7 +174,7 @@ export function QuotationPi({
             <div className="flex items-center justify-between py-0.5"><span className="text-[13px] font-semibold text-slate-500">CGST @ 9%</span><span className="tabular-nums text-[12.5px] text-slate-500">{inr(totals.cgst)}</span></div>
             <div className="flex items-center justify-between py-0.5"><span className="text-[13px] font-semibold text-slate-500">SGST @ 9%</span><span className="tabular-nums text-[12.5px] text-slate-500">{inr(totals.sgst)}</span></div>
             <div className="my-3 h-px bg-slate-100" />
-            <div className="flex items-center justify-between rounded-xl px-3 py-2.5 text-white" style={{ background: "linear-gradient(120deg, #0069b3, #63b81e)" }}>
+            <div className="flex items-center justify-between rounded-xl px-3 py-2.5 text-white" style={{ background: "linear-gradient(120deg, #14245c, #e11d2f)" }}>
               <span className="text-[12px] font-bold uppercase tracking-[0.06em]">Grand Total</span>
               <span className="tabular-nums text-[20px] font-black">{inr(totals.grandTotal)}</span>
             </div>
@@ -223,7 +223,7 @@ function PiPrint({
       </div>
 
       {/* title */}
-      <div style={{ border: "1.5px solid #0069b3", background: "#eef6fc", textAlign: "center", fontWeight: 800, fontSize: 13, padding: 4, color: "#0069b3" }}>
+      <div style={{ border: "1.5px solid #14245c", background: "#eef6fc", textAlign: "center", fontWeight: 800, fontSize: 13, padding: 4, color: "#14245c" }}>
         PROFORMA INVOICE — Supply &amp; Installation
       </div>
 
@@ -271,7 +271,7 @@ function PiPrint({
           ))}
         </colgroup>
         <thead>
-          <tr style={{ background: "linear-gradient(180deg,#0180cf,#0069b3)", color: "#fff" }}>
+          <tr style={{ background: "linear-gradient(180deg,#1e40af,#14245c)", color: "#fff" }}>
             {["Sr No", "Door Code", "Location", "Door Width", "Door Height", "Description", "HSN Code", "UOM", "Qty Nos", "Rate ₹", "Install ₹", "Amount ₹"].map((h) => (
               <th key={h} className={c} style={{ textAlign: "center", fontWeight: 700, wordBreak: "break-word" }}>{h}</th>
             ))}
@@ -320,7 +320,7 @@ function PiPrint({
                   <tr><td className={c} colSpan={2}>CGST @ 9.00%</td><td className={c} style={{ textAlign: "right" }}>{num(totals.cgst)}</td></tr>
                   <tr><td className={c} colSpan={2}>SGST @ 9.00%</td><td className={c} style={{ textAlign: "right" }}>{num(totals.sgst)}</td></tr>
                   <tr><td className={c} colSpan={2}>Freight</td><td className={c} style={{ textAlign: "right", fontSize: 7.5 }}>{piMeta.freightNote}</td></tr>
-                  <tr style={{ background: "linear-gradient(90deg,#0069b3,#63b81e)" }}><td className={c} colSpan={2} style={{ color: "#fff", fontWeight: 800 }}>Grand Total</td><td className={c} style={{ textAlign: "right", color: "#fff", fontWeight: 800 }}>{num(totals.grandTotal)}</td></tr>
+                  <tr style={{ background: "linear-gradient(90deg,#14245c,#e11d2f)" }}><td className={c} colSpan={2} style={{ color: "#fff", fontWeight: 800 }}>Grand Total</td><td className={c} style={{ textAlign: "right", color: "#fff", fontWeight: 800 }}>{num(totals.grandTotal)}</td></tr>
                 </tbody>
               </table>
               <div style={{ padding: "26px 8px 8px", textAlign: "right", fontSize: 8.5 }}>

@@ -98,10 +98,10 @@ function BadgeCard({ row }: { row: AchievementRow }) {
         padding: 16,
         borderRadius: 12,
         background: row.earned
-          ? "linear-gradient(135deg, rgba(1, 128, 207, 0.06), rgba(0, 105, 179, 0.04))"
+          ? "linear-gradient(135deg, rgba(30, 64, 175, 0.06), rgba(20, 36, 92, 0.04))"
           : "rgba(15, 23, 42, 0.03)",
         border: `1px solid ${
-          row.earned ? "rgba(1, 128, 207, 0.18)" : "rgba(15, 23, 42, 0.05)"
+          row.earned ? "rgba(30, 64, 175, 0.18)" : "rgba(15, 23, 42, 0.05)"
         }`,
         position: "relative",
         opacity: row.earned ? 1 : 0.82,
@@ -168,7 +168,7 @@ function BadgeCard({ row }: { row: AchievementRow }) {
               style={{
                 width: `${pct}%`,
                 height: "100%",
-                background: "linear-gradient(90deg, #0180cf, #0069b3)",
+                background: "linear-gradient(90deg, #1e40af, #14245c)",
                 transition: "width 0.4s ease",
               }}
             />

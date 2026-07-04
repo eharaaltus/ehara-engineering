@@ -29,7 +29,7 @@ function TrendBadge({ trend, onDark = false }: { trend: Trend; onDark?: boolean 
   const { dir, pct } = trend;
   const Icon = dir === "up" ? TrendingUp : dir === "down" ? TrendingDown : Minus;
   const tone =
-    dir === "up" ? "#63b81e" : dir === "down" ? "#ef4444" : onDark ? "rgba(255,255,255,0.6)" : "#94a3b8";
+    dir === "up" ? "#e11d2f" : dir === "down" ? "#ef4444" : onDark ? "rgba(255,255,255,0.6)" : "#94a3b8";
   return (
     <span
       className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-black tabular-nums"
@@ -138,17 +138,17 @@ export function TopPerformersSection({ performers }: { performers: TopPerformer[
         <span
           aria-hidden
           className="mt-0.5 inline-flex size-11 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg"
-          style={{ background: "linear-gradient(135deg, #0180cf, #63b81e)", boxShadow: "0 12px 26px -12px rgba(1,128,207,0.7)" }}
+          style={{ background: "linear-gradient(135deg, #1e40af, #e11d2f)", boxShadow: "0 12px 26px -12px rgba(30, 64, 175,0.7)" }}
         >
           <Gauge size={22} strokeWidth={2.2} />
         </span>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h2 className="text-display-lg text-ink-strong">Performance Intelligence</h2>
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#63b81e]/12 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#3f7a14]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#e11d2f]/12 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#3f7a14]">
               <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#63b81e] opacity-75" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-[#63b81e]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#e11d2f] opacity-75" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-[#e11d2f]" />
               </span>
               Live
             </span>
@@ -163,9 +163,9 @@ export function TopPerformersSection({ performers }: { performers: TopPerformer[
         <>
           {/* team aggregate strip */}
           <div className="mb-4 grid grid-cols-3 gap-2.5">
-            <MiniStat icon={Flame} label="Completed" value={teamTotal} from="#0180cf" to="#0069b3" />
-            <MiniStat icon={Users} label="Contributors" value={performers.length} from="#63b81e" to="#3f7a14" />
-            <MiniStat icon={Activity} label="Top share" value={championShare} suffix="%" from="#0069b3" to="#0180cf" />
+            <MiniStat icon={Flame} label="Completed" value={teamTotal} from="#1e40af" to="#14245c" />
+            <MiniStat icon={Users} label="Contributors" value={performers.length} from="#e11d2f" to="#3f7a14" />
+            <MiniStat icon={Activity} label="Top share" value={championShare} suffix="%" from="#14245c" to="#1e40af" />
           </div>
 
           {/* champion spotlight */}
@@ -239,8 +239,8 @@ function ChampionCard({ champion, share }: { champion: TopPerformer; share: numb
       }}
     >
       {/* glow + shimmer */}
-      <span aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full" style={{ background: "radial-gradient(circle, rgba(99,184,30,0.4), transparent 68%)", filter: "blur(20px)" }} />
-      <span aria-hidden className="pointer-events-none absolute -left-14 bottom-[-3rem] h-44 w-44 rounded-full" style={{ background: "radial-gradient(circle, rgba(1,128,207,0.45), transparent 68%)", filter: "blur(22px)" }} />
+      <span aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full" style={{ background: "radial-gradient(circle, rgba(225, 29, 47,0.4), transparent 68%)", filter: "blur(20px)" }} />
+      <span aria-hidden className="pointer-events-none absolute -left-14 bottom-[-3rem] h-44 w-44 rounded-full" style={{ background: "radial-gradient(circle, rgba(30, 64, 175,0.45), transparent 68%)", filter: "blur(22px)" }} />
       <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-[200%] -skew-x-12 bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[320%]" />
 
       <div className="relative flex items-center gap-4 max-md:flex-col max-md:text-center">
@@ -277,7 +277,7 @@ function ChampionCard({ champion, share }: { champion: TopPerformer; share: numb
         {/* weekly trend chart */}
         <div className="shrink-0 max-md:mt-1">
           <div className="mb-1 text-right text-[10px] font-bold uppercase tracking-[0.1em] text-white/45 max-md:text-center">This week</div>
-          <Sparkline data={champion.weeklySparkline} color="#63b81e" />
+          <Sparkline data={champion.weeklySparkline} color="#e11d2f" />
         </div>
       </div>
     </Link>
@@ -329,7 +329,7 @@ function LeaderRow({ performer, pctOfLeader }: { performer: TopPerformer; pctOfL
         <span className="w-28 shrink-0 truncate text-[14px] font-bold text-ink-strong max-md:w-20">{performer.employeeName}</span>
         {/* achievement bar */}
         <span className="relative h-1.5 flex-1 overflow-hidden rounded-full" style={{ background: "var(--color-surface-track)" }}>
-          <span className="absolute inset-y-0 left-0 rounded-full" style={{ width: `${Math.max(6, pctOfLeader)}%`, background: "linear-gradient(90deg, #0180cf, #63b81e)" }} />
+          <span className="absolute inset-y-0 left-0 rounded-full" style={{ width: `${Math.max(6, pctOfLeader)}%`, background: "linear-gradient(90deg, #1e40af, #e11d2f)" }} />
         </span>
         <TrendBadge trend={trend} />
         <span className="w-8 shrink-0 text-right tabular-nums text-[16px] font-black text-ink-strong" style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}>
@@ -343,7 +343,7 @@ function LeaderRow({ performer, pctOfLeader }: { performer: TopPerformer; pctOfL
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center text-center py-10" style={{ background: "var(--color-surface-soft)", border: "1px dashed var(--color-hairline-strong)", borderRadius: 16 }}>
-      <span aria-hidden className="inline-flex size-14 items-center justify-center rounded-2xl text-white shadow-lg" style={{ background: "linear-gradient(135deg, #0180cf, #63b81e)" }}>
+      <span aria-hidden className="inline-flex size-14 items-center justify-center rounded-2xl text-white shadow-lg" style={{ background: "linear-gradient(135deg, #1e40af, #e11d2f)" }}>
         <Inbox size={26} strokeWidth={2} />
       </span>
       <p className="mt-3 font-bold" style={{ fontSize: 17, color: "var(--color-ink-strong)" }}>

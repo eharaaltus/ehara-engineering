@@ -64,7 +64,7 @@ export function MainNavPill({ href, label, Icon, active, count, badge, grow, var
             alignItems: "center",
             justifyContent: "center",
             background:
-              "linear-gradient(135deg, #ff5560, var(--color-brand-blue))",
+              "linear-gradient(135deg, #e11d2f, var(--color-brand-blue))",
             color: "#ffffff",
             fontFamily: "var(--font-mono)",
             fontSize: 10,
@@ -72,7 +72,7 @@ export function MainNavPill({ href, label, Icon, active, count, badge, grow, var
             lineHeight: 1,
             letterSpacing: 0,
             boxShadow:
-              "0 0 0 2px rgba(15, 23, 42, 0.82), 0 4px 10px rgba(1, 128, 207, 0.45)",
+              "0 0 0 2px rgba(15, 23, 42, 0.82), 0 4px 10px rgba(30, 64, 175, 0.45)",
           }}
         >
           {badgeLabel}

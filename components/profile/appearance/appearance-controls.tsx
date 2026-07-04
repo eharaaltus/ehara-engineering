@@ -30,7 +30,7 @@ function applyAppearanceLive(patch: { density?: Density; accent?: string }) {
 type Density = "cozy" | "compact";
 
 const ACCENT_PRESETS = [
-  { label: "Ehara Engineering red", value: "#0180cf" },
+  { label: "Ehara Engineering red", value: "#1e40af" },
   { label: "Forest", value: "#16A34A" },
   { label: "Royal", value: "#2563EB" },
   { label: "Sunset", value: "#D97706" },
@@ -277,7 +277,7 @@ export function AppearanceControls({ initial }: Props) {
             id="accent-custom"
             type="text"
             value={accent}
-            placeholder="#0180cf"
+            placeholder="#1e40af"
             maxLength={7}
             onChange={(e) => setAccent(e.target.value)}
             onBlur={() => {
@@ -300,7 +300,7 @@ export function AppearanceControls({ initial }: Props) {
           />
           <input
             type="color"
-            value={/^#[0-9a-fA-F]{6}$/.test(accent) ? accent : "#0180cf"}
+            value={/^#[0-9a-fA-F]{6}$/.test(accent) ? accent : "#1e40af"}
             onChange={(e) => {
               setAccent(e.target.value);
               save({ accent: e.target.value });

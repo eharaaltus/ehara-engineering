@@ -32,7 +32,7 @@ export default function AppError({
         className="text-center"
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(1, 128, 207, 0.08), transparent 70%), linear-gradient(180deg, var(--color-surface-card) 0%, var(--color-surface-soft) 100%)",
+            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(30, 64, 175, 0.08), transparent 70%), linear-gradient(180deg, var(--color-surface-card) 0%, var(--color-surface-soft) 100%)",
           border: "1px solid var(--color-hairline)",
           borderRadius: 20,
           padding: 48,
@@ -74,7 +74,7 @@ export default function AppError({
             style={{
               background:
                 "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-              boxShadow: "0 4px 12px rgba(1, 128, 207, 0.25)",
+              boxShadow: "0 4px 12px rgba(30, 64, 175, 0.25)",
               cursor: "pointer",
               border: "none",
             }}

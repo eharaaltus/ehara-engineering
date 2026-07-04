@@ -115,7 +115,7 @@ export function LoginFormCanva() {
           width={48}
           height={55}
           priority
-          style={{ height: 54, width: "auto", filter: "drop-shadow(0 8px 20px rgba(1,128,207,0.45))" }}
+          style={{ height: 54, width: "auto", filter: "drop-shadow(0 8px 20px rgba(30, 64, 175,0.45))" }}
         />
       </div>
 
@@ -156,7 +156,7 @@ export function LoginFormCanva() {
           <div
             role="alert"
             className="rounded-xl px-4 py-3"
-            style={{ background: "rgba(1,128,207,0.12)", border: "1px solid rgba(1,128,207,0.4)", color: "#FECACA", fontSize: 13.5, lineHeight: 1.5 }}
+            style={{ background: "rgba(30, 64, 175,0.12)", border: "1px solid rgba(30, 64, 175,0.4)", color: "#FECACA", fontSize: 13.5, lineHeight: 1.5 }}
           >
             {error}
           </div>
@@ -167,13 +167,13 @@ export function LoginFormCanva() {
           disabled={isPending}
           className="group relative flex w-full items-center justify-center gap-2 overflow-hidden transition-transform active:scale-[0.99] disabled:opacity-70"
           style={{
-            background: "linear-gradient(135deg, #63b81e 0%, #0180cf 50%, #0069b3 100%)",
+            background: "linear-gradient(135deg, #e11d2f 0%, #1e40af 50%, #14245c 100%)",
             color: "#fff",
             padding: "15px 22px",
             borderRadius: 13,
             fontSize: 16,
             fontWeight: 700,
-            boxShadow: "0 12px 30px -12px rgba(1,128,207,0.7), 0 1px 0 rgba(255,255,255,0.22) inset",
+            boxShadow: "0 12px 30px -12px rgba(30, 64, 175,0.7), 0 1px 0 rgba(255,255,255,0.22) inset",
           }}
         >
           <span className="relative z-10">{isPending ? "Signing you in…" : "Sign in"}</span>
@@ -249,9 +249,9 @@ function Field({
         className="relative"
         style={{
           background: "rgba(255,255,255,0.05)",
-          border: `1px solid ${focused ? "rgba(1,128,207,0.6)" : "rgba(255,255,255,0.12)"}`,
+          border: `1px solid ${focused ? "rgba(30, 64, 175,0.6)" : "rgba(255,255,255,0.12)"}`,
           borderRadius: 12,
-          boxShadow: focused ? "0 0 0 4px rgba(1,128,207,0.12)" : "none",
+          boxShadow: focused ? "0 0 0 4px rgba(30, 64, 175,0.12)" : "none",
           transition: "border-color 180ms, box-shadow 180ms",
         }}
       >

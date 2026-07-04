@@ -131,7 +131,7 @@ export function FormEditorDialog({
                 <div className="mt-2 flex items-center gap-1.5">
                   <button type="button" onClick={() => move(i, -1)} className="rounded-md p-1.5 text-ink-soft hover:bg-surface-soft"><ArrowUp size={14} /></button>
                   <button type="button" onClick={() => move(i, 1)} className="rounded-md p-1.5 text-ink-soft hover:bg-surface-soft"><ArrowDown size={14} /></button>
-                  <button type="button" onClick={() => remove(i)} className="ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[12px] font-bold text-[#0069b3] hover:bg-[#FEF2F2]"><Trash2 size={13} /> Remove</button>
+                  <button type="button" onClick={() => remove(i)} className="ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[12px] font-bold text-[#14245c] hover:bg-[#FEF2F2]"><Trash2 size={13} /> Remove</button>
                 </div>
               </div>
             ))}
@@ -141,12 +141,12 @@ export function FormEditorDialog({
             <Plus size={14} /> Add field
           </button>
 
-          {error && <div role="alert" className="mt-3 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-[14px] text-[#0069b3]">{error}</div>}
+          {error && <div role="alert" className="mt-3 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-[14px] text-[#14245c]">{error}</div>}
 
           <div className="mt-5 flex items-center gap-2">
             <button type="button" onClick={save} disabled={pending}
               className="rounded-md py-2.5 px-5 text-[14px] font-bold text-white disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #0180cf, #0069b3)" }}>
+              style={{ background: "linear-gradient(135deg, #1e40af, #14245c)" }}>
               {pending ? "Saving…" : "Save form"}
             </button>
             <button type="button" onClick={reset} disabled={pending}

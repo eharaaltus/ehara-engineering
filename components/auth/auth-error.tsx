@@ -14,8 +14,8 @@ export function AuthError({ message }: { message: string | null }) {
       className="flex items-start gap-2.5 rounded-xl px-3.5 py-3 text-[14px]"
       style={{
         background:
-          "linear-gradient(135deg, rgba(1, 128, 207, 0.06), rgba(244, 63, 94, 0.06))",
-        border: "1px solid rgba(1, 128, 207, 0.25)",
+          "linear-gradient(135deg, rgba(30, 64, 175, 0.06), rgba(244, 63, 94, 0.06))",
+        border: "1px solid rgba(30, 64, 175, 0.25)",
         color: "var(--color-brand-blue-deep)",
         animation:
           "errorSlide 240ms cubic-bezier(0.2, 0.7, 0.3, 1) both",

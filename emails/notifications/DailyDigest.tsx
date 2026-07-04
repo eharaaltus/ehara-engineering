@@ -102,7 +102,7 @@ export function DailyDigestEmail(props: DailyDigestProps) {
           href={`${stripTrailingSlash(props.siteUrl)}/tasks`}
           style={{
             display: "inline-block",
-            backgroundColor: "#0180cf",
+            backgroundColor: "#1e40af",
             color: "#ffffff",
             padding: "12px 24px",
             borderRadius: 8,

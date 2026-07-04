@@ -56,7 +56,7 @@ export function CredentialsInviteEmail({
       </div>
       <Text style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, margin: "0 0 16px" }}>
         Sign in here:{" "}
-        <Link href={loginUrl} style={{ color: "#0069b3" }}>
+        <Link href={loginUrl} style={{ color: "#14245c" }}>
           {loginUrl}
         </Link>
       </Text>

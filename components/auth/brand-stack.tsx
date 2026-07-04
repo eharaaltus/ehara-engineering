@@ -29,13 +29,13 @@ export function BrandStack({
         className="mx-auto mt-5 mb-3 h-px w-16"
         style={{
           background:
-            "linear-gradient(90deg, transparent, rgba(1, 128, 207, 0.45), transparent)",
+            "linear-gradient(90deg, transparent, rgba(30, 64, 175, 0.45), transparent)",
         }}
       />
 
       <div
         className="text-table-head"
-        style={{ color: "rgb(0, 105, 179)", letterSpacing: "0.14em" }}
+        style={{ color: "rgb(20, 36, 92)", letterSpacing: "0.14em" }}
       >
         {eyebrow}
       </div>

@@ -354,7 +354,7 @@ export function TaskImport({
                 onClick={commit}
                 disabled={committing || preview.validCount === 0}
                 className="inline-flex items-center gap-2 text-white px-6 py-3 rounded-chip text-[15px] font-bold transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:translate-y-0"
-                style={{ background: "linear-gradient(135deg, rgb(1,128,207), rgb(0,105,179))", boxShadow: "0 6px 16px rgba(1,128,207,0.32)" }}
+                style={{ background: "linear-gradient(135deg, rgb(30, 64, 175), rgb(20, 36, 92))", boxShadow: "0 6px 16px rgba(30, 64, 175,0.32)" }}
               >
                 {committing ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} strokeWidth={2.4} />}
                 {committing ? "Importing…" : `Import ${preview.validCount} task${preview.validCount === 1 ? "" : "s"}`}

@@ -75,15 +75,15 @@ function Stat({
     <div
       className="rounded-lg px-4 py-4 text-center"
       style={{
-        background: accent ? "rgba(1,128,207,0.06)" : "var(--color-surface-soft)",
+        background: accent ? "rgba(30, 64, 175,0.06)" : "var(--color-surface-soft)",
         border: accent
-          ? "1px solid rgba(1,128,207,0.18)"
+          ? "1px solid rgba(30, 64, 175,0.18)"
           : "1px solid var(--color-hairline)",
       }}
     >
       <div
         className="text-[30px] font-bold tabular-nums leading-none"
-        style={{ color: accent ? "#0069b3" : "var(--color-ink-strong)" }}
+        style={{ color: accent ? "#14245c" : "var(--color-ink-strong)" }}
       >
         {value}
       </div>

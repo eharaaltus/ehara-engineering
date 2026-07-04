@@ -124,7 +124,7 @@ export function EnablePushButton() {
   }
   if (permission === "denied") {
     return (
-      <p className="text-xs text-[#0069b3]">
+      <p className="text-xs text-[#14245c]">
         Push is blocked. Re-enable it in your browser&apos;s site settings.
       </p>
     );
@@ -147,7 +147,7 @@ export function EnablePushButton() {
       onClick={enable}
       disabled={pending}
       className="rounded-md py-2 px-4 text-sm font-medium text-white disabled:opacity-70"
-      style={{ background: "linear-gradient(135deg, #0180cf, #0069b3)" }}
+      style={{ background: "linear-gradient(135deg, #1e40af, #14245c)" }}
     >
       {pending ? "Enabling…" : "Enable push notifications"}
     </button>

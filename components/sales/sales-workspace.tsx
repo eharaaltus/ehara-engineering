@@ -56,8 +56,8 @@ const FORMS: FormDef[] = [
     label: "Quote Status",
     desc: "Enquiries to quotations to PO received",
     icon: FileText,
-    from: "#0180cf",
-    to: "#63b81e",
+    from: "#1e40af",
+    to: "#e11d2f",
     steps: ["Enquiry", "Quotation", "PO Received"],
     columns: QUOTE_COLUMNS,
     primaryKey: "enquiryNo",
@@ -67,8 +67,8 @@ const FORMS: FormDef[] = [
     label: "SO Status",
     desc: "PO to sales order, amendments & dispatch",
     icon: FileCheck2,
-    from: "#0180cf",
-    to: "#63b81e",
+    from: "#1e40af",
+    to: "#e11d2f",
     steps: ["PO", "Sales Order", "Amendment", "Dispatch"],
     columns: SO_COLUMNS,
     primaryKey: "ourSoNo",
@@ -78,8 +78,8 @@ const FORMS: FormDef[] = [
     label: "GA Approval Status",
     desc: "GA drawing submission to approval",
     icon: BadgeCheck,
-    from: "#63b81e",
-    to: "#0069b3",
+    from: "#e11d2f",
+    to: "#14245c",
     steps: ["SO", "GA Submission", "GA Approval"],
     columns: GA_COLUMNS,
     primaryKey: "gaNo",
@@ -89,8 +89,8 @@ const FORMS: FormDef[] = [
     label: "BOM Status",
     desc: "PO to sales orders to production & dispatch",
     icon: ClipboardList,
-    from: "#63b81e",
-    to: "#0069b3",
+    from: "#e11d2f",
+    to: "#14245c",
     steps: ["PO", "Sales Order", "Production", "Dispatch"],
     columns: BOM_COLUMNS,
     primaryKey: "ourSoNo",
@@ -100,8 +100,8 @@ const FORMS: FormDef[] = [
     label: "Work Order Status",
     desc: "BOM to pre-production to work order",
     icon: Factory,
-    from: "#0180cf",
-    to: "#63b81e",
+    from: "#1e40af",
+    to: "#e11d2f",
     steps: ["BOM", "Pre-Production", "Work Order"],
     columns: WO_COLUMNS,
     primaryKey: "workOrderNo",
@@ -182,7 +182,7 @@ export function SalesWorkspace({
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10 opacity-[0.5]"
         style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, rgba(1,128,207,0.07) 1px, transparent 0)",
+          backgroundImage: "radial-gradient(circle at 1px 1px, rgba(30, 64, 175,0.07) 1px, transparent 0)",
           backgroundSize: "26px 26px",
         }}
       />
@@ -201,7 +201,7 @@ export function SalesWorkspace({
                   value={hubQuery}
                   onChange={(e) => setHubQuery(e.target.value)}
                   placeholder="Search modules…"
-                  className="h-11 w-[240px] max-w-[55vw] rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-[13.5px] shadow-sm outline-none transition-all focus:border-[#0180cf] focus:ring-2 focus:ring-[#0180cf]/20"
+                  className="h-11 w-[240px] max-w-[55vw] rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-[13.5px] shadow-sm outline-none transition-all focus:border-[#1e40af] focus:ring-2 focus:ring-[#1e40af]/20"
                 />
               </div>
             }
@@ -380,8 +380,8 @@ function WindowCard({
 
 /* ── Quotation launcher card (links into the Quotation builder) ── */
 function QuotationLinkCard() {
-  const from = "#0069b3";
-  const to = "#63b81e";
+  const from = "#14245c";
+  const to = "#e11d2f";
   const steps = ["Doors", "Hardware", "Print"];
   return (
     <Link href={"/quotation" as Route} className="group relative block">
@@ -442,8 +442,8 @@ function QuotationLinkCard() {
 
 /* ── PI launcher card (Proforma Invoice — made from a quotation) ── */
 function PiLinkCard() {
-  const from = "#0069b3";
-  const to = "#0180cf";
+  const from = "#14245c";
+  const to = "#1e40af";
   const steps = ["Quote", "Fill", "Print"];
   return (
     <Link href={"/quotation/pi" as Route} className="group relative block">

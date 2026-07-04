@@ -7,11 +7,11 @@
  * RGB-triplet family used by nav pills, hover rails, focus glows). Setting
  * these on <html> (server-rendered) cascades everywhere.
  *
- * For the default Ehara Engineering red (#0180cf) this reproduces the exact values
+ * For the default Ehara Engineering red (#1e40af) this reproduces the exact values
  * hard-coded in globals.css, so default users see no change.
  */
 
-const DEEP_FACTOR = 0.747; // 225*0.747 ≈ 168  → #0180cf deep ≈ #0069b3
+const DEEP_FACTOR = 0.747; // 225*0.747 ≈ 168  → #1e40af deep ≈ #14245c
 
 function clampByte(n: number): number {
   return Math.max(0, Math.min(255, Math.round(n)));
@@ -55,7 +55,7 @@ export function accentVars(hex: string): Record<string, string> {
 }
 
 /** The default Ehara Engineering-red accent, used when the user hasn't set one. */
-export const DEFAULT_ACCENT = "#0180cf";
+export const DEFAULT_ACCENT = "#1e40af";
 
 /** Normalises a stored value to a valid accent hex (falls back to default). */
 export function resolveAccent(value: string | null | undefined): string {

@@ -311,7 +311,7 @@ function Header({ isAdmin }: { isAdmin: boolean }) {
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[14px] font-semibold text-white transition-all hover:-translate-y-0.5"
           style={{
             background: "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-            boxShadow: "0 4px 12px rgba(1, 128, 207, 0.25)",
+            boxShadow: "0 4px 12px rgba(30, 64, 175, 0.25)",
           }}
         >
           <LayoutGrid size={15} strokeWidth={2.4} />

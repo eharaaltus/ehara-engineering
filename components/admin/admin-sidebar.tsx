@@ -96,7 +96,7 @@ export function AdminSidebar({ adminName, adminEmail, avatarUrl }: Props) {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 80% 50% at 0% 0%, rgba(1, 128, 207, 0.22), transparent 70%), radial-gradient(ellipse 70% 60% at 100% 100%, rgba(168, 85, 247, 0.16), transparent 70%)",
+            "radial-gradient(ellipse 80% 50% at 0% 0%, rgba(30, 64, 175, 0.22), transparent 70%), radial-gradient(ellipse 70% 60% at 100% 100%, rgba(168, 85, 247, 0.16), transparent 70%)",
         }}
       />
 
@@ -124,7 +124,7 @@ export function AdminSidebar({ adminName, adminEmail, avatarUrl }: Props) {
               style={{
                 background:
                   "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-                boxShadow: "0 2px 8px rgba(1, 128, 207, 0.35)",
+                boxShadow: "0 2px 8px rgba(30, 64, 175, 0.35)",
                 letterSpacing: "0.08em",
               }}
             >
@@ -199,7 +199,7 @@ export function AdminSidebar({ adminName, adminEmail, avatarUrl }: Props) {
                           "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
                         color: "#ffffff",
                         boxShadow:
-                          "0 8px 22px -10px rgba(1, 128, 207, 0.55), inset 0 1px 0 rgba(255,255,255,0.14)",
+                          "0 8px 22px -10px rgba(30, 64, 175, 0.55), inset 0 1px 0 rgba(255,255,255,0.14)",
                       }
                     : {
                         color: "rgba(255, 255, 255, 0.80)",

@@ -84,7 +84,7 @@ export function DocumentLibrary({ documents }: { documents: DocumentRow[] }) {
             type="submit"
             disabled={busy}
             className="rounded-md py-2 px-5 text-[14px] font-semibold text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #0180cf, #0069b3)" }}
+            style={{ background: "linear-gradient(135deg, #1e40af, #14245c)" }}
           >
             {busy ? "Uploading…" : "Upload"}
           </button>

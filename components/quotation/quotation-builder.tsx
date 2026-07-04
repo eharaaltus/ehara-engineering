@@ -46,7 +46,7 @@ const HW_ABBR: Record<string, string> = {
 };
 
 const inp =
-  "h-9 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-[13px] text-slate-800 outline-none transition-all focus:border-[#0180cf] focus:ring-2 focus:ring-[#0180cf]/15";
+  "h-9 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-[13px] text-slate-800 outline-none transition-all focus:border-[#1e40af] focus:ring-2 focus:ring-[#1e40af]/15";
 
 export function QuotationBuilder({
   id,
@@ -171,10 +171,10 @@ export function QuotationBuilder({
             <button type="button" onClick={printClient} className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[13.5px] font-bold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5" title="Client quotation (without totals)">
               <FileText size={16} /> Client Quotation
             </button>
-            <button type="button" onClick={goToPi} disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl border border-[#0180cf]/40 bg-[#0180cf]/8 px-4 text-[13.5px] font-bold text-[#0069b3] shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-60" title="Save & go to Proforma Invoice">
+            <button type="button" onClick={goToPi} disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl border border-[#1e40af]/40 bg-[#1e40af]/8 px-4 text-[13.5px] font-bold text-[#14245c] shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-60" title="Save & go to Proforma Invoice">
               {saving ? <Loader2 size={15} className="animate-spin" /> : <ReceiptText size={16} />} Go to PI
             </button>
-            <button type="button" onClick={save} disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl px-5 text-[14px] font-extrabold text-white shadow-lg transition-all hover:-translate-y-0.5 disabled:opacity-60" style={{ background: "linear-gradient(135deg, #63b81e, #0180cf)", boxShadow: "0 12px 26px -10px rgba(1,128,207,0.6)" }}>
+            <button type="button" onClick={save} disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl px-5 text-[14px] font-extrabold text-white shadow-lg transition-all hover:-translate-y-0.5 disabled:opacity-60" style={{ background: "linear-gradient(135deg, #e11d2f, #1e40af)", boxShadow: "0 12px 26px -10px rgba(30, 64, 175,0.6)" }}>
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} strokeWidth={2.4} />} Save
             </button>
           </div>
@@ -210,7 +210,7 @@ export function QuotationBuilder({
           ))}
         </div>
 
-        <button type="button" onClick={addDoor} className="mt-4 inline-flex h-11 items-center gap-2 rounded-xl border-2 border-dashed border-[#0180cf]/40 px-5 text-[14px] font-extrabold text-[#0069b3] transition-colors hover:bg-[#0180cf]/5">
+        <button type="button" onClick={addDoor} className="mt-4 inline-flex h-11 items-center gap-2 rounded-xl border-2 border-dashed border-[#1e40af]/40 px-5 text-[14px] font-extrabold text-[#14245c] transition-colors hover:bg-[#1e40af]/5">
           <Plus size={17} strokeWidth={2.8} /> Add Door
         </button>
 
@@ -222,7 +222,7 @@ export function QuotationBuilder({
               {notes.map((nt, i) => (
                 <div key={i} className="flex items-start gap-2">
                   <span className="mt-2 text-[12px] font-bold text-slate-400">{i + 1}.</span>
-                  <textarea rows={1} className="min-h-9 flex-1 resize-y rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[13px] text-slate-700 outline-none focus:border-[#0180cf]" value={nt} onChange={(e) => setNotes((p) => p.map((x, j) => (j === i ? e.target.value : x)))} />
+                  <textarea rows={1} className="min-h-9 flex-1 resize-y rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[13px] text-slate-700 outline-none focus:border-[#1e40af]" value={nt} onChange={(e) => setNotes((p) => p.map((x, j) => (j === i ? e.target.value : x)))} />
                   <button type="button" onClick={() => setNotes((p) => p.filter((_, j) => j !== i))} className="mt-1 rounded-lg p-1.5 text-slate-300 hover:bg-red-50 hover:text-red-600"><Trash2 size={14} /></button>
                 </div>
               ))}
@@ -240,7 +240,7 @@ export function QuotationBuilder({
             <Row label="CGST @ 9%" value={inr2(totals.cgst)} muted />
             <Row label="SGST @ 9%" value={inr2(totals.sgst)} muted />
             <div className="my-3 h-px bg-slate-100" />
-            <div className="flex items-center justify-between rounded-xl px-3 py-2.5 text-white" style={{ background: "linear-gradient(120deg, #0069b3, #63b81e)" }}>
+            <div className="flex items-center justify-between rounded-xl px-3 py-2.5 text-white" style={{ background: "linear-gradient(120deg, #14245c, #e11d2f)" }}>
               <span className="text-[12px] font-bold uppercase tracking-[0.06em]">Grand Total</span>
               <span className="tabular-nums text-[20px] font-black">{inr2(totals.grandTotal)}</span>
             </div>
@@ -316,12 +316,12 @@ function DoorCard({
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-[#f3f9fe] to-white px-4 py-2.5">
         <div className="flex items-center gap-2.5">
-          <span className="inline-flex size-8 items-center justify-center rounded-lg text-white" style={{ background: "linear-gradient(135deg, #0180cf, #0069b3)" }}><DoorOpen size={16} /></span>
+          <span className="inline-flex size-8 items-center justify-center rounded-lg text-white" style={{ background: "linear-gradient(135deg, #1e40af, #14245c)" }}><DoorOpen size={16} /></span>
           <span className="text-[14px] font-black text-slate-800">Door #{index + 1}</span>
           <span className="text-[12.5px] font-semibold text-slate-400">{door.doorType || "—"}</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[12.5px] font-bold text-slate-500">Total: <span className="tabular-nums text-[#0069b3]">{inr(c.totalSupply + c.installTotal)}</span></span>
+          <span className="text-[12.5px] font-bold text-slate-500">Total: <span className="tabular-nums text-[#14245c]">{inr(c.totalSupply + c.installTotal)}</span></span>
           <button type="button" onClick={onRemove} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"><Trash2 size={15} /></button>
         </div>
       </div>
@@ -362,7 +362,7 @@ function DoorCard({
         <div className="mt-4">
           <div className="mb-1.5 flex items-center justify-between gap-2">
             <div className="text-[11px] font-black uppercase tracking-[0.08em] text-slate-400">Hardware (name × qty × rate)</div>
-            <button type="button" onClick={onAddHw} className="inline-flex h-7 items-center gap-1 rounded-lg border border-[#0180cf]/40 bg-[#0180cf]/5 px-2.5 text-[12px] font-bold text-[#0069b3] transition-colors hover:bg-[#0180cf]/10">
+            <button type="button" onClick={onAddHw} className="inline-flex h-7 items-center gap-1 rounded-lg border border-[#1e40af]/40 bg-[#1e40af]/5 px-2.5 text-[12px] font-bold text-[#14245c] transition-colors hover:bg-[#1e40af]/10">
               <Plus size={13} strokeWidth={2.8} /> Add Item
             </button>
           </div>
@@ -376,7 +376,7 @@ function DoorCard({
               return (
                 <div key={idx} className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/60 px-2.5 py-1.5">
                   <select
-                    className="h-8 min-w-0 flex-1 cursor-pointer rounded-md border border-slate-200 bg-white px-1.5 text-[12.5px] font-semibold text-slate-700 outline-none focus:border-[#0180cf]"
+                    className="h-8 min-w-0 flex-1 cursor-pointer rounded-md border border-slate-200 bg-white px-1.5 text-[12.5px] font-semibold text-slate-700 outline-none focus:border-[#1e40af]"
                     value={h.name}
                     title={h.name}
                     onChange={(e) => {
@@ -391,9 +391,9 @@ function DoorCard({
                       <option key={nm} value={nm}>{nm}</option>
                     ))}
                   </select>
-                  <input type="number" className="h-8 w-14 shrink-0 rounded-md border border-slate-200 bg-white px-2 text-right text-[12.5px] outline-none focus:border-[#0180cf]" value={h.qty || ""} onChange={(e) => onPatchHw(idx, { qty: Number(e.target.value) })} placeholder="qty" />
+                  <input type="number" className="h-8 w-14 shrink-0 rounded-md border border-slate-200 bg-white px-2 text-right text-[12.5px] outline-none focus:border-[#1e40af]" value={h.qty || ""} onChange={(e) => onPatchHw(idx, { qty: Number(e.target.value) })} placeholder="qty" />
                   <span className="text-[12px] text-slate-300">×</span>
-                  <input type="number" className="h-8 w-20 shrink-0 rounded-md border border-slate-200 bg-white px-2 text-right text-[12.5px] outline-none focus:border-[#0180cf]" value={h.rate || ""} onChange={(e) => onPatchHw(idx, { rate: Number(e.target.value) })} placeholder="rate" />
+                  <input type="number" className="h-8 w-20 shrink-0 rounded-md border border-slate-200 bg-white px-2 text-right text-[12.5px] outline-none focus:border-[#1e40af]" value={h.rate || ""} onChange={(e) => onPatchHw(idx, { rate: Number(e.target.value) })} placeholder="rate" />
                   <span className="w-[70px] shrink-0 text-right text-[12.5px] font-black tabular-nums text-slate-700">{inr(amt)}</span>
                   <button type="button" onClick={() => onRemoveHw(idx)} className="shrink-0 rounded-md p-1 text-slate-300 hover:bg-red-50 hover:text-red-600" title="Remove item"><Trash2 size={13} /></button>
                 </div>
@@ -410,7 +410,7 @@ function Chip({ label, value, strong }: { label: string; value: string; strong?:
   return (
     <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[12px]">
       <span className="font-semibold text-slate-400">{label}</span>
-      <span className={`tabular-nums ${strong ? "font-black text-[#0069b3]" : "font-bold text-slate-700"}`}>{value}</span>
+      <span className={`tabular-nums ${strong ? "font-black text-[#14245c]" : "font-bold text-slate-700"}`}>{value}</span>
     </span>
   );
 }
@@ -442,26 +442,26 @@ function QuotationPrint({
   return (
     <div className={`${active ? "q-print print:block" : ""} hidden bg-white text-slate-900`} style={{ fontSize: 8 }}>
       {/* ── Ehara Engineering branded header ── */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "3px solid #0180cf", paddingBottom: 6 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "3px solid #1e40af", paddingBottom: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src="/logo-mark.png?v=3" alt="" style={{ height: 44, width: "auto" }} />
           <div>
-            <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em", color: "#0a0a0a" }}>Anant Avinya Technologies</div>
-            <div style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: "0.22em", color: "#63b81e" }}>SMART WAREHOUSE MANAGEMENT SYSTEM</div>
+            <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em", color: "#0a0a0a" }}>Ehara Engineering</div>
+            <div style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: "0.22em", color: "#e11d2f" }}>WORK &amp; PRODUCT MANAGEMENT SYSTEM</div>
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: "0.04em", color: "#0069b3" }}>QUOTATION</div>
+          <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: "0.04em", color: "#14245c" }}>QUOTATION</div>
           <div style={{ fontSize: 8.5, color: "#475569", fontWeight: 600 }}>{header.subject || "Supply of Clean Room Doors"}</div>
         </div>
       </div>
 
       {/* meta band */}
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, background: "linear-gradient(90deg, #eef6fc, #eef7e6)", border: "1px solid #d7e7f3", borderRadius: 4, padding: "4px 10px", marginTop: 6, fontSize: 9 }}>
-        <span><b style={{ color: "#0069b3" }}>Offer No:</b> {header.offerNo || "—"}</span>
-        <span><b style={{ color: "#0069b3" }}>Date:</b> {header.quoteDate || "—"}</span>
-        <span><b style={{ color: "#0069b3" }}>Customer:</b> {header.customer || "—"}</span>
-        <span><b style={{ color: "#0069b3" }}>Project:</b> {header.project || "—"}</span>
+        <span><b style={{ color: "#14245c" }}>Offer No:</b> {header.offerNo || "—"}</span>
+        <span><b style={{ color: "#14245c" }}>Date:</b> {header.quoteDate || "—"}</span>
+        <span><b style={{ color: "#14245c" }}>Customer:</b> {header.customer || "—"}</span>
+        <span><b style={{ color: "#14245c" }}>Project:</b> {header.project || "—"}</span>
       </div>
 
       {/* door table */}
@@ -472,7 +472,7 @@ function QuotationPrint({
           ))}
         </colgroup>
         <thead>
-          <tr style={{ background: "linear-gradient(180deg, #0180cf, #0069b3)" }}>
+          <tr style={{ background: "linear-gradient(180deg, #1e40af, #14245c)" }}>
             <th className={`${th} th-vert`}>SR</th>
             <th className={`${th} th-vert`}>CODE</th>
             <th className={`${th} th-vert`}>TYPE</th>
@@ -556,7 +556,7 @@ function QuotationPrint({
             <td className={td} colSpan={FOOT_SPAN} style={{ textAlign: "right" }}>SGST @ 9%</td>
             <td className={td}>{inr2(totals.sgst)}</td>
           </tr>
-          <tr style={{ background: "linear-gradient(90deg, #0069b3, #63b81e)" }}>
+          <tr style={{ background: "linear-gradient(90deg, #14245c, #e11d2f)" }}>
             <td className="border border-[#0a5a93] px-1 py-1.5 text-white" colSpan={FOOT_SPAN} style={{ textAlign: "right", fontWeight: 800, fontSize: 9.5 }}>GRAND TOTAL (incl GST)</td>
             <td className="border border-[#0a5a93] px-1 py-1.5 text-center text-white" style={{ fontWeight: 800, fontSize: 9.5 }}>{inr2(totals.grandTotal)}</td>
           </tr>
@@ -566,7 +566,7 @@ function QuotationPrint({
 
       {/* notes */}
       <div className="mt-3" style={{ fontSize: 8 }}>
-        <div style={{ fontWeight: 800, color: "#0069b3", borderBottom: "1.5px solid #63b81e", display: "inline-block", paddingBottom: 1, marginBottom: 2 }}>NOTES &amp; TERMS</div>
+        <div style={{ fontWeight: 800, color: "#14245c", borderBottom: "1.5px solid #e11d2f", display: "inline-block", paddingBottom: 1, marginBottom: 2 }}>NOTES &amp; TERMS</div>
         {notes.filter((n) => n.trim()).map((nt, i) => (
           <div key={i} style={{ lineHeight: 1.5 }}>{i + 1}. {nt}</div>
         ))}
@@ -579,7 +579,7 @@ function QuotationPrint({
       </div>
 
       {/* brand footer */}
-      <div style={{ marginTop: 10, borderTop: "2px solid #0180cf", paddingTop: 4, textAlign: "center", fontSize: 7.5, fontWeight: 700, letterSpacing: "0.1em", color: "#0069b3" }}>
+      <div style={{ marginTop: 10, borderTop: "2px solid #1e40af", paddingTop: 4, textAlign: "center", fontSize: 7.5, fontWeight: 700, letterSpacing: "0.1em", color: "#14245c" }}>
         ANANT AVINYA TECHNOLOGIES · POWERED BY ALTUS CORP
       </div>
     </div>

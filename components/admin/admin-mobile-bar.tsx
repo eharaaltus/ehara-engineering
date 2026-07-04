@@ -159,11 +159,11 @@ export function AdminMobileBar({ adminName, adminEmail }: Props) {
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors"
                     style={{
                       background: active
-                        ? "rgba(1, 128, 207, 0.18)"
+                        ? "rgba(30, 64, 175, 0.18)"
                         : "transparent",
                       color: active ? "white" : "rgba(255, 255, 255, 0.78)",
                       border: active
-                        ? "1px solid rgba(1, 128, 207, 0.42)"
+                        ? "1px solid rgba(30, 64, 175, 0.42)"
                         : "1px solid transparent",
                     }}
                   >
@@ -184,7 +184,7 @@ export function AdminMobileBar({ adminName, adminEmail }: Props) {
                   className="size-9 rounded-full flex items-center justify-center text-white font-bold"
                   style={{
                     background:
-                      "linear-gradient(135deg, rgb(1, 128, 207), rgb(0, 105, 179))",
+                      "linear-gradient(135deg, rgb(30, 64, 175), rgb(20, 36, 92))",
                   }}
                 >
                   {initials}

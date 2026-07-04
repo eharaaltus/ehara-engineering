@@ -31,7 +31,7 @@ export default async function UserManualPage() {
 
         {!hasContent ? (
           <div className="mt-8 flex flex-col items-center justify-center rounded-[24px] border border-dashed border-slate-300 bg-white/60 px-6 py-20 text-center backdrop-blur">
-            <span className="inline-flex size-14 items-center justify-center rounded-2xl text-white shadow-lg" style={{ background: "linear-gradient(135deg, #0ea5c4, #0069b3)" }}>
+            <span className="inline-flex size-14 items-center justify-center rounded-2xl text-white shadow-lg" style={{ background: "linear-gradient(135deg, #0ea5c4, #14245c)" }}>
               <PlayCircle size={26} strokeWidth={2.1} />
             </span>
             <p className="mt-4 text-[16px] font-bold text-slate-700">No manual content yet</p>

@@ -20,7 +20,7 @@ const PENDING_STYLE = { bg: "rgba(245,158,11,0.12)", fg: "#B45309" };
 const STATUS_STYLE: Record<string, { bg: string; fg: string }> = {
   pending: PENDING_STYLE,
   approved: { bg: "rgba(22,163,74,0.12)", fg: "#15803D" },
-  rejected: { bg: "rgba(1,128,207,0.10)", fg: "#0069b3" },
+  rejected: { bg: "rgba(30, 64, 175,0.10)", fg: "#14245c" },
 };
 
 export function ModuleList({
@@ -114,7 +114,7 @@ function Card({
           )}
           {isAdmin && row.status !== "rejected" && (
             <button type="button" disabled={pending} onClick={() => decide("rejected")}
-              className="rounded-md px-3.5 py-2 text-[13px] font-semibold disabled:opacity-50" style={{ background: "rgba(1,128,207,0.08)", color: "#0069b3", border: "1px solid rgba(1,128,207,0.25)" }}>
+              className="rounded-md px-3.5 py-2 text-[13px] font-semibold disabled:opacity-50" style={{ background: "rgba(30, 64, 175,0.08)", color: "#14245c", border: "1px solid rgba(30, 64, 175,0.25)" }}>
               Reject
             </button>
           )}
@@ -181,10 +181,10 @@ function AdminPanel({ row, adminFields, productOptions }: { row: ModuleSubmissio
           </Field>
         ))}
       </div>
-      {error && <div role="alert" className="mt-3 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-[13px] text-[#0069b3]">{error}</div>}
+      {error && <div role="alert" className="mt-3 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-[13px] text-[#14245c]">{error}</div>}
       <button type="button" onClick={save} disabled={pending}
         className="mt-3 inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-[13px] font-bold text-white disabled:opacity-50"
-        style={{ background: "linear-gradient(135deg, #0180cf, #0069b3)" }}>
+        style={{ background: "linear-gradient(135deg, #1e40af, #14245c)" }}>
         <Check size={14} /> {pending ? "Saving…" : "Save response"}
       </button>
     </div>
@@ -226,7 +226,7 @@ function CardMenu({ row, view }: { row: ModuleSubmissionRow; view: "active" | "a
             ) : (
               <button type="button" onClick={() => archive(true)} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-[14px] font-medium text-ink-strong hover:bg-surface-soft"><Archive size={15} /> Archive</button>
             )}
-            <button type="button" onClick={remove} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-[14px] font-medium text-[#0069b3] hover:bg-[#FEF2F2]"><Trash2 size={15} /> Delete</button>
+            <button type="button" onClick={remove} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-[14px] font-medium text-[#14245c] hover:bg-[#FEF2F2]"><Trash2 size={15} /> Delete</button>
           </div>
         </>
       )}

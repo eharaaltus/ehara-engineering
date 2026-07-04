@@ -72,7 +72,7 @@ const COLORS = {
   paper: "#FFFFFF",
   hairline: "#E5E5E5",
   hairlineSoft: "#F4F4F5",
-  brand: "#0180cf", // Ehara Engineering red (matches --color-brand-blue in globals.css)
+  brand: "#1e40af", // Ehara Engineering red (matches --color-brand-blue in globals.css)
   brandDeep: "#B00500",
 } as const;
 

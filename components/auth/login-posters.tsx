@@ -13,9 +13,9 @@ import type { ReactNode } from "react";
  * varied masonry rhythm.
  */
 
-const BLUE_PRIMARY = "#0180cf";
-const BLUE_DEEP = "#0069b3";
-const GREEN_BRAND = "#63b81e";
+const BLUE_PRIMARY = "#1e40af";
+const BLUE_DEEP = "#14245c";
+const GREEN_BRAND = "#e11d2f";
 const INK = "#0a0a0a";
 const PAPER = "#F4F7FA";
 const GREEN = "#16A34A";
@@ -66,7 +66,7 @@ function Mark({ size = 40, glow = true }: { size?: number; glow?: boolean }) {
       height={size}
       style={{
         objectFit: "contain",
-        filter: glow ? "drop-shadow(0 4px 14px rgba(1,128,207,0.45))" : undefined,
+        filter: glow ? "drop-shadow(0 4px 14px rgba(30, 64, 175,0.45))" : undefined,
       }}
     />
   );
@@ -257,7 +257,7 @@ function BarsTile() {
       <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)", marginBottom: 12 }}>WEEKLY VELOCITY</div>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 7, height: 110 }}>
         {bars.map((b, i) => (
-          <div key={i} style={{ flex: 1, height: `${b}%`, borderRadius: "4px 4px 0 0", background: i === 5 ? BLUE_PRIMARY : "rgba(99,184,30,0.55)" }} />
+          <div key={i} style={{ flex: 1, height: `${b}%`, borderRadius: "4px 4px 0 0", background: i === 5 ? BLUE_PRIMARY : "rgba(225, 29, 47,0.55)" }} />
         ))}
       </div>
     </Tile>

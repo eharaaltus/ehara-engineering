@@ -143,7 +143,7 @@ export function ProfileTabs({ onChange }: Props) {
                   left: 16,
                   right: 16,
                   height: 3,
-                  background: "#0180cf",
+                  background: "#1e40af",
                   borderRadius: 3,
                 }}
               />

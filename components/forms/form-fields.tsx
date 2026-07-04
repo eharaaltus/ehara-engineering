@@ -23,7 +23,7 @@ export function Field({
     <div>
       <label className="block text-[14px] font-semibold text-[#0F172A] mb-1.5">
         {label}
-        {required && <span className="text-[#0180cf] ml-0.5">*</span>}
+        {required && <span className="text-[#1e40af] ml-0.5">*</span>}
       </label>
       {children}
     </div>

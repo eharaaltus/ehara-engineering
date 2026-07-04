@@ -84,7 +84,7 @@ export function ProfileHero({
               display: "grid",
               placeItems: "center",
               background:
-                "linear-gradient(135deg, #FCA5A5 0%, #0180cf 60%, #0069b3 100%)",
+                "linear-gradient(135deg, #FCA5A5 0%, #1e40af 60%, #14245c 100%)",
               color: "white",
               fontFamily: "var(--font-mono-display, ui-monospace, monospace)",
               fontWeight: 700,
@@ -165,7 +165,7 @@ export function ProfileHero({
           label="Day streak"
           value={stats.streakDays}
           suffix={stats.streakDays >= 3 ? " 🔥" : ""}
-          accent="#0180cf"
+          accent="#1e40af"
         />
       </div>
 

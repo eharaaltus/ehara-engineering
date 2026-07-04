@@ -58,7 +58,7 @@ export function ResetPasswordDialog({ open, onOpenChange, employee }: Props) {
           <div className="flex items-start gap-3 mb-3">
             <span
               className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-              style={{ background: "rgba(1, 128, 207, 0.10)", color: "#0069b3" }}
+              style={{ background: "rgba(30, 64, 175, 0.10)", color: "#14245c" }}
               aria-hidden
             >
               <KeyRound size={18} strokeWidth={2.3} />
@@ -102,7 +102,7 @@ export function ResetPasswordDialog({ open, onOpenChange, employee }: Props) {
                 </button>
               </div>
               {tooShort && (
-                <span className="block text-[12px] text-[#0069b3] mt-1">
+                <span className="block text-[12px] text-[#14245c] mt-1">
                   Must be at least 8 characters.
                 </span>
               )}
@@ -121,7 +121,7 @@ export function ResetPasswordDialog({ open, onOpenChange, employee }: Props) {
                 disabled={pending}
               />
               {mismatch && (
-                <span className="block text-[12px] text-[#0069b3] mt-1">
+                <span className="block text-[12px] text-[#14245c] mt-1">
                   Passwords don't match.
                 </span>
               )}
@@ -131,7 +131,7 @@ export function ResetPasswordDialog({ open, onOpenChange, employee }: Props) {
               type="button"
               onClick={handleGenerate}
               disabled={pending}
-              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#0069b3] hover:underline"
+              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#14245c] hover:underline"
             >
               <Sparkles size={14} />
               Generate strong password
@@ -153,7 +153,7 @@ export function ResetPasswordDialog({ open, onOpenChange, employee }: Props) {
               onClick={handleSubmit}
               disabled={!canSubmit}
               className="rounded-md py-2.5 px-5 text-[14px] font-semibold text-white disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: "linear-gradient(135deg, #0180cf, #0069b3)" }}
+              style={{ background: "linear-gradient(135deg, #1e40af, #14245c)" }}
             >
               {pending ? "Resetting…" : "Reset password"}
             </button>

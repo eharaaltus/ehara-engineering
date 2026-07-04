@@ -404,7 +404,7 @@ function PunchButton({
         background:
           kind === "in"
             ? "linear-gradient(135deg, #16A34A, #15803D)"
-            : "linear-gradient(135deg, #0180cf, #0069b3)",
+            : "linear-gradient(135deg, #1e40af, #14245c)",
       }}
     >
       <Icon size={20} strokeWidth={2.3} className={pending ? "animate-spin" : undefined} />

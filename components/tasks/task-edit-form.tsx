@@ -92,7 +92,7 @@ function FieldShell({
       >
         {label}
         {required && (
-          <span className="ml-1" style={{ color: "rgb(0, 105, 179)" }}>
+          <span className="ml-1" style={{ color: "rgb(20, 36, 92)" }}>
             *
           </span>
         )}
@@ -106,7 +106,7 @@ function FieldShell({
         className="block h-[1.5px] mt-px rounded-full"
         style={{
           background:
-            "linear-gradient(90deg, rgb(1, 128, 207), rgb(0, 105, 179))",
+            "linear-gradient(90deg, rgb(30, 64, 175), rgb(20, 36, 92))",
           transform: focused ? "scaleX(1)" : "scaleX(0)",
           transformOrigin: "left center",
           transition: "transform 380ms cubic-bezier(0.2, 0.7, 0.3, 1)",
@@ -272,7 +272,7 @@ export function TaskEditForm({
   }
 
   const inputClass =
-    "w-full rounded-lg border border-hairline px-3.5 py-3 text-[15px] bg-white outline-none transition-shadow focus:border-[rgba(1, 128, 207,0.55)] focus:shadow-[0_0_0_4px_rgba(1, 128, 207,0.10)]";
+    "w-full rounded-lg border border-hairline px-3.5 py-3 text-[15px] bg-white outline-none transition-shadow focus:border-[rgba(30, 64, 175,0.55)] focus:shadow-[0_0_0_4px_rgba(30, 64, 175,0.10)]";
 
   return (
     <motion.form
@@ -498,7 +498,7 @@ export function TaskEditForm({
           className="rounded-lg p-4 grid grid-cols-2 gap-3 max-md:grid-cols-1"
           style={{
             background: "var(--vp-cyan-tint)",
-            border: "1px solid rgba(1, 128, 207, 0.32)",
+            border: "1px solid rgba(30, 64, 175, 0.32)",
           }}
         >
           <div className="col-span-2 -mb-1">
@@ -583,8 +583,8 @@ export function TaskEditForm({
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-[14px] font-semibold text-white disabled:opacity-50"
           style={{
             background:
-              "linear-gradient(135deg, rgb(99, 184, 30), rgb(1, 128, 207) 45%, rgb(0, 105, 179))",
-            boxShadow: "0 8px 20px -10px rgba(1, 128, 207, 0.55)",
+              "linear-gradient(135deg, rgb(225, 29, 47), rgb(30, 64, 175) 45%, rgb(20, 36, 92))",
+            boxShadow: "0 8px 20px -10px rgba(30, 64, 175, 0.55)",
           }}
         >
           {pending ? "Saving…" : "Save changes"}

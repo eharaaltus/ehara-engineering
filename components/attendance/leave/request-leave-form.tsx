@@ -68,7 +68,7 @@ export function RequestLeaveForm({ today }: { today: string }) {
                   style={
                     active
                       ? {
-                          background: "linear-gradient(135deg, #0180cf, #0069b3)",
+                          background: "linear-gradient(135deg, #1e40af, #14245c)",
                           color: "#fff",
                         }
                       : {
@@ -124,7 +124,7 @@ export function RequestLeaveForm({ today }: { today: string }) {
         {error && (
           <div
             role="alert"
-            className="rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-[14px] text-[#0069b3]"
+            className="rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-[14px] text-[#14245c]"
           >
             {error}
           </div>
@@ -135,7 +135,7 @@ export function RequestLeaveForm({ today }: { today: string }) {
             type="submit"
             disabled={pending}
             className="rounded-md py-2.5 px-6 text-[14px] font-semibold text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #0180cf, #0069b3)" }}
+            style={{ background: "linear-gradient(135deg, #1e40af, #14245c)" }}
           >
             {pending ? "Submitting…" : "Submit request"}
           </button>

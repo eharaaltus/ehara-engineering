@@ -29,7 +29,7 @@ export function InviteEmail({ inviteeName, inviterName, link }: Props) {
       <Text style={{ fontSize: 12, color: "#64748B", lineHeight: 1.6, margin: "24px 0 0" }}>
         Button not working? Paste this link into your browser:
         <br />
-        <Link href={link} style={{ color: "#0069b3", wordBreak: "break-all" }}>
+        <Link href={link} style={{ color: "#14245c", wordBreak: "break-all" }}>
           {link}
         </Link>
       </Text>

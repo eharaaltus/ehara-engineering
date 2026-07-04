@@ -75,7 +75,7 @@ export default async function HolidaysPage({
               style={
                 active
                   ? {
-                      background: "linear-gradient(135deg, #0180cf, #0069b3)",
+                      background: "linear-gradient(135deg, #1e40af, #14245c)",
                       color: "#fff",
                     }
                   : {

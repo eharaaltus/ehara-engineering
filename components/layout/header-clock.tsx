@@ -26,8 +26,8 @@ export function HeaderStatusBar({ moduleCount }: { moduleCount: number }) {
       <Pill
         icon={
           <span className="relative flex size-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#63b81e] opacity-75" />
-            <span className="relative inline-flex size-2 rounded-full bg-[#63b81e]" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#e11d2f] opacity-75" />
+            <span className="relative inline-flex size-2 rounded-full bg-[#e11d2f]" />
           </span>
         }
         text="System Online"
@@ -42,7 +42,7 @@ function Pill({ icon, text }: { icon: React.ReactNode; text: string }) {
       className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur"
       suppressHydrationWarning
     >
-      <span className="text-[#0180cf]">{icon}</span>
+      <span className="text-[#1e40af]">{icon}</span>
       <span className="text-[12px] font-semibold tabular-nums text-slate-600">{text}</span>
     </span>
   );

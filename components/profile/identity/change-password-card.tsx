@@ -180,9 +180,9 @@ export function ChangePasswordCard({ email }: Props) {
               margin: 0,
               padding: "10px 12px",
               fontSize: 13,
-              color: "rgb(0, 105, 179)",
-              background: "rgba(1, 128, 207, 0.06)",
-              border: "1px solid rgba(1, 128, 207, 0.18)",
+              color: "rgb(20, 36, 92)",
+              background: "rgba(30, 64, 175, 0.06)",
+              border: "1px solid rgba(30, 64, 175, 0.18)",
               borderRadius: 8,
             }}
           >
@@ -210,7 +210,7 @@ export function ChangePasswordCard({ email }: Props) {
                 next.length === 0 ||
                 confirm.length === 0
                   ? "rgba(15, 23, 42, 0.18)"
-                  : "linear-gradient(135deg, #0180cf, #0069b3)",
+                  : "linear-gradient(135deg, #1e40af, #14245c)",
               border: "none",
               borderRadius: 10,
               cursor:

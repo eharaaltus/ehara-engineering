@@ -49,7 +49,7 @@ export function AnimatedBrandBackdrop() {
               display: "block",
               userSelect: "none",
               filter:
-                "drop-shadow(0 24px 80px rgba(1, 128, 207, 0.30)) drop-shadow(0 0 40px rgba(0, 0, 0, 0.35))",
+                "drop-shadow(0 24px 80px rgba(30, 64, 175, 0.30)) drop-shadow(0 0 40px rgba(0, 0, 0, 0.35))",
             }}
           />
         </div>
@@ -79,7 +79,7 @@ export function AnimatedBrandBackdrop() {
             <div
               style={{
                 background:
-                  "linear-gradient(110deg, #63b81e, #0180cf 50%, #0069b3)",
+                  "linear-gradient(110deg, #e11d2f, #1e40af 50%, #14245c)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",

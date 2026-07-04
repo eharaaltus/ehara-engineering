@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         className="pointer-events-none absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(1, 128, 207, 0.22), rgba(1, 128, 207, 0) 70%)",
+            "radial-gradient(closest-side, rgba(30, 64, 175, 0.22), rgba(30, 64, 175, 0) 70%)",
           filter: "blur(8px)",
           animation: "auraDriftA 18s ease-in-out infinite",
         }}

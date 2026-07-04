@@ -71,8 +71,8 @@ export function InviteEmployeeDialog({
           className="rounded-md py-2.5 px-5 text-[14px] font-semibold text-white"
           style={{
             background:
-              "linear-gradient(135deg, rgb(1, 128, 207), rgb(0, 105, 179))",
-            boxShadow: "0 4px 14px rgba(1, 128, 207, 0.32)",
+              "linear-gradient(135deg, rgb(30, 64, 175), rgb(20, 36, 92))",
+            boxShadow: "0 4px 14px rgba(30, 64, 175, 0.32)",
           }}
         >
           + Invite employee
@@ -138,7 +138,7 @@ export function InviteEmployeeDialog({
                 Admin (can manage employees + settings)
               </label>
             )}
-            {error && <div className="text-[14px] text-[#0069b3]">{error}</div>}
+            {error && <div className="text-[14px] text-[#14245c]">{error}</div>}
             <div className="flex justify-end gap-2 pt-2">
               <Dialog.Close asChild>
                 <button type="button" className="px-4 py-2.5 text-[14px] font-medium text-[#64748B]">
@@ -151,8 +151,8 @@ export function InviteEmployeeDialog({
                 className="rounded-md py-2.5 px-5 text-[14px] font-semibold text-white disabled:opacity-50"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgb(1, 128, 207), rgb(0, 105, 179))",
-                  boxShadow: "0 4px 14px rgba(1, 128, 207, 0.32)",
+                    "linear-gradient(135deg, rgb(30, 64, 175), rgb(20, 36, 92))",
+                  boxShadow: "0 4px 14px rgba(30, 64, 175, 0.32)",
                 }}
               >
                 {pending ? "Sending…" : "Send invite"}

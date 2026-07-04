@@ -6,7 +6,7 @@ export function PrimaryButton({ href, children }: { href: string; children: Reac
     <REmailButton
       href={href}
       style={{
-        background: "linear-gradient(135deg, #0180cf, #0069b3)",
+        background: "linear-gradient(135deg, #1e40af, #14245c)",
         color: "#ffffff",
         padding: "12px 24px",
         borderRadius: 8,

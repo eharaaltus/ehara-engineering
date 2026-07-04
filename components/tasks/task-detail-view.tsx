@@ -112,7 +112,7 @@ const STATUS_TONE: Record<
   },
   need_help: {
     label: "Need Help",
-    rgb: "1, 128, 207",
+    rgb: "30, 64, 175",
     ink: "var(--color-red-deep)",
     bg: "var(--color-red-bg)",
     live: false,
@@ -126,7 +126,7 @@ const STATUS_TONE: Record<
   },
   need_info: {
     label: "Need Info",
-    rgb: "1, 128, 207",
+    rgb: "30, 64, 175",
     ink: "var(--color-red-deep)",
     bg: "var(--color-red-bg)",
     live: false,
@@ -292,7 +292,7 @@ export function TaskDetailView({
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 38% 60% at 92% 10%, rgba(1, 128, 207, 0.04), transparent 65%)",
+            "radial-gradient(ellipse 38% 60% at 92% 10%, rgba(30, 64, 175, 0.04), transparent 65%)",
         }}
       />
 
@@ -982,7 +982,7 @@ function TopHeaderStrip({
               background:
                 "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
               boxShadow:
-                "0 6px 18px -8px rgba(1, 128, 207, 0.55), inset 0 1px 0 rgba(255,255,255,0.18)",
+                "0 6px 18px -8px rgba(30, 64, 175, 0.55), inset 0 1px 0 rgba(255,255,255,0.18)",
             }}
           >
             <Pencil size={14} strokeWidth={2.6} />

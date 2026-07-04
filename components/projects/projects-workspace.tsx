@@ -191,7 +191,7 @@ function HeroHeader({
         opacity: 0,
         animation: "fadeUp 700ms ease-out 50ms forwards",
         background:
-          "radial-gradient(ellipse 90% 70% at 85% 100%, rgba(1, 128, 207, 0.55), transparent 55%), radial-gradient(ellipse 60% 60% at 15% 0%, rgba(0, 105, 179, 0.20), transparent 60%), linear-gradient(135deg, #0E0B0A 0%, #1A0F0C 50%, #0B0708 100%)",
+          "radial-gradient(ellipse 90% 70% at 85% 100%, rgba(30, 64, 175, 0.55), transparent 55%), radial-gradient(ellipse 60% 60% at 15% 0%, rgba(20, 36, 92, 0.20), transparent 60%), linear-gradient(135deg, #0E0B0A 0%, #1A0F0C 50%, #0B0708 100%)",
         boxShadow:
           "0 24px 60px -20px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.06)",
       }}
@@ -237,8 +237,8 @@ function HeroHeader({
                 height: 0,
                 borderLeft: "6px solid transparent",
                 borderRight: "6px solid transparent",
-                borderBottom: "10px solid #0180cf",
-                filter: "drop-shadow(0 0 10px rgba(1, 128, 207, 0.8))",
+                borderBottom: "10px solid #1e40af",
+                filter: "drop-shadow(0 0 10px rgba(30, 64, 175, 0.8))",
               }}
             />
             Projects
@@ -415,10 +415,10 @@ function RailItem({
   const containerStyle: React.CSSProperties = active
     ? {
         background:
-          "linear-gradient(180deg, rgba(1,128,207,0.06), rgba(1,128,207,0.02))",
-        border: "1px solid rgba(1, 128, 207, 0.18)",
+          "linear-gradient(180deg, rgba(30, 64, 175,0.06), rgba(30, 64, 175,0.02))",
+        border: "1px solid rgba(30, 64, 175, 0.18)",
         boxShadow:
-          "0 1px 3px rgba(1, 128, 207, 0.08), inset 0 1px 0 rgba(255,255,255,0.5)",
+          "0 1px 3px rgba(30, 64, 175, 0.08), inset 0 1px 0 rgba(255,255,255,0.5)",
       }
     : { border: "1px solid transparent" };
 
@@ -447,7 +447,7 @@ function RailItem({
             background:
               "linear-gradient(180deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
             opacity: active ? 1 : 0,
-            boxShadow: active ? "0 0 8px rgba(1, 128, 207, 0.45)" : "none",
+            boxShadow: active ? "0 0 8px rgba(30, 64, 175, 0.45)" : "none",
           }}
         />
 
@@ -716,7 +716,7 @@ function KindGlyph({ kind, depth }: { kind: NodeKind; depth: number }) {
         fill="var(--color-brand-blue)"
         style={{
           color: "var(--color-brand-blue)",
-          filter: "drop-shadow(0 0 6px rgba(1, 128, 207, 0.30))",
+          filter: "drop-shadow(0 0 6px rgba(30, 64, 175, 0.30))",
         }}
         aria-hidden
       />
@@ -2039,7 +2039,7 @@ function NewProjectButton({ hero = false }: { hero?: boolean }) {
                 background:
                   "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
                 boxShadow:
-                  "0 8px 24px -8px rgba(1, 128, 207, 0.55), inset 0 1px 0 rgba(255,255,255,0.18)",
+                  "0 8px 24px -8px rgba(30, 64, 175, 0.55), inset 0 1px 0 rgba(255,255,255,0.18)",
                 letterSpacing: "0.01em",
               }}
             >
@@ -2049,7 +2049,7 @@ function NewProjectButton({ hero = false }: { hero?: boolean }) {
                 aria-hidden
                 className="absolute inset-0 rounded-pill pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
                 style={{
-                  boxShadow: "0 0 24px 0 rgba(1, 128, 207, 0.45)",
+                  boxShadow: "0 0 24px 0 rgba(30, 64, 175, 0.45)",
                 }}
               />
             </button>
@@ -2203,7 +2203,7 @@ function EmptyState() {
         className="inline-flex items-center justify-center size-14 rounded-2xl mb-5"
         style={{
           background:
-            "radial-gradient(ellipse 70% 70% at 50% 50%, rgba(1, 128, 207, 0.10), transparent 70%)",
+            "radial-gradient(ellipse 70% 70% at 50% 50%, rgba(30, 64, 175, 0.10), transparent 70%)",
           border: "1px solid color-mix(in srgb, var(--color-brand-blue) 18%, transparent)",
         }}
       >

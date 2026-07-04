@@ -83,7 +83,7 @@ export function DigestAndQuiet({ initial }: Props) {
                 color: frequency === opt ? "white" : "var(--color-ink-soft)",
                 background:
                   frequency === opt
-                    ? "linear-gradient(135deg, #0180cf, #0069b3)"
+                    ? "linear-gradient(135deg, #1e40af, #14245c)"
                     : "rgba(15, 23, 42, 0.04)",
                 border: `1px solid ${
                   frequency === opt

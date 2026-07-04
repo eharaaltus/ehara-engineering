@@ -71,7 +71,7 @@ const COLORS = {
   inkSoft: "#737373",
   hairline: "#E5E5E5",
   hairlineSoft: "#F4F4F5",
-  brand: "#0180cf",
+  brand: "#1e40af",
   brandDeep: "#B00500",
 } as const;
 

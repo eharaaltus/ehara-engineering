@@ -40,7 +40,7 @@ export function LegalShell({ eyebrow, title, lastUpdated, intro, children }: Pro
               style={{
                 background:
                   "linear-gradient(135deg, #ff5560, var(--color-brand-blue))",
-                boxShadow: "0 0 12px rgba(1, 128, 207, 0.45)",
+                boxShadow: "0 0 12px rgba(30, 64, 175, 0.45)",
               }}
             />
             <span

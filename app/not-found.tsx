@@ -52,7 +52,7 @@ export default function NotFound() {
             style={{
               background:
                 "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-              boxShadow: "0 4px 12px rgba(1, 128, 207, 0.25)",
+              boxShadow: "0 4px 12px rgba(30, 64, 175, 0.25)",
             }}
           >
             Back to dashboard →

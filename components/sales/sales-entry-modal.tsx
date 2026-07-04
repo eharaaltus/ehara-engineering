@@ -56,8 +56,8 @@ export function SalesEntryModal({
   existingRows,
   primaryKey,
   onSaved,
-  from = "#0069b3",
-  to = "#0180cf",
+  from = "#14245c",
+  to = "#1e40af",
   Icon = ClipboardList,
 }: {
   open: boolean;
@@ -306,7 +306,7 @@ function FormBody({
             </>
           ) : (
             <div className="flex flex-col items-center animate-in zoom-in-75 fade-in duration-300">
-              <span className="inline-flex size-16 items-center justify-center rounded-full text-white shadow-lg" style={{ background: `linear-gradient(135deg, #63b81e, ${to})` }}>
+              <span className="inline-flex size-16 items-center justify-center rounded-full text-white shadow-lg" style={{ background: `linear-gradient(135deg, #e11d2f, ${to})` }}>
                 <CheckCircle2 size={36} strokeWidth={2.4} />
               </span>
               <p className="mt-3 text-[15px] font-black text-slate-700">Saved!</p>
@@ -536,7 +536,7 @@ function SearchSelect({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search…"
-              className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-8 pr-2.5 text-[13.5px] outline-none focus:border-[#0180cf]"
+              className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-8 pr-2.5 text-[13.5px] outline-none focus:border-[#1e40af]"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();

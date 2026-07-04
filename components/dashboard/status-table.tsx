@@ -193,7 +193,7 @@ export function StatusTable({
           <span
             aria-hidden
             className="mt-0.5 inline-flex size-11 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg"
-            style={{ background: "linear-gradient(135deg, #0180cf, #63b81e)", boxShadow: "0 12px 26px -12px rgba(1,128,207,0.6)" }}
+            style={{ background: "linear-gradient(135deg, #1e40af, #e11d2f)", boxShadow: "0 12px 26px -12px rgba(30, 64, 175,0.6)" }}
           >
             <Users size={20} strokeWidth={2.2} />
           </span>

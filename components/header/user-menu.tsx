@@ -175,7 +175,7 @@ export function UserMenu({
                   style={{
                     background:
                       "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-                    boxShadow: "0 1px 4px rgba(1, 128, 207, 0.35)",
+                    boxShadow: "0 1px 4px rgba(30, 64, 175, 0.35)",
                   }}
                 >
                   <Crown size={11} strokeWidth={2.4} />
@@ -204,7 +204,7 @@ export function UserMenu({
                 className="mt-1 flex items-center justify-between gap-2.5 px-3.5 py-2.5 text-[15px] rounded-lg cursor-pointer outline-none"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(1, 128, 207, 0.06), rgba(244, 63, 94, 0.04))",
+                    "linear-gradient(135deg, rgba(30, 64, 175, 0.06), rgba(244, 63, 94, 0.04))",
                   color: "#0F172A",
                 }}
               >
@@ -305,9 +305,9 @@ export function UserMenu({
 
           <DropdownMenu.Item
             onSelect={handleSignOut}
-            className="flex items-center gap-2.5 px-3.5 py-2.5 text-[15px] rounded-lg cursor-pointer outline-none text-[#0069b3] data-[highlighted]:bg-[#FEF2F2]"
+            className="flex items-center gap-2.5 px-3.5 py-2.5 text-[15px] rounded-lg cursor-pointer outline-none text-[#14245c] data-[highlighted]:bg-[#FEF2F2]"
           >
-            <LogOut size={14} strokeWidth={2.2} style={{ color: "#0069b3" }} />
+            <LogOut size={14} strokeWidth={2.2} style={{ color: "#14245c" }} />
             <span className="font-medium">Sign out</span>
           </DropdownMenu.Item>
         </DropdownMenu.Content>

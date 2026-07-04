@@ -49,7 +49,7 @@ export function PageHero({
           {Icon && (
             <span
               className="inline-flex size-14 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg max-md:size-12"
-              style={{ background: "linear-gradient(135deg, #0180cf, #63b81e)", boxShadow: "0 14px 30px -14px rgba(1,128,207,0.55)" }}
+              style={{ background: "linear-gradient(135deg, #1e40af, #e11d2f)", boxShadow: "0 14px 30px -14px rgba(30, 64, 175,0.55)" }}
             >
               <Icon size={26} strokeWidth={2.3} />
             </span>
@@ -57,7 +57,7 @@ export function PageHero({
           <div className="min-w-0">
             {eyebrow && (
               <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                <span className="inline-block size-1.5 rounded-full bg-[#63b81e] shadow-[0_0_8px_#63b81e88]" />
+                <span className="inline-block size-1.5 rounded-full bg-[#e11d2f] shadow-[0_0_8px_#e11d2f88]" />
                 {eyebrow}
               </div>
             )}
@@ -70,7 +70,7 @@ export function PageHero({
                 letterSpacing: "-0.035em",
                 lineHeight: 1.03,
                 width: "fit-content",
-                background: "linear-gradient(95deg, #0069b3 0%, #0180cf 42%, #4e9e2e 100%)",
+                background: "linear-gradient(95deg, #14245c 0%, #1e40af 42%, #b3121f 100%)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent",
@@ -102,9 +102,9 @@ export function PageHero({
 export function HeroBackdrop({ Icon }: { Icon?: LucideIcon }) {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.6]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(1,128,207,0.06) 1px, transparent 0)", backgroundSize: "28px 28px" }} />
-      <div className="hero-anim absolute -left-28 -top-32 h-[420px] w-[420px] rounded-full" style={{ background: "radial-gradient(circle, rgba(1,128,207,0.16), transparent 66%)", filter: "blur(30px)", animation: "heroFloat1 16s ease-in-out infinite" }} />
-      <div className="hero-anim absolute right-[-7rem] top-[18%] h-[440px] w-[440px] rounded-full" style={{ background: "radial-gradient(circle, rgba(99,184,30,0.15), transparent 66%)", filter: "blur(34px)", animation: "heroFloat2 20s ease-in-out infinite" }} />
+      <div className="absolute inset-0 opacity-[0.6]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(30, 64, 175,0.06) 1px, transparent 0)", backgroundSize: "28px 28px" }} />
+      <div className="hero-anim absolute -left-28 -top-32 h-[420px] w-[420px] rounded-full" style={{ background: "radial-gradient(circle, rgba(30, 64, 175,0.16), transparent 66%)", filter: "blur(30px)", animation: "heroFloat1 16s ease-in-out infinite" }} />
+      <div className="hero-anim absolute right-[-7rem] top-[18%] h-[440px] w-[440px] rounded-full" style={{ background: "radial-gradient(circle, rgba(225, 29, 47,0.15), transparent 66%)", filter: "blur(34px)", animation: "heroFloat2 20s ease-in-out infinite" }} />
       {Icon && <Icon className="absolute -right-8 -top-10 text-slate-900 opacity-[0.04] max-md:hidden" size={260} strokeWidth={1.2} />}
     </div>
   );

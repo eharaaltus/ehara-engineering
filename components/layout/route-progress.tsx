@@ -129,7 +129,7 @@ export function RouteProgress() {
           height: "100%",
           width: `${progress}%`,
           background: "linear-gradient(90deg, var(--color-brand-blue), #ff5560)",
-          boxShadow: "0 0 8px rgba(1, 128, 207, 0.55), 0 0 2px rgba(1, 128, 207, 0.9)",
+          boxShadow: "0 0 8px rgba(30, 64, 175, 0.55), 0 0 2px rgba(30, 64, 175, 0.9)",
           borderRadius: "0 2px 2px 0",
           opacity: active ? 1 : 0,
           transition: "width 180ms ease-out, opacity 260ms ease",

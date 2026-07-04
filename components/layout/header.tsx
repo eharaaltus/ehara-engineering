@@ -37,7 +37,7 @@ export async function DashboardHeader({
           <div
             aria-hidden
             className="absolute -inset-1 rounded-[34px] opacity-25 blur-2xl"
-            style={{ background: "linear-gradient(105deg, #0180cf 0%, #0a7d8a 50%, #63b81e 100%)" }}
+            style={{ background: "linear-gradient(105deg, #1e40af 0%, #0a7d8a 50%, #e11d2f 100%)" }}
           />
 
           {/* the card */}
@@ -50,9 +50,9 @@ export async function DashboardHeader({
           >
             {/* decorative backdrop */}
             <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-              <div className="absolute inset-0 opacity-[0.6]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(1,128,207,0.06) 1px, transparent 0)", backgroundSize: "26px 26px" }} />
-              <div className="hero-anim absolute -left-24 -top-28 h-72 w-72 rounded-full" style={{ background: "radial-gradient(circle, rgba(1,128,207,0.18), transparent 68%)", filter: "blur(30px)", animation: "heroFloat1 18s ease-in-out infinite" }} />
-              <div className="hero-anim absolute right-[-4rem] -bottom-32 h-80 w-80 rounded-full" style={{ background: "radial-gradient(circle, rgba(99,184,30,0.16), transparent 68%)", filter: "blur(34px)", animation: "heroFloat2 22s ease-in-out infinite" }} />
+              <div className="absolute inset-0 opacity-[0.6]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(30, 64, 175,0.06) 1px, transparent 0)", backgroundSize: "26px 26px" }} />
+              <div className="hero-anim absolute -left-24 -top-28 h-72 w-72 rounded-full" style={{ background: "radial-gradient(circle, rgba(30, 64, 175,0.18), transparent 68%)", filter: "blur(30px)", animation: "heroFloat1 18s ease-in-out infinite" }} />
+              <div className="hero-anim absolute right-[-4rem] -bottom-32 h-80 w-80 rounded-full" style={{ background: "radial-gradient(circle, rgba(225, 29, 47,0.16), transparent 68%)", filter: "blur(34px)", animation: "heroFloat2 22s ease-in-out infinite" }} />
             </div>
 
             <div className="relative flex items-center justify-between gap-6 px-8 py-5 max-md:px-4 max-md:py-4 max-md:gap-3">
@@ -62,7 +62,7 @@ export async function DashboardHeader({
                 aria-label="Ehara Engineering home"
                 className="group relative flex shrink-0 flex-col items-center justify-center transition-transform hover:scale-[1.05]"
               >
-                <img src="/logo-mark.png?v=3" alt="Ehara Engineering" className="relative h-16 w-auto max-md:h-12" style={{ display: "block", filter: "drop-shadow(0 6px 14px rgba(1,128,207,0.3))" }} />
+                <img src="/logo-mark.png?v=3" alt="Ehara Engineering" className="relative h-16 w-auto max-md:h-12" style={{ display: "block", filter: "drop-shadow(0 6px 14px rgba(30, 64, 175,0.3))" }} />
                 <span className="relative mt-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-slate-700 max-md:text-[9px]">Ehara Engineering</span>
               </a>
 
@@ -76,7 +76,7 @@ export async function DashboardHeader({
                     fontSize: "clamp(20px, 2.5vw, 33px)",
                     letterSpacing: "-0.02em",
                     lineHeight: 1.05,
-                    background: "linear-gradient(95deg, #0069b3 0%, #0180cf 42%, #4e9e2e 100%)",
+                    background: "linear-gradient(95deg, #14245c 0%, #1e40af 45%, #e11d2f 100%)",
                     backgroundSize: "200% auto",
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
@@ -85,7 +85,7 @@ export async function DashboardHeader({
                     animation: "headerTextShimmer 7s linear infinite",
                   }}
                 >
-                  Anant Avinya Technologies
+                  Ehara Engineering
                 </h1>
                 <div className="mt-3.5 max-md:mt-2.5">
                   <HeaderStatusBar moduleCount={moduleCount} />

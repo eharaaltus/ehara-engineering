@@ -38,8 +38,8 @@ export function SalesDataGrid({
   onEdit,
   onDeleted,
   onImported,
-  from = "#0069b3",
-  to = "#0180cf",
+  from = "#14245c",
+  to = "#1e40af",
 }: {
   kind: SaleKind;
   title?: string;
@@ -189,7 +189,7 @@ export function SalesDataGrid({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search all columns…"
-              className="h-10 w-[260px] max-w-[60vw] rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-[13px] shadow-sm outline-none transition-all focus:border-[#0180cf] focus:ring-2 focus:ring-[#0180cf]/20"
+              className="h-10 w-[260px] max-w-[60vw] rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-[13px] shadow-sm outline-none transition-all focus:border-[#1e40af] focus:ring-2 focus:ring-[#1e40af]/20"
             />
           </div>
           <button
@@ -197,13 +197,13 @@ export function SalesDataGrid({
             onClick={() => setShowFilters((s) => !s)}
             className={`inline-flex h-10 items-center gap-1.5 rounded-xl border px-3.5 text-[13px] font-bold shadow-sm transition-all ${
               showFilters || activeColFilters
-                ? "border-[#0180cf] bg-[#0180cf]/8 text-[#0069b3]"
+                ? "border-[#1e40af] bg-[#1e40af]/8 text-[#14245c]"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
             <SlidersHorizontal size={15} /> Filters
             {activeColFilters > 0 && (
-              <span className="ml-0.5 inline-flex size-5 items-center justify-center rounded-full bg-[#0180cf] text-[10px] font-black text-white">
+              <span className="ml-0.5 inline-flex size-5 items-center justify-center rounded-full bg-[#1e40af] text-[10px] font-black text-white">
                 {activeColFilters}
               </span>
             )}
@@ -231,7 +231,7 @@ export function SalesDataGrid({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={importing}
-            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#0180cf]/40 bg-[#0180cf]/10 px-3.5 text-[13px] font-bold text-[#0069b3] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#0180cf]/15 disabled:opacity-50 disabled:hover:translate-y-0"
+            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#1e40af]/40 bg-[#1e40af]/10 px-3.5 text-[13px] font-bold text-[#14245c] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#1e40af]/15 disabled:opacity-50 disabled:hover:translate-y-0"
             title="Import from Excel"
           >
             {importing ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />} Import
@@ -240,7 +240,7 @@ export function SalesDataGrid({
             type="button"
             onClick={exportExcel}
             disabled={rows.length === 0}
-            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#63b81e]/40 bg-[#63b81e]/10 px-3.5 text-[13px] font-bold text-[#3f7a14] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#63b81e]/15 disabled:opacity-50 disabled:hover:translate-y-0"
+            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#e11d2f]/40 bg-[#e11d2f]/10 px-3.5 text-[13px] font-bold text-[#3f7a14] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#e11d2f]/15 disabled:opacity-50 disabled:hover:translate-y-0"
             title="Export to Excel"
           >
             <Download size={15} /> Export
@@ -252,7 +252,7 @@ export function SalesDataGrid({
       {banner && (
         <div
           className={`mb-3 flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-[13px] font-semibold animate-in fade-in slide-in-from-top-1 ${
-            banner.kind === "ok" ? "border-[#63b81e]/30 bg-[#63b81e]/10 text-[#3f7a14]" : "border-red-200 bg-red-50 text-red-700"
+            banner.kind === "ok" ? "border-[#e11d2f]/30 bg-[#e11d2f]/10 text-[#3f7a14]" : "border-red-200 bg-red-50 text-red-700"
           }`}
         >
           <span className="inline-flex items-center gap-2">
@@ -268,9 +268,9 @@ export function SalesDataGrid({
       {/* ── table ── */}
       <div
         className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-        style={{ boxShadow: "0 18px 40px -16px rgba(0,105,179,0.22), 0 2px 8px rgba(15,23,42,0.05)" }}
+        style={{ boxShadow: "0 18px 40px -16px rgba(20, 36, 92,0.22), 0 2px 8px rgba(15,23,42,0.05)" }}
       >
-        <div style={{ height: 4, background: `linear-gradient(90deg, #63b81e, ${to} 55%, ${from})` }} />
+        <div style={{ height: 4, background: `linear-gradient(90deg, #e11d2f, ${to} 55%, ${from})` }} />
 
         <div className="overflow-auto" style={{ maxHeight: "60vh" }}>
           <table className="w-max border-collapse text-[13px]">
@@ -317,7 +317,7 @@ export function SalesDataGrid({
                         value={colFilters[c.key] ?? ""}
                         onChange={(e) => setColFilters((s) => ({ ...s, [c.key]: e.target.value }))}
                         placeholder="Filter…"
-                        className="h-7 w-full min-w-[80px] rounded-md border border-slate-200 bg-white px-2 text-[12px] font-normal normal-case tracking-normal text-slate-700 outline-none focus:border-[#0180cf]"
+                        className="h-7 w-full min-w-[80px] rounded-md border border-slate-200 bg-white px-2 text-[12px] font-normal normal-case tracking-normal text-slate-700 outline-none focus:border-[#1e40af]"
                       />
                     </th>
                   ))}
@@ -359,7 +359,7 @@ export function SalesDataGrid({
                             e.stopPropagation();
                             onEdit(row);
                           }}
-                          className="rounded-lg p-1.5 text-slate-400 transition-all hover:-translate-y-0.5 hover:bg-[#0180cf]/10 hover:text-[#0069b3]"
+                          className="rounded-lg p-1.5 text-slate-400 transition-all hover:-translate-y-0.5 hover:bg-[#1e40af]/10 hover:text-[#14245c]"
                           title="Edit"
                         >
                           <Pencil size={14} />
@@ -392,7 +392,7 @@ export function SalesDataGrid({
                   setPageSize(Number(e.target.value));
                   setPage(0);
                 }}
-                className="h-8 cursor-pointer rounded-lg border border-slate-200 bg-white px-2 text-[12.5px] font-semibold text-slate-700 outline-none focus:border-[#0180cf]"
+                className="h-8 cursor-pointer rounded-lg border border-slate-200 bg-white px-2 text-[12.5px] font-semibold text-slate-700 outline-none focus:border-[#1e40af]"
               >
                 {PAGE_SIZES.map((s) => (
                   <option key={s} value={s}>
@@ -440,7 +440,7 @@ function EmptyState({ hasRows, from, to }: { hasRows: boolean; from: string; to:
     <div className="flex flex-col items-center justify-center text-center">
       <span
         className="inline-flex size-16 items-center justify-center rounded-3xl text-white shadow-lg"
-        style={{ background: `linear-gradient(135deg, #63b81e, ${from})`, boxShadow: `0 16px 32px -12px ${to}aa` }}
+        style={{ background: `linear-gradient(135deg, #e11d2f, ${from})`, boxShadow: `0 16px 32px -12px ${to}aa` }}
       >
         <Table2 size={30} strokeWidth={2.1} />
       </span>
@@ -462,18 +462,18 @@ function CellValue({ row, col }: { row: SalesRow; col: SalesColDef }) {
       <span
         className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold"
         style={{
-          background: yes ? "color-mix(in srgb, #63b81e 18%, transparent)" : "#eef1f4",
+          background: yes ? "color-mix(in srgb, #e11d2f 18%, transparent)" : "#eef1f4",
           color: yes ? "#3f7a14" : "#64748b",
         }}
       >
-        <span className="size-1.5 rounded-full" style={{ background: yes ? "#63b81e" : "#9aa6b2" }} />
+        <span className="size-1.5 rounded-full" style={{ background: yes ? "#e11d2f" : "#9aa6b2" }} />
         {yes ? "Yes" : "No"}
       </span>
     );
   }
   if (col.type === "select") {
     return (
-      <span className="inline-flex items-center rounded-full bg-[#0180cf]/10 px-2.5 py-0.5 text-[11.5px] font-bold text-[#0069b3]">
+      <span className="inline-flex items-center rounded-full bg-[#1e40af]/10 px-2.5 py-0.5 text-[11.5px] font-bold text-[#14245c]">
         {String(v)}
       </span>
     );
@@ -485,7 +485,7 @@ function CellValue({ row, col }: { row: SalesRow; col: SalesColDef }) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => e.stopPropagation()}
-        className="inline-flex items-center gap-1 font-bold text-[#0180cf] hover:underline"
+        className="inline-flex items-center gap-1 font-bold text-[#1e40af] hover:underline"
       >
         <ExternalLink size={12} /> Link
       </a>

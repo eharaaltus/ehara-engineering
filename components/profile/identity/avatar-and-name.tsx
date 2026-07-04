@@ -139,7 +139,7 @@ export function AvatarAndName({ initialName, initialAvatarUrl }: Props) {
                 display: "grid",
                 placeItems: "center",
                 background:
-                  "linear-gradient(135deg, #FCA5A5 0%, #0180cf 60%, #0069b3 100%)",
+                  "linear-gradient(135deg, #FCA5A5 0%, #1e40af 60%, #14245c 100%)",
                 color: "white",
                 fontFamily:
                   "var(--font-mono-display, ui-monospace, monospace)",
@@ -314,7 +314,7 @@ function btnStyle(kind: "primary" | "ghost"): React.CSSProperties {
       fontSize: 14,
       fontWeight: 600,
       color: "white",
-      background: "linear-gradient(135deg, #0180cf, #0069b3)",
+      background: "linear-gradient(135deg, #1e40af, #14245c)",
       border: "none",
       borderRadius: 10,
       cursor: "pointer",

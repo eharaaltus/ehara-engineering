@@ -129,8 +129,8 @@ export function LoginFormGlass() {
             aria-hidden
             className="h-[7px] w-[7px] rounded-full"
             style={{
-              background: "#0180cf",
-              boxShadow: "0 0 14px #0180cf",
+              background: "#1e40af",
+              boxShadow: "0 0 14px #1e40af",
             }}
           />
           <span
@@ -161,7 +161,7 @@ export function LoginFormGlass() {
           <span
             style={{
               background:
-                "linear-gradient(110deg, #63b81e, #0180cf 50%, #0069b3)",
+                "linear-gradient(110deg, #e11d2f, #1e40af 50%, #14245c)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -225,8 +225,8 @@ export function LoginFormGlass() {
             transition={{ duration: 0.24 }}
             className="rounded-lg px-5 py-4"
             style={{
-              background: "rgba(1, 128, 207, 0.10)",
-              border: "1px solid rgba(1, 128, 207, 0.35)",
+              background: "rgba(30, 64, 175, 0.10)",
+              border: "1px solid rgba(30, 64, 175, 0.35)",
               color: "#FECACA",
               fontSize: 15,
               lineHeight: 1.5,
@@ -257,7 +257,7 @@ export function LoginFormGlass() {
           className="group relative mt-2 flex w-full items-center justify-center gap-2.5 overflow-hidden transition-transform active:scale-[0.99] disabled:opacity-70"
           style={{
             background:
-              "linear-gradient(135deg, #63b81e 0%, #0180cf 50%, #0069b3 100%)",
+              "linear-gradient(135deg, #e11d2f 0%, #1e40af 50%, #14245c 100%)",
             color: "#FFFFFF",
             padding: "22px 28px",
             borderRadius: 16,
@@ -265,7 +265,7 @@ export function LoginFormGlass() {
             fontWeight: 600,
             letterSpacing: "0.01em",
             boxShadow:
-              "0 10px 30px -10px rgba(1, 128, 207, 0.6), 0 1px 0 rgba(255, 255, 255, 0.20) inset",
+              "0 10px 30px -10px rgba(30, 64, 175, 0.6), 0 1px 0 rgba(255, 255, 255, 0.20) inset",
           }}
         >
           <span className="relative z-10">
@@ -353,10 +353,10 @@ function GlassField({
       className="relative"
       style={{
         background: "rgba(255, 255, 255, 0.04)",
-        border: `1px solid ${focused ? "rgba(1, 128, 207, 0.55)" : "rgba(255, 255, 255, 0.12)"}`,
+        border: `1px solid ${focused ? "rgba(30, 64, 175, 0.55)" : "rgba(255, 255, 255, 0.12)"}`,
         borderRadius: 16,
         transition: "border-color 220ms, background 220ms, box-shadow 220ms",
-        boxShadow: focused ? "0 0 0 4px rgba(1, 128, 207, 0.10)" : "none",
+        boxShadow: focused ? "0 0 0 4px rgba(30, 64, 175, 0.10)" : "none",
       }}
     >
       <label

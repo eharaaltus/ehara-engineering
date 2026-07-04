@@ -27,7 +27,7 @@ export function EmailLayout({
               display: "inline-block",
               padding: "4px 10px",
               borderRadius: 999,
-              backgroundColor: "#0180cf",
+              backgroundColor: "#1e40af",
               color: "#ffffff",
               fontSize: 11,
               fontWeight: 600,

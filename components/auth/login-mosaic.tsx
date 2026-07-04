@@ -81,7 +81,7 @@ export function LoginMosaic({ overlay = "strong" }: { overlay?: "strong" | "soft
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(70% 55% at 78% 92%, rgba(1,128,207,0.20), transparent 60%)",
+            "radial-gradient(70% 55% at 78% 92%, rgba(30, 64, 175,0.20), transparent 60%)",
           mixBlendMode: "screen",
         }}
       />

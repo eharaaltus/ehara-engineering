@@ -184,7 +184,7 @@ export default async function AdminOverviewPage() {
                             "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
                           color: "#ffffff",
                           boxShadow:
-                            "0 4px 10px -4px rgba(1, 128, 207, 0.45)",
+                            "0 4px 10px -4px rgba(30, 64, 175, 0.45)",
                         }
                       : {
                           background: "rgba(15, 23, 42, 0.04)",

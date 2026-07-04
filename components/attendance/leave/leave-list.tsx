@@ -14,7 +14,7 @@ import { decideLeave, cancelLeave } from "@/app/(app)/attendance/leave/actions";
 const STATUS_STYLE: Record<LeaveStatus, { bg: string; fg: string }> = {
   pending:   { bg: "rgba(245,158,11,0.12)", fg: "#B45309" },
   approved:  { bg: "rgba(22,163,74,0.12)",  fg: "#15803D" },
-  rejected:  { bg: "rgba(1,128,207,0.10)",    fg: "#0069b3" },
+  rejected:  { bg: "rgba(30, 64, 175,0.10)",    fg: "#14245c" },
   cancelled: { bg: "rgba(15,23,42,0.06)",   fg: "#64748B" },
 };
 
@@ -156,9 +156,9 @@ function LeaveCard({ row, mode }: { row: LeaveRow; mode: "mine" | "pending" }) {
                     onClick={() => decide("rejected")}
                     className="rounded-md px-3.5 py-2 text-[13px] font-semibold disabled:opacity-50"
                     style={{
-                      background: "rgba(1,128,207,0.08)",
-                      color: "#0069b3",
-                      border: "1px solid rgba(1,128,207,0.25)",
+                      background: "rgba(30, 64, 175,0.08)",
+                      color: "#14245c",
+                      border: "1px solid rgba(30, 64, 175,0.25)",
                     }}
                   >
                     Reject

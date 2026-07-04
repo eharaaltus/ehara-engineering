@@ -88,7 +88,7 @@ export function WeeklyGoalsFillForm({ goals, weekLabel, greetingName }: Props) {
             style={{
               background:
                 "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-              boxShadow: "0 10px 28px -10px rgba(1, 128, 207, 0.6)",
+              boxShadow: "0 10px 28px -10px rgba(30, 64, 175, 0.6)",
             }}
           >
             <Target size={28} strokeWidth={2.4} />
@@ -265,7 +265,7 @@ export function WeeklyGoalsFillForm({ goals, weekLabel, greetingName }: Props) {
             style={{
               background:
                 "linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-blue-deep))",
-              boxShadow: "0 12px 30px -10px rgba(1, 128, 207, 0.6)",
+              boxShadow: "0 12px 30px -10px rgba(30, 64, 175, 0.6)",
             }}
           >
             {pending ? (

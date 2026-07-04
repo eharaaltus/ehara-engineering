@@ -74,7 +74,7 @@ export function WorkspaceHub({
       {/* ── header (premium dark glass) ── */}
       <div className="relative z-10 px-6 pt-6 max-md:px-3">
         <div className="relative mx-auto max-w-[1180px]">
-          <div aria-hidden className="absolute -inset-[3px] rounded-[26px] opacity-45 blur-2xl" style={{ background: "linear-gradient(110deg, #1e40af, #0a7d8a 52%, #e11d2f)" }} />
+          <div aria-hidden className="absolute -inset-[3px] rounded-[26px] opacity-45 blur-2xl" style={{ background: "linear-gradient(110deg, #1e40af, #2b55c4 52%, #e11d2f)" }} />
           <header
             className="relative flex items-center justify-between gap-4 overflow-hidden rounded-[22px] px-6 py-4 backdrop-blur-2xl max-md:px-4"
             style={{

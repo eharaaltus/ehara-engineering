@@ -37,7 +37,7 @@ export async function DashboardHeader({
           <div
             aria-hidden
             className="absolute -inset-1 rounded-[34px] opacity-25 blur-2xl"
-            style={{ background: "linear-gradient(105deg, #1e40af 0%, #0a7d8a 50%, #e11d2f 100%)" }}
+            style={{ background: "linear-gradient(105deg, #1e40af 0%, #2b55c4 50%, #e11d2f 100%)" }}
           />
 
           {/* the card */}

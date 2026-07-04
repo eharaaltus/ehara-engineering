@@ -21,22 +21,22 @@ export function DashboardFooter() {
       />
 
       <div className="relative z-10 mx-auto flex max-w-[1600px] flex-col items-center gap-3 px-6 py-10 text-center">
-        {/* TOP — Ehara Engineering logo */}
-        <div className={`${tile} px-3 py-2`} style={tileShadow}>
-          <img src="/logo.png" alt="Ehara Engineering" style={{ height: 36, width: "auto", display: "block" }} />
+        {/* TOP — Ehara Engineering logo (circular, matches the header mark) */}
+        <div className="inline-flex items-center justify-center rounded-full bg-white p-1.5" style={tileShadow}>
+          <img src="/logo-mark.png?v=5" alt="Ehara Engineering" className="rounded-full" style={{ height: 64, width: 64, objectFit: "cover", display: "block" }} />
         </div>
 
         {/* MIDDLE — Powered by */}
         <p
-          className="text-[11px] font-bold uppercase tracking-[0.22em]"
+          className="mt-1 text-[11px] font-bold uppercase tracking-[0.22em]"
           style={{ color: "rgba(255, 255, 255, 0.5)" }}
         >
           Powered by
         </p>
 
-        {/* BOTTOM — Altus Corp logo (larger) */}
-        <div className={`${tile} px-4 py-2.5`} style={tileShadow}>
-          <img src="/altus-corp-logo.png" alt="Altus Corp" style={{ height: 58, width: "auto", display: "block" }} />
+        {/* BOTTOM — Altus Corp logo */}
+        <div className={`${tile} rounded-xl px-4 py-2.5`} style={tileShadow}>
+          <img src="/altus-corp-logo.png?v=5" alt="Altus Corp" style={{ height: 52, width: "auto", display: "block" }} />
         </div>
 
         <p className="mt-2 text-xs" style={{ color: "rgba(255, 255, 255, 0.5)" }}>

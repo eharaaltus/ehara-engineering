@@ -198,7 +198,7 @@
   background-clip: padding-box;
 }
 .thin-scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #57a82b, #14245c);
+  background: linear-gradient(180deg, #2b55c4, #14245c);
   border: 2px solid transparent;
   background-clip: padding-box;
 }
@@ -1113,7 +1113,7 @@ html[data-density="compact"] body {
    chips by default (not transparent), so the nav has visible weight
    on the white surface. Active pill stays full cyan gradient. */
 .header-light .nav-pill {
-  background: linear-gradient(135deg, #e11d2f, #1e40af);
+  background: linear-gradient(135deg, #2b55c4, #14245c);
   border: 1.5px solid transparent;
   color: #ffffff;
   font-size: 14px;
@@ -1125,7 +1125,7 @@ html[data-density="compact"] body {
   box-shadow: 0 4px 12px -5px rgba(30, 64, 175, 0.45);
 }
 .header-light .nav-pill:hover {
-  background: linear-gradient(135deg, #57a82b, #14245c);
+  background: linear-gradient(135deg, #1e40af, #0f1b3a);
   border-color: transparent;
   color: #ffffff;
   transform: translateY(-1px);

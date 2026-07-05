@@ -110,7 +110,10 @@ export function MultiSelect({
         </button>
         )}
       </PopoverTrigger>
-      <PopoverContent className="w-72 p-0">
+      {/* overflow-hidden: the inner CommandList is the single scroller — the
+          PopoverContent must NOT also scroll, or you get two stacked scrollbars.
+          (Same pattern subject-select / client-select already use.) */}
+      <PopoverContent className="w-72 p-0 overflow-hidden">
         <Command onKeyDown={onCommandKeyDown}>
           <CommandInput placeholder="Search…" />
           <CommandList className="max-h-64 overflow-auto">

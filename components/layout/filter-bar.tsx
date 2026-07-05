@@ -9,7 +9,6 @@ import {
   Calendar,
   User,
   Users,
-  Bookmark,
   X,
   Loader2,
   FileText,
@@ -35,6 +34,7 @@ import { StatusFilter } from "./filters/status-filter";
 import { SubjectFilter } from "./filters/subject-filter";
 import { ClientFilter } from "./filters/client-filter";
 import { FilterPill, summarizeSelection } from "./filters/filter-pill";
+import { SavedViews } from "./filters/saved-views";
 
 type AssigneeMode = "default" | "all" | "specific";
 
@@ -210,14 +210,16 @@ export function FilterBar({
 
   return (
     <div
-      className="sticky top-0 z-40 border-b border-hairline"
+      // Sticks BELOW the header's sticky nav bar (h-[62px] / h-[58px] on mobile),
+      // not at top-0 — otherwise it freezes hidden underneath the higher-z nav.
+      className="sticky top-[62px] max-md:top-[58px] z-40 border-b border-hairline"
       style={{
-        backgroundColor: "rgba(250, 251, 252, 0.82)",
+        backgroundColor: "rgba(250, 251, 252, 0.9)",
         backdropFilter: "blur(20px) saturate(150%)",
         WebkitBackdropFilter: "blur(20px) saturate(150%)",
       }}
     >
-      <div className="mx-auto max-w-[1600px] px-12 py-3 max-md:px-4 flex flex-col gap-2.5">
+      <div className="mx-auto max-w-[1600px] px-12 py-2 max-md:px-4 flex flex-col gap-1.5">
         {/* Row 1 — filter pill-cards */}
         <div className="flex items-center gap-2.5 flex-wrap">
           {/* Date range */}
@@ -344,34 +346,15 @@ export function FilterBar({
               );
             })()}
 
-            {/* Saved views (on-brand button) */}
-            <Popover.Root>
-              <Popover.Trigger asChild>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-2.5 text-[14px] font-semibold border border-hairline bg-surface-card text-ink-strong hover:border-hairline-strong transition-colors"
-                  style={{ boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}
-                >
-                  <Bookmark size={15} strokeWidth={2} className="text-ink-subtle" />
-                  Saved views
-                </button>
-              </Popover.Trigger>
-              <Popover.Portal>
-                <Popover.Content
-                  align="end"
-                  sideOffset={8}
-                  className="z-[100] w-60 bg-surface-card border border-hairline-strong rounded-chip p-3 text-[13px] text-ink-subtle"
-                  style={{ boxShadow: "0 16px 40px rgba(15, 23, 42, 0.14)" }}
-                >
-                  Saving named filter views is coming soon.
-                </Popover.Content>
-              </Popover.Portal>
-            </Popover.Root>
+            {/* Saved views — save/apply/delete named filter combos (per page). */}
+            <SavedViews />
           </div>
         </div>
 
-        {/* Row 2 — active filter chips + result count */}
-        <div className="flex items-center gap-2.5 flex-wrap min-h-[28px]">
+        {/* Row 2 — active filter chips + result count. Only rendered when it
+            has something to show, so an unfiltered bar stays compact. */}
+        {(activePills.length > 0 || typeof taskCount === "number" || isPending) && (
+        <div className="flex items-center gap-2 flex-wrap">
           {activePills.map((p) => (
             <span
               key={p.key}
@@ -421,6 +404,7 @@ export function FilterBar({
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );

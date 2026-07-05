@@ -1,47 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  DISPLAY_SCALE_EVENT,
-  DISPLAY_SCALE_KEY,
-  computeFactor,
-  readScaleMode,
-} from "@/lib/display-scale";
 
 /**
- * Keeps the document's `zoom` in sync with the user's display-scale preference.
- * In `auto` mode it re-applies on viewport resize so the UI tracks the screen;
- * it also listens for the in-app change event (Settings → Display size) and the
- * cross-tab `storage` event. Renders nothing. The initial pre-paint application
- * is handled by the inline no-flash script in app/layout.tsx so there's no
- * flash of unscaled UI before this mounts.
+ * DISABLED: this used to drive CSS `zoom` on <html> from the user's
+ * display-scale preference. CSS `zoom` breaks Radix's fixed-positioned popovers
+ * (dropdowns/menus/tooltips get offset by a growing diagonal gap), so it's gone.
+ * This now only clears any leftover `zoom` a previous build may have set, so the
+ * UI renders at true 1:1 size and popovers anchor correctly. Use browser zoom
+ * (Ctrl +/-) to resize — that doesn't affect element positioning.
  */
 export function DisplayScaleProvider() {
   useEffect(() => {
-    const apply = () => {
-      const factor = computeFactor(readScaleMode(), window.innerWidth);
-      document.documentElement.style.zoom = String(factor);
-    };
-    apply();
-
-    let raf = 0;
-    const onResize = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(apply);
-    };
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === DISPLAY_SCALE_KEY) apply();
-    };
-
-    window.addEventListener("resize", onResize);
-    window.addEventListener(DISPLAY_SCALE_EVENT, apply);
-    window.addEventListener("storage", onStorage);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener(DISPLAY_SCALE_EVENT, apply);
-      window.removeEventListener("storage", onStorage);
-    };
+    document.documentElement.style.zoom = "";
   }, []);
 
   return null;

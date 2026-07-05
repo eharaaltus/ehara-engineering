@@ -95,15 +95,12 @@ export default async function RootLayout({
           safe and React's normal hydration warnings still apply
           everywhere else. */}
       <body suppressHydrationWarning>
-        {/* Display-scale no-flash: apply the saved/auto zoom BEFORE paint so the
-            UI never flashes at the wrong size. Mirrors lib/display-scale.ts
-            (kept inline because this must run pre-hydration). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var raw=localStorage.getItem('aatech.displayScale')||'auto';var f;if(raw==='auto'){var r=window.innerWidth/1440;f=Math.round(Math.min(1.35,Math.max(1,r))*100)/100;}else{var m={smaller:0.9,'default':1,larger:1.15,largest:1.3};f=m[raw]||1;}document.documentElement.style.zoom=String(f);}catch(e){}})();",
-          }}
-        />
+        {/* NOTE: the CSS `zoom` "display scale" was removed. `zoom` on <html>
+            breaks Radix's fixed-positioned popovers/dropdowns/tooltips — they
+            get offset proportionally to position (a growing diagonal gap) — so
+            it made every filter/menu across the app misalign on wide screens.
+            DisplayScaleProvider now just clears any stale zoom. Use the browser's
+            own zoom (Ctrl +/-) to resize the UI; that doesn't break positioning. */}
         <DisplayScaleProvider />
         {/* Global navigation progress bar — fires on every in-app link click
             across ALL route groups (app, admin, auth). Wrapped in Suspense

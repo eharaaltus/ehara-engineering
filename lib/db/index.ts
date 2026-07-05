@@ -13,47 +13,33 @@ const globalForDb = globalThis as unknown as {
 const client =
   globalForDb.__pg ??
   postgres(env.DATABASE_URL, {
-    // Required for Supabase's pgbouncer (transaction-mode pooler):
-    // prepared statements are per-session and break under txn pooling.
+    // Harmless on the session pooler; also keeps us safe if DATABASE_URL is ever
+    // pointed at the transaction pooler (6543), where named prepared statements
+    // break. Session mode would allow prepares, but we don't rely on them.
     prepare: false,
-    // We connect to the Supabase TRANSACTION pooler (Supavisor, port 6543), not
-    // Postgres directly. The pooler accepts up to ~200 client connections and
-    // multiplexes them onto its own server pool (≈40) against the DB's 60-conn
-    // ceiling. So this `max` is connections to the POOLER, not to Postgres —
-    // the pooler, not us, guards the 60 ceiling. An over-tight pool is actually
-    // harmful: a page like the dashboard fires 6–15 queries in one Promise.all,
-    // and with only 4 slots a single STALE connection blocks a quarter of them.
+    // POOLER CHOICE — use the SESSION pooler (port 5432), not the transaction
+    // pooler (6543). This app is a PERSISTENT server with its own connection
+    // pool, not an ephemeral serverless client. The transaction pooler is built
+    // for the latter and, from a remote persistent client, WEDGES under
+    // concurrent connection bursts: verified locally that 8 parallel page
+    // renders (what a browser generates via navigation + prefetch) left ~half
+    // the requests hung at 60s+ on 6543, cascading to 120s — i.e. the dashboard
+    // "keeps loading forever" when you click around. The exact same burst on the
+    // session pooler (5432) served all 8 in 0.6–1.0s, every round. So the port
+    // is the fix; keep DATABASE_URL on :5432.  (For a future serverless/Vercel
+    // deploy, revisit: there 6543 with a small `max` is the right trade-off.)
     //
-    // INCIDENT 2026-06-17: after a Supabase restart-storm (network restrictions
-    // toggle + pooler bounce), warm Vercel instances kept handing out dead
-    // connections from before the bounce. With no query timeout, a query on a
-    // dead socket hung FOREVER → authed pages intermittently stuck on "Loading…"
-    // (≈1 in 5 requests). Root cause was NOT the 60-conn ceiling (queries are
-    // <200ms on ~800 rows) — it was stale connections + no timeout. Hardening:
-    //   • max 4→10  — headroom for parallel page queries; safe vs the pooler's
-    //                 200-client limit even across ~15 warm instances.
-    //   • max_lifetime 30m→10m and idle_timeout 20s→10s — recycle aggressively
-    //                 so a connection orphaned by a pooler restart is dropped
-    //                 (idle >10s → closed) instead of lingering up to 30m and
-    //                 being handed out dead. This is the primary anti-hang fix.
-    //
-    // NOTE on query timeouts: Supabase already enforces a server-side
-    // statement_timeout of 2min by default, so a query that REACHES the server
-    // can't hang forever. We deliberately do NOT pass `connection: {
-    // statement_timeout }` — Supavisor (the txn pooler) silently ignores
-    // startup GUCs (verified: it still reports 2min), so it'd be a misleading
-    // no-op. The aggressive recycling above + postgres-js's default TCP
-    // keep_alive (60s) are what actually bound the dead-socket case.
+    // `max` is connections held to the pooler. 10 gives headroom for the
+    // dashboard's ~15-query Promise.all without starving under a couple of
+    // concurrent renders.
     max: 10,
-    // idle_timeout MUST stay small (10s). Supavisor / the network drops an idle
-    // client socket after a few seconds; postgres-js can't tell and will hand
-    // out the dead socket, whose next query then hangs ~60s until TCP keep_alive
-    // (default 60s) finally kills it — this is the intermittent multi-minute
-    // "Dashboard is taking longer than usual". Recycling at 10s means our own
-    // pool closes the socket BEFORE it can go stale, so we reconnect (~250ms)
-    // instead of hanging. Do NOT raise this to "keep the socket warm" — the warm
-    // saving (~250ms) is dwarfed by the 60s stale-hang risk it reintroduces.
-    // keep_alive further bounds the dead-socket case.
+    // Recycle idle sockets fast (10s): a pooled socket idle for more than a few
+    // seconds can be dropped by the pooler/network while postgres-js still
+    // believes it's live, and the next query on that dead socket hangs until TCP
+    // keep_alive notices. Closing at 10s idle means we reconnect (~250ms) rather
+    // than hang. keep_alive:20 bounds the case where a socket dies mid-query.
+    // (History: briefly raising idle_timeout to 60 to "keep sockets warm"
+    // reintroduced exactly that stale-socket hang — don't.)
     idle_timeout: 10,
     max_lifetime: 60 * 10,
     connect_timeout: 10,

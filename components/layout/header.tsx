@@ -1,4 +1,4 @@
-import { LayoutGrid, Home } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import { MainNavServer } from "./main-nav-server";
 import { MobileMenuServer } from "./mobile-menu-server";
 import { HeaderStatusBar } from "./header-clock";
@@ -122,8 +122,8 @@ export async function DashboardHeader({
         <div className="relative w-full h-[62px] px-6 max-md:h-[58px] max-md:px-4 flex items-center gap-4 2xl:gap-6 max-md:gap-3">
           <MobileMenuServer isAdmin={isAdmin} />
 
-          {/* Wayfinding — jump to the workspace picker or the app home.
-              Replaces the old floating back/forward arrows. */}
+          {/* Wayfinding — jump to the workspace picker. Replaces the old
+              floating back/forward arrows. */}
           <div className="flex items-center gap-1.5 shrink-0 max-md:hidden">
             <a
               href="/portal"
@@ -131,13 +131,6 @@ export async function DashboardHeader({
               className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-3 text-[13px] font-bold text-slate-600 transition-all hover:-translate-y-0.5 hover:border-[#1e40af]/40 hover:bg-white hover:text-[#14245c]"
             >
               <LayoutGrid size={15} strokeWidth={2.5} /> Workspace
-            </a>
-            <a
-              href="/"
-              title="Go to Home"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-3 text-[13px] font-bold text-slate-600 transition-all hover:-translate-y-0.5 hover:border-[#e11d2f]/40 hover:bg-white hover:text-[#e11d2f]"
-            >
-              <Home size={15} strokeWidth={2.5} /> Home
             </a>
             <span className="mx-1 h-6 w-px bg-slate-200" aria-hidden />
           </div>

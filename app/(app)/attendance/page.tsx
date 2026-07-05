@@ -4,13 +4,15 @@ import { DashboardFooter } from "@/components/layout/footer";
 import { PunchCard } from "@/components/attendance/punch-card";
 import { TeamDatePicker } from "@/components/attendance/team-date-picker";
 import { TeamPunchButton } from "@/components/attendance/team-punch-button";
+import { AttendanceCalendar } from "@/components/attendance/attendance-calendar";
+import { AttendanceEmpPicker } from "@/components/attendance/attendance-emp-picker";
 import { EmployeeAvatar } from "@/components/ui/employee-avatar";
 import { requireUser } from "@/lib/auth/current";
 import { isSuperAdmin } from "@/lib/auth/super-admin";
 import {
   listMyAttendance,
   listTeamAttendanceForDate,
-  type DayPunches,
+  listActiveEmployeesBasic,
   type PunchDetail,
   type TeamAttendanceRow,
 } from "@/lib/queries/attendance";
@@ -44,19 +46,29 @@ export default async function AttendancePage({ searchParams }: PageProps) {
   const tz = me.timezone || "Asia/Kolkata";
   const today = localDateString(tz);
 
-  // My last 14 calendar days.
-  const since = localDateString(tz, new Date(Date.now() - 13 * 86_400_000));
+  // Calendar month (YYYY-MM), default current month.
+  const monthRaw = typeof sp.month === "string" ? sp.month : today.slice(0, 7);
+  const monthISO = /^\d{4}-\d{2}$/.test(monthRaw) ? monthRaw : today.slice(0, 7);
+  const monthStart = `${monthISO}-01`;
+  const monthEnd = `${monthISO}-31`; // string upper bound — safe for YYYY-MM-DD
+
+  // Whose calendar: admins can view any employee via ?emp=; everyone else self.
+  const calEmpId = me.isAdmin && typeof sp.emp === "string" && sp.emp ? sp.emp : me.id;
 
   const rawDate = typeof sp.date === "string" ? sp.date : today;
   const teamDate = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : today;
 
-  const [myDays, team, settings] = await Promise.all([
-    listMyAttendance(me.id, since),
+  const [todayDays, calDays, team, empList, settings] = await Promise.all([
+    listMyAttendance(me.id, today), // today's own punch for the punch card
+    listMyAttendance(calEmpId, monthStart, monthEnd), // month grid (self or picked)
     me.isAdmin ? listTeamAttendanceForDate(teamDate) : Promise.resolve(null),
+    me.isAdmin ? listActiveEmployeesBasic() : Promise.resolve([]),
     getOrgSettings(),
   ]);
 
-  const todayRow = myDays.find((d) => d.date === today);
+  const todayRow = todayDays.find((d) => d.date === today);
+  const calEmpName = empList.find((e) => e.id === calEmpId)?.name ?? me.name;
+  const weeklyOffs = [0]; // Sunday off by default
   const office =
     settings.officeLat != null && settings.officeLng != null
       ? {
@@ -88,7 +100,26 @@ export default async function AttendancePage({ searchParams }: PageProps) {
           biometricExempt={me.attendanceBiometricExempt}
         />
 
-        <MyLog days={myDays} tz={tz} />
+        {me.isAdmin && empList.length > 0 && (
+          <div className="mt-6 flex justify-end">
+            <AttendanceEmpPicker
+              employees={empList}
+              selected={calEmpId}
+              month={monthISO}
+              selfId={me.id}
+            />
+          </div>
+        )}
+
+        <AttendanceCalendar
+          monthISO={monthISO}
+          days={calDays}
+          tz={tz}
+          today={today}
+          weeklyOffs={weeklyOffs}
+          emp={calEmpId !== me.id ? calEmpId : undefined}
+          heading={calEmpId === me.id ? "My attendance" : `${calEmpName}'s attendance`}
+        />
 
         {team && (
           <TeamSection
@@ -142,56 +173,6 @@ function PunchTime({ punch, tz }: { punch: PunchDetail | null; tz: string }) {
         </span>
       ) : null}
     </span>
-  );
-}
-
-function MyLog({ days, tz }: { days: DayPunches[]; tz: string }) {
-  return (
-    <section
-      className="mt-6 rounded-section bg-surface-card p-6 max-md:p-4"
-      style={{
-        border: "1px solid var(--color-hairline)",
-        boxShadow: "0 1px 3px rgba(15,23,42,0.04)",
-      }}
-    >
-      <h2 className="text-display-2xs text-ink-strong mb-4">My last 14 days</h2>
-      {days.length === 0 ? (
-        <p className="text-[15px] text-ink-subtle">No punches yet — your log starts with today&apos;s first check-in.</p>
-      ) : (
-        <table className="w-full text-[14px]">
-          <thead>
-            <tr className="text-left text-[12px] uppercase tracking-wide text-ink-subtle">
-              <th className="py-2 pr-3 font-semibold">Date</th>
-              <th className="py-2 pr-3 font-semibold">In</th>
-              <th className="py-2 pr-3 font-semibold">Out</th>
-              <th className="py-2 font-semibold max-md:hidden">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {days.map((d) => (
-              <tr
-                key={d.date}
-                className="border-t"
-                style={{ borderColor: "var(--color-hairline)" }}
-              >
-                <td className="py-2.5 pr-3 text-ink-strong whitespace-nowrap">
-                  {labelForDate(d.date)}
-                </td>
-                <td className="py-2.5 pr-3 tabular-nums text-ink-soft">
-                  <PunchTime punch={d.in} tz={tz} />
-                </td>
-                <td className="py-2.5 pr-3 tabular-nums text-ink-soft">
-                  <PunchTime punch={d.out} tz={tz} />
-                </td>
-                <td className="py-2.5 text-ink-subtle max-md:hidden">
-                  {[d.in?.note, d.out?.note].filter(Boolean).join(" · ") || ""}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </section>
   );
 }
 

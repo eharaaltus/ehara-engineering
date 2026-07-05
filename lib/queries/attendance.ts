@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, gte } from "drizzle-orm";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { attendanceLogs, employees } from "@/db/schema";
 
@@ -46,10 +46,12 @@ function foldByDay(rows: RawPunch[]): DayPunches[] {
   return [...byDay.values()].sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** My punches for the last `days` calendar days (employee timezone dates). */
+/** One employee's punches between `sinceDate` and (optional) `untilDate`
+ *  inclusive — employee-timezone calendar dates, folded to one row per day. */
 export async function listMyAttendance(
   employeeId: string,
   sinceDate: string,
+  untilDate?: string,
 ): Promise<DayPunches[]> {
   const rows = await db
     .select({
@@ -65,10 +67,22 @@ export async function listMyAttendance(
       and(
         eq(attendanceLogs.employeeId, employeeId),
         gte(attendanceLogs.logDate, sinceDate),
+        untilDate ? lte(attendanceLogs.logDate, untilDate) : undefined,
       ),
     )
     .orderBy(desc(attendanceLogs.logDate));
   return foldByDay(rows);
+}
+
+/** Active employees for the admin attendance selector. */
+export async function listActiveEmployeesBasic(): Promise<
+  { id: string; name: string }[]
+> {
+  return db
+    .select({ id: employees.id, name: employees.name })
+    .from(employees)
+    .where(eq(employees.isActive, true))
+    .orderBy(employees.name);
 }
 
 export interface TeamAttendanceRow {

@@ -123,9 +123,10 @@ export default async function NpdListPage() {
                     <span className="text-xl font-black text-[var(--color-ink)]">{h.percentDone}%</span>
                     <span className="ml-1 text-xs text-[var(--color-ink-subtle)]">complete</span>
                   </div>
-                  <div className="flex gap-4 text-xs text-[var(--color-ink-subtle)]">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--color-ink-subtle)]">
                     <span>Done <b className="text-[#16a34a]">{h.completed}</b></span>
                     <span>Overdue <b style={{ color: h.overdue ? "#e11d2f" : "inherit" }}>{h.overdue}</b></span>
+                    <span>On Hold <b style={{ color: h.onHold ? "#64748b" : "inherit" }}>{h.onHold}</b></span>
                     <span>Delay <b className="text-[#d97706]">{h.totalDelayDays}d</b></span>
                   </div>
                 </div>

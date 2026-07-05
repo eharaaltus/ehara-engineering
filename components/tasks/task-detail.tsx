@@ -42,9 +42,17 @@ export function TaskDetail({ task }: { task: TaskDetailModel }) {
   // `title` and `client`, so the client gets its own clearly-labelled field
   // below the hero instead of dominating as the headline.
   const description = task.description?.trim() || null;
-  const clientName = task.client?.trim() || task.title?.trim() || null;
+  const title = task.title?.trim() || null;
+  const client = task.client?.trim() || null;
+  // The new-task form copies the Client Name into `title` too, so only treat
+  // `title` as real task content when it differs from the client. IMPORTED tasks
+  // put the actual work in `title` with an empty description — without this the
+  // detail view showed only the subject ("Project") and hid the real task.
+  const titleContent = title && title !== client ? title : null;
   const headline =
-    description || task.subject?.trim() || clientName || "Untitled task";
+    description || titleContent || task.subject?.trim() || client || "Untitled task";
+  // Don't repeat the title as the client when we've promoted it to the headline.
+  const clientName = client || (titleContent ? null : title);
   const subjectChip = task.subject?.trim() || null;
   // Overdue is keyed off the EFFECTIVE due (revised ?? original), not the
   // immutable original due_at.

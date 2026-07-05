@@ -78,6 +78,50 @@ export function computeHealth(tasks: Parameters<typeof computeNpd>[0][]): NpdHea
   return { applicable, completed, overdue, onTrack, onHold, percentDone, totalDelayDays, health };
 }
 
+/**
+ * Predicted project end date.
+ *
+ * The old logic added the SUM of every overdue task's lateness to the target —
+ * so a 1-day slip on 10 tasks pushed the end out 10 days, which is wrong. A
+ * project finishes when its LAST work finishes, so the shift is driven by the
+ * single worst *current* slip, not the total:
+ *   • all applicable tasks done → the actual last completion date (can land
+ *     BEFORE the target if finished early — the date "comes back").
+ *   • otherwise → target end + the largest slip among still-open tasks
+ *     (max(0, today − plannedDate)). Each task 1 day late ⇒ ~1 day shift; catch
+ *     up and the slip shrinks, so the predicted date moves back toward target.
+ */
+export function computePredictedEnd(
+  tasks: Parameters<typeof computeNpd>[0][],
+  targetEndDate: string | null,
+): string | null {
+  const today = todayISO();
+  let allDone = true;
+  let maxSlip = 0;
+  let lastCompletion: string | null = null;
+  let lastPlanned: string | null = null;
+  for (const t of tasks) {
+    const c = computeNpd(t);
+    if (c.state === "NotApplicable" || c.state === "OnHold") continue;
+    if (c.state === "Done") {
+      if (t.completionDate && (!lastCompletion || t.completionDate > lastCompletion)) {
+        lastCompletion = t.completionDate;
+      }
+      continue;
+    }
+    allDone = false;
+    if (t.plannedDate) {
+      if (!lastPlanned || t.plannedDate > lastPlanned) lastPlanned = t.plannedDate;
+      const slip = daysBetween(t.plannedDate, today); // today − planned (>0 = late)
+      if (slip > maxSlip) maxSlip = slip;
+    }
+  }
+  if (allDone) return lastCompletion ?? targetEndDate;
+  const base = targetEndDate ?? lastPlanned;
+  if (!base) return null;
+  return maxSlip > 0 ? addDaysISO(base, maxSlip) : base;
+}
+
 export function addDaysISO(iso: string, n: number): string {
   const d = new Date(iso + "T00:00:00Z");
   d.setUTCDate(d.getUTCDate() + n);

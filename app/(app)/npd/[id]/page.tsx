@@ -5,7 +5,7 @@ import { eq, asc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { npdProducts, npdTasks, employees } from "@/db/schema";
 import { requireUser } from "@/lib/auth/current";
-import { computeHealth, computeNpd, NPD_STAGES, addDaysISO, fmtDate } from "@/lib/npd/status";
+import { computeHealth, computeNpd, NPD_STAGES, computePredictedEnd, fmtDate } from "@/lib/npd/status";
 import { NpdTaskRow } from "@/components/npd/npd-task-row";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
@@ -25,8 +25,7 @@ export default async function NpdDetailPage({ params }: { params: Promise<{ id: 
   ]);
 
   const h = computeHealth(tasks);
-  const predictedEnd =
-    prod.targetEndDate && h.totalDelayDays > 0 ? addDaysISO(prod.targetEndDate, h.totalDelayDays) : prod.targetEndDate;
+  const predictedEnd = computePredictedEnd(tasks, prod.targetEndDate);
 
   const kpi = (label: string, value: React.ReactNode, color: string) => (
     <div className="rounded-2xl border border-[var(--color-hairline)] bg-white p-4" style={{ borderTop: `3px solid ${color}` }}>
@@ -49,12 +48,17 @@ export default async function NpdDetailPage({ params }: { params: Promise<{ id: 
         <Link href={"/npd" as Route} className="text-sm font-semibold text-[#1e40af] hover:underline">← All products</Link>
       </div>
 
-      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
         {kpi("Tasks", h.applicable, "#1e40af")}
         {kpi("Completed", h.completed, "#16a34a")}
         {kpi("Overdue", h.overdue, "#e11d2f")}
+        {kpi("On Hold", h.onHold, "#64748b")}
         {kpi("Delay", `${h.totalDelayDays}d`, "#d97706")}
-        {kpi("Predicted End", fmtDate(predictedEnd), h.totalDelayDays > 0 ? "#e11d2f" : "#16a34a")}
+        {kpi(
+          "Predicted End",
+          fmtDate(predictedEnd),
+          predictedEnd && prod.targetEndDate && predictedEnd > prod.targetEndDate ? "#e11d2f" : "#16a34a",
+        )}
       </div>
 
       <div className="space-y-5">

@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default function ReimbursementPage() {
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace="employees" />
       <ComingSoon
         title="Reimbursement"
         description="Submit and track expense reimbursement claims — coming soon."

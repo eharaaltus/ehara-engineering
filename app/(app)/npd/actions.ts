@@ -42,6 +42,8 @@ export async function createNpdProduct(formData: FormData): Promise<void> {
     })
     .returning();
 
+  if (!prod) throw new Error("Could not create the NPD product. Please try again.");
+
   const base = start ?? new Date().toISOString().slice(0, 10);
   await db.insert(npdTasks).values(
     NPD_ACTIVITIES.map((a, i) => ({
@@ -68,8 +70,11 @@ export async function updateNpdTask(formData: FormData): Promise<void> {
 
   const resolution = (str(formData.get("resolution")) ?? "Open") as "Open" | "Done" | "On Hold";
   const explicitCompletion = str(formData.get("completionDate"));
+  // Completion date is tied to "Done". Re-opening (Open / On Hold) MUST clear it,
+  // otherwise computeNpd still reads a stale completionDate and the row stays
+  // stuck showing "✓ Done".
   const completionDate =
-    resolution === "Done" ? explicitCompletion ?? new Date().toISOString().slice(0, 10) : explicitCompletion;
+    resolution === "Done" ? explicitCompletion ?? new Date().toISOString().slice(0, 10) : null;
 
   await db
     .update(npdTasks)

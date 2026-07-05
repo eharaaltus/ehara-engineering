@@ -1,5 +1,6 @@
 import { LayoutGrid } from "lucide-react";
 import { MainNavServer } from "./main-nav-server";
+import { EmployeesNav } from "./employees-nav";
 import { MobileMenuServer } from "./mobile-menu-server";
 import { HeaderStatusBar } from "./header-clock";
 import { UserMenuServer } from "@/components/header/user-menu-server";
@@ -24,10 +25,14 @@ import { getCurrentEmployee } from "@/lib/auth/current";
  */
 export async function DashboardHeader({
   generatedAt: _generatedAt,
-}: { generatedAt: Date }) {
+  workspace = "wms",
+}: { generatedAt: Date; workspace?: "wms" | "employees" }) {
   const me = await getCurrentEmployee();
   const isAdmin = me?.isAdmin ?? false;
-  const moduleCount = 6 + (isAdmin ? 1 : 0); // primary nav modules in reach
+  const isEmployees = workspace === "employees";
+  const moduleCount = isEmployees ? 4 : 6 + (isAdmin ? 1 : 0); // primary nav modules in reach
+  // Back-link target for the "Workspace" wayfinding button.
+  const workspaceHref = isEmployees ? "/portal/employees" : "/portal";
 
   return (
     <header className="header-light">
@@ -125,13 +130,13 @@ export async function DashboardHeader({
         }}
       >
         <div className="relative w-full h-[62px] px-6 max-md:h-[58px] max-md:px-4 flex items-center gap-4 2xl:gap-6 max-md:gap-3">
-          <MobileMenuServer isAdmin={isAdmin} />
+          <MobileMenuServer isAdmin={isAdmin} workspace={workspace} />
 
           {/* Wayfinding — jump to the workspace picker. Replaces the old
               floating back/forward arrows. */}
           <div className="flex items-center gap-1.5 shrink-0 max-md:hidden">
             <a
-              href="/portal"
+              href={workspaceHref}
               title="Go to Workspaces"
               className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-3 text-[13px] font-bold text-slate-600 transition-all hover:-translate-y-0.5 hover:border-[#1e40af]/40 hover:bg-white hover:text-[#14245c]"
             >
@@ -142,7 +147,7 @@ export async function DashboardHeader({
 
           <div className="flex-1 min-w-0 overflow-x-auto nav-scroll max-md:hidden">
             <div className="flex w-max mx-auto">
-              <MainNavServer />
+              {isEmployees ? <EmployeesNav /> : <MainNavServer />}
             </div>
           </div>
 

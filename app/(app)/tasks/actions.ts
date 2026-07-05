@@ -465,10 +465,37 @@ export async function bulkSetStatus(
   const now = new Date();
   try {
     await db.transaction(async (tx) => {
-      await tx
-        .update(tasks)
-        .set({ status, updatedAt: now, completedAt: status === "done" ? now : null })
-        .where(inArray(tasks.id, allowed));
+      // completedAt rules (mirror the single-task path so bulk edits don't
+      // corrupt completion data):
+      //   • entering "done"           → stamp now
+      //   • done → approved           → PRESERVE (still completed, just approved)
+      //   • done → any other status   → clear (task re-opened, no longer complete)
+      //   • non-done → non-done       → PRESERVE (leave untouched)
+      if (status === "done") {
+        await tx
+          .update(tasks)
+          .set({ status, updatedAt: now, completedAt: now })
+          .where(inArray(tasks.id, allowed));
+      } else {
+        const clears =
+          status === "approved"
+            ? []
+            : allowed.filter((id) => prevStatus.get(id) === "done");
+        const keeps = allowed.filter((id) => !clears.includes(id));
+        if (clears.length > 0) {
+          await tx
+            .update(tasks)
+            .set({ status, updatedAt: now, completedAt: null })
+            .where(inArray(tasks.id, clears));
+        }
+        if (keeps.length > 0) {
+          // Omit completedAt entirely → preserved.
+          await tx
+            .update(tasks)
+            .set({ status, updatedAt: now })
+            .where(inArray(tasks.id, keeps));
+        }
+      }
       await tx.insert(taskEvents).values(
         allowed.map((id) => ({
           taskId: id,

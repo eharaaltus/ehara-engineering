@@ -1,3 +1,4 @@
+import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { attendanceLogs } from "@/db/schema";
 import { localDateString } from "@/lib/format";
@@ -74,6 +75,26 @@ export async function insertPunchRow(
   const tz = actor.timezone || "Asia/Kolkata";
   const today = localDateString(tz);
   const { kind, note, location, distanceM } = fields;
+
+  // You can't check OUT before you've checked IN. Without this, a stray "out"
+  // is accepted, the day still grades Absent (no "in"), and finalize notifies
+  // on a day that never really started.
+  if (kind === "out") {
+    const existingIn = await db
+      .select({ id: attendanceLogs.id })
+      .from(attendanceLogs)
+      .where(
+        and(
+          eq(attendanceLogs.employeeId, actor.id),
+          eq(attendanceLogs.logDate, today),
+          eq(attendanceLogs.kind, "in"),
+        ),
+      )
+      .limit(1);
+    if (existingIn.length === 0) {
+      return { ok: false, error: "Check in first — you haven't checked in today." };
+    }
+  }
 
   try {
     await db.insert(attendanceLogs).values({

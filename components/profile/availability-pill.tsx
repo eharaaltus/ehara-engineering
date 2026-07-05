@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { patchIdentity } from "@/app/(app)/profile/actions";
 import { fireToast } from "@/lib/toast";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type Availability = "available" | "focused" | "heads_down" | "away";
 
@@ -70,10 +71,10 @@ export function AvailabilityPill({ initial, size = "md" }: Props) {
   }
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`Availability: ${pres.label}. Click to change.`}
@@ -117,34 +118,9 @@ export function AvailabilityPill({ initial, size = "md" }: Props) {
           ▾
         </span>
       </button>
-
-      {open && (
-        <>
-          {/* click-away */}
-          <div
-            onClick={() => setOpen(false)}
-            style={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 30,
-            }}
-          />
-          <div
-            role="listbox"
-            style={{
-              position: "absolute",
-              top: "calc(100% + 6px)",
-              left: 0,
-              minWidth: 200,
-              background: "var(--color-surface-card)",
-              borderRadius: 12,
-              border: "1px solid var(--color-hairline-strong)",
-              boxShadow:
-                "0 12px 32px -8px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.06)",
-              padding: 6,
-              zIndex: 40,
-            }}
-          >
+      </PopoverTrigger>
+      <PopoverContent align="start" role="listbox" className="w-52 p-1.5">
+          <div>
             {ORDER.map((opt) => {
               const p = PRESENTATION[opt];
               const active = opt === value;
@@ -204,8 +180,7 @@ export function AvailabilityPill({ initial, size = "md" }: Props) {
               );
             })}
           </div>
-        </>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 }

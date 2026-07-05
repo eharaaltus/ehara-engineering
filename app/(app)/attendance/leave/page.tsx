@@ -25,7 +25,7 @@ export default async function LeavePage() {
 
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace="employees" />
       <main className="mx-auto max-w-[860px] px-8 max-md:px-4 pt-8 pb-16">
         <header className="mb-6">
           <h1 className="text-display-lg text-ink-strong">Leave</h1>

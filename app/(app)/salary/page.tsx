@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default function SalaryPage() {
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace="employees" />
       <ComingSoon
         title="Salary"
         description="Payroll, salary slips and compensation for the team — coming soon."

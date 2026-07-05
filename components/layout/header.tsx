@@ -108,9 +108,14 @@ export async function DashboardHeader({
         </div>
       </div>
 
-      {/* ─────────────── FUNCTIONAL NAV BAR (sticky) ─────────────── */}
+      {/* ─────────────── FUNCTIONAL NAV BAR ─────────────── */}
+      {/* Not sticky: it lives inside the short <header>, so a sticky here can't
+          escape it anyway (it scrolled away and left a gap above the filter),
+          and its z-50 was overlapping the sticky FilterBar and eating clicks on
+          the far-right actions (Saved views). The FilterBar is the single bar
+          that freezes at top-0; the nav scrolls away with the hero. */}
       <div
-        className="sticky top-0 z-50 mt-3"
+        className="relative z-30 mt-3"
         style={{
           backgroundColor: "rgba(255, 255, 255, 0.82)",
           backdropFilter: "blur(20px) saturate(160%)",

@@ -105,21 +105,23 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   return (
     <>
       <DashboardHeader generatedAt={data.generatedAt} />
-      <div className={mobileToday ? "max-md:hidden" : undefined}>
-        <FilterBar
-          employees={employeeOptions}
-          subjects={subjects}
-          initial={{
-            start: isoDay(filters.startDate ?? new Date()),
-            end:   isoDay(filters.endDate   ?? new Date()),
-            emp:   filters.employeeIds,
-            view:  filters.view,
-            dept:  filters.departments,
-            prio:  filters.priorities,
-            subj:  filters.subjects,
-          }}
-        />
-      </div>
+      {/* FilterBar must be a direct sibling (not wrapped in a same-height div)
+          or position:sticky can't move → won't freeze. Mobile hiding is passed
+          as a class on its own sticky root instead. */}
+      <FilterBar
+        className={mobileToday ? "max-md:hidden" : undefined}
+        employees={employeeOptions}
+        subjects={subjects}
+        initial={{
+          start: isoDay(filters.startDate ?? new Date()),
+          end:   isoDay(filters.endDate   ?? new Date()),
+          emp:   filters.employeeIds,
+          view:  filters.view,
+          dept:  filters.departments,
+          prio:  filters.priorities,
+          subj:  filters.subjects,
+        }}
+      />
       <main>
         {isEmpty ? (
           <WelcomeHero />

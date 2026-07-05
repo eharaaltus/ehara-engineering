@@ -58,6 +58,9 @@ interface Props {
   assigneeMode?: AssigneeMode;
   /** Number of tasks matching the current filters (shown in the summary row). */
   taskCount?: number;
+  /** Extra classes for the sticky root (e.g. responsive hiding). Must NOT wrap
+   *  the FilterBar in a same-height div — that breaks position:sticky. */
+  className?: string;
 }
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -82,6 +85,7 @@ export function FilterBar({
   me,
   assigneeMode: initialAssigneeMode = "all",
   taskCount,
+  className,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -210,14 +214,14 @@ export function FilterBar({
 
   return (
     <div
-      // Sticks BELOW the header's sticky nav bar (h-[62px] / h-[58px] on mobile),
-      // not at top-0 — otherwise it freezes hidden underneath the higher-z nav.
-      className="sticky top-[62px] max-md:top-[58px] z-40 border-b border-hairline"
-      style={{
-        backgroundColor: "rgba(250, 251, 252, 0.9)",
-        backdropFilter: "blur(20px) saturate(150%)",
-        WebkitBackdropFilter: "blur(20px) saturate(150%)",
-      }}
+      // Freezes at the very top of the viewport. The header's nav bar is bounded
+      // by the (short) <header> so it scrolls away — nothing else stays pinned —
+      // so the filter bar owns top-0. OPAQUE background (not translucent) so no
+      // page content shows through or above it while frozen. `className` lets the
+      // caller add responsive hiding WITHOUT a same-height wrapper div (which
+      // would break position:sticky — that was the "dashboard won't freeze" bug).
+      className={`sticky top-0 z-40 border-b border-hairline ${className ?? ""}`}
+      style={{ backgroundColor: "var(--color-surface-page, #f7f9fb)" }}
     >
       <div className="mx-auto max-w-[1600px] px-12 py-2 max-md:px-4 flex flex-col gap-1.5">
         {/* Row 1 — filter pill-cards */}

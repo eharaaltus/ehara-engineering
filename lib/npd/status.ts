@@ -58,24 +58,29 @@ export interface NpdHealth {
   onTrack: number;
   onHold: number;
   percentDone: number;
-  totalDelayDays: number;
+  /** How many days behind schedule the product is = the WORST single overdue
+   *  task (the bottleneck), NOT the sum across tasks. For one product's timeline
+   *  the slip can't exceed the most-overdue activity, so summing (e.g. 19 tasks ×
+   *  ~40d = 765d) is meaningless — the real delay is ~44d. Matches the shift
+   *  used by computePredictedEnd. */
+  maxDelayDays: number;
   health: "Good" | "At Risk" | "Critical";
 }
 
 export function computeHealth(tasks: Parameters<typeof computeNpd>[0][]): NpdHealth {
-  let applicable = 0, completed = 0, overdue = 0, onTrack = 0, onHold = 0, totalDelayDays = 0;
+  let applicable = 0, completed = 0, overdue = 0, onTrack = 0, onHold = 0, maxDelayDays = 0;
   for (const t of tasks) {
     const c = computeNpd(t);
     if (c.state === "NotApplicable") continue;
     applicable++;
     if (c.state === "Done") completed++;
-    else if (c.state === "Overdue") { overdue++; totalDelayDays += Math.abs(c.daysLeft ?? 0); }
+    else if (c.state === "Overdue") { overdue++; maxDelayDays = Math.max(maxDelayDays, Math.abs(c.daysLeft ?? 0)); }
     else if (c.state === "OnHold") onHold++;
     else onTrack++;
   }
   const percentDone = applicable ? Math.round((completed / applicable) * 100) : 0;
-  const health = overdue >= 5 || totalDelayDays >= 60 ? "Critical" : overdue > 0 ? "At Risk" : "Good";
-  return { applicable, completed, overdue, onTrack, onHold, percentDone, totalDelayDays, health };
+  const health = overdue >= 5 || maxDelayDays >= 30 ? "Critical" : overdue > 0 ? "At Risk" : "Good";
+  return { applicable, completed, overdue, onTrack, onHold, percentDone, maxDelayDays, health };
 }
 
 /**

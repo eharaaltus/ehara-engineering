@@ -127,7 +127,7 @@ export default async function NpdListPage() {
                     <span>Done <b className="text-[#16a34a]">{h.completed}</b></span>
                     <span>Overdue <b style={{ color: h.overdue ? "#e11d2f" : "inherit" }}>{h.overdue}</b></span>
                     <span>On Hold <b style={{ color: h.onHold ? "#64748b" : "inherit" }}>{h.onHold}</b></span>
-                    <span>Delay <b className="text-[#d97706]">{h.totalDelayDays}d</b></span>
+                    <span>Delay <b className="text-[#d97706]">{h.maxDelayDays}d</b></span>
                   </div>
                 </div>
               </Link>

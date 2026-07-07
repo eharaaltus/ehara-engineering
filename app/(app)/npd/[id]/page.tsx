@@ -53,7 +53,7 @@ export default async function NpdDetailPage({ params }: { params: Promise<{ id: 
         {kpi("Completed", h.completed, "#16a34a")}
         {kpi("Overdue", h.overdue, "#e11d2f")}
         {kpi("On Hold", h.onHold, "#64748b")}
-        {kpi("Delay", `${h.totalDelayDays}d`, "#d97706")}
+        {kpi("Delay", `${h.maxDelayDays}d`, "#d97706")}
         {kpi(
           "Predicted End",
           fmtDate(predictedEnd),

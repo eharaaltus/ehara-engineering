@@ -1739,7 +1739,7 @@ select.nt-input {
   background-size: 14px, auto;
 }
 
-/* Task title link — cyan hover instead of aatech red */
+/* Task title link — cyan hover instead of brand red */
 .task-title-link:hover {
   color: rgb(var(--vp-cyan-deep));
   text-decoration: underline;

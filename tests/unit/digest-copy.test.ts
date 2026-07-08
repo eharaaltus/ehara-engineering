@@ -17,9 +17,9 @@ describe("digestSubject", () => {
     expect(digestSubject(0)).toMatch(/all clear|caught up/i);
   });
   it("singular", () => {
-    expect(digestSubject(1)).toBe("You have 1 pending task — A A Tech Dashboard");
+    expect(digestSubject(1)).toBe("You have 1 pending task — Ehara Engineering Dashboard");
   });
   it("plural", () => {
-    expect(digestSubject(5)).toBe("You have 5 pending tasks — A A Tech Dashboard");
+    expect(digestSubject(5)).toBe("You have 5 pending tasks — Ehara Engineering Dashboard");
   });
 });

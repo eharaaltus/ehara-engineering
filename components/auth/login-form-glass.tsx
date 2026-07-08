@@ -123,64 +123,17 @@ export function LoginFormGlass() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.05, ease: [0.2, 0.7, 0.3, 1] }}
       >
-        {/* Eyebrow */}
-        <div className="mb-6 flex items-center gap-2.5">
-          <span
-            aria-hidden
-            className="h-[7px] w-[7px] rounded-full"
-            style={{
-              background: "#1e40af",
-              boxShadow: "0 0 14px #1e40af",
-            }}
-          />
-          <span
-            style={{
-              fontSize: 12,
-              letterSpacing: "0.26em",
-              color: "rgba(255,255,255,0.60)",
-              fontFamily: "var(--font-mono-display)",
-              fontWeight: 700,
-            }}
-          >
-            WELCOME BACK
-          </span>
+        {/* Compact centered card header (matches the reference login card). */}
+        <div className="flex flex-col items-center text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-mark.png?v=6" alt="Ehara Engineering" width={54} height={54} style={{ objectFit: "contain", filter: "drop-shadow(0 6px 16px rgba(30,64,175,0.5))" }} />
+          <h1 style={{ marginTop: 16, fontFamily: "var(--font-display), system-ui, sans-serif", fontWeight: 900, fontSize: 30, letterSpacing: "-0.02em", color: "#fff" }}>
+            Welcome back
+          </h1>
+          <p className="mt-1.5" style={{ fontSize: 14.5, color: "rgba(255,255,255,0.60)" }}>
+            Sign in to your Ehara Engineering workspace.
+          </p>
         </div>
-
-        <h1
-          style={{
-            fontFamily: "var(--font-display)",
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 68,
-            lineHeight: 1.0,
-            letterSpacing: "-0.03em",
-            color: "rgba(255,255,255,0.97)",
-          }}
-        >
-          Sign in to{" "}
-          <span
-            style={{
-              background:
-                "linear-gradient(110deg, #e11d2f, #1e40af 50%, #14245c)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Ehara Engineering
-          </span>
-          .
-        </h1>
-        <p
-          className="mt-4"
-          style={{
-            fontSize: 18,
-            color: "rgba(255,255,255,0.60)",
-            lineHeight: 1.55,
-          }}
-        >
-          Use the email your admin set up for you.
-        </p>
       </motion.div>
 
       <motion.div

@@ -93,3 +93,7 @@ ai-refs/
 
 # production env for Vercel import — never commit
 .env.vercel
+
+# local dev scratch logs
+scratch-next*
+scratchpad-devlog.txt

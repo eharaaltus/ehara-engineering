@@ -37,7 +37,7 @@ interface QuickAction {
   description: string;
   href: Route;
   icon: LucideIcon;
-  tone: "aatech" | "ink";
+  tone: "brand" | "ink";
 }
 
 const QUICK_ACTIONS: QuickAction[] = [
@@ -46,7 +46,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     description: "Send an invite email",
     href: "/admin/employees" as Route,
     icon: UserPlus,
-    tone: "aatech",
+    tone: "brand",
   },
   {
     label: "New Task",
@@ -165,7 +165,7 @@ export default async function AdminOverviewPage() {
         <div className="grid grid-cols-4 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-3">
           {QUICK_ACTIONS.map((q) => {
             const Icon = q.icon;
-            const isAatech = q.tone === "aatech";
+            const isAatech = q.tone === "brand";
             return (
               <Link
                 key={q.label}

@@ -1,4 +1,6 @@
-import { MapPin, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import type { Route } from "next";
+import { MapPin, ShieldCheck, BarChart3 } from "lucide-react";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
 import { PunchCard } from "@/components/attendance/punch-card";
@@ -82,13 +84,24 @@ export default async function AttendancePage({ searchParams }: PageProps) {
     <>
       <DashboardHeader generatedAt={new Date()} workspace="employees" />
       <main className="mx-auto max-w-[860px] px-8 max-md:px-4 pt-8 pb-16">
-        <header className="mb-6">
-          <h1 className="text-display-lg text-ink-strong">Attendance</h1>
-          <p className="text-body-lg text-ink-subtle mt-1">
-            {office
-              ? `Punch with your fingerprint, within ${office.radiusM}m of the office.`
-              : "Check in when you start, check out when you wrap up. One of each per day."}
-          </p>
+        <header className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-display-lg text-ink-strong">Attendance</h1>
+            <p className="text-body-lg text-ink-subtle mt-1">
+              {office
+                ? `Punch with your fingerprint, within ${office.radiusM}m of the office.`
+                : "Check in when you start, check out when you wrap up. One of each per day."}
+            </p>
+          </div>
+          {me.isAdmin && (
+            <Link
+              href={"/attendance/dashboard" as Route}
+              className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface-card py-2.5 px-4 text-[14px] font-semibold text-ink-strong hover:border-hairline-strong transition-colors"
+            >
+              <BarChart3 size={15} strokeWidth={2.2} />
+              Monthly Dashboard
+            </Link>
+          )}
         </header>
 
         <PunchCard

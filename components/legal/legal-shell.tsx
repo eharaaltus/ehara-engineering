@@ -123,10 +123,10 @@ export function LegalShell({ eyebrow, title, lastUpdated, intro, children }: Pro
         >
           Questions? Write to{" "}
           <a
-            href="mailto:danyalsayyed.altuscorp@gmail.com"
+            href="mailto:ehara.altus@gmail.com"
             className="auth-link font-semibold"
           >
-            danyalsayyed.altuscorp@gmail.com
+            ehara.altus@gmail.com
           </a>
           .
         </div>

@@ -55,7 +55,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "Ehara Engineering — Work Management",
   description: "Ehara Engineering work management dashboard",
-  metadataBase: new URL("https://aa-tech-dashboard.vercel.app"),
+  metadataBase: new URL("https://ehara-engineering.vercel.app"),
   manifest: "/manifest.json",
 };
 

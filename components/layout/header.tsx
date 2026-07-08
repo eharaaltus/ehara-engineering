@@ -26,11 +26,12 @@ import { getCurrentEmployee } from "@/lib/auth/current";
 export async function DashboardHeader({
   generatedAt: _generatedAt,
   workspace = "wms",
-}: { generatedAt: Date; workspace?: "wms" | "employees" }) {
+}: { generatedAt: Date; workspace?: "wms" | "employees" | "manual" }) {
   const me = await getCurrentEmployee();
   const isAdmin = me?.isAdmin ?? false;
   const isEmployees = workspace === "employees";
-  const moduleCount = isEmployees ? 4 : 6 + (isAdmin ? 1 : 0); // primary nav modules in reach
+  const isWms = workspace === "wms";
+  const moduleCount = isEmployees ? 4 : isWms ? 6 + (isAdmin ? 1 : 0) : 1; // primary nav modules in reach
   // Back-link target for the "Workspace" wayfinding button.
   const workspaceHref = isEmployees ? "/portal/employees" : "/portal";
 
@@ -147,13 +148,19 @@ export async function DashboardHeader({
 
           <div className="flex-1 min-w-0 overflow-x-auto nav-scroll max-md:hidden">
             <div className="flex w-max mx-auto">
-              {isEmployees ? <EmployeesNav /> : <MainNavServer />}
+              {isEmployees ? <EmployeesNav isAdmin={isAdmin} /> : isWms ? <MainNavServer /> : null}
             </div>
           </div>
 
           <div className="flex items-center gap-2.5 2xl:gap-3 shrink-0 max-xl:ml-auto max-md:gap-1.5">
-            <GlobalSearch />
-            <NewTaskTrigger />
+            {/* WMS-only quick actions — kept out of the Employees / Manual
+                workspaces so each workspace stays self-contained. */}
+            {isWms && (
+              <>
+                <GlobalSearch />
+                <NewTaskTrigger />
+              </>
+            )}
             {isAdmin && (
               <span className="max-2xl:hidden">
                 <AdminPill />

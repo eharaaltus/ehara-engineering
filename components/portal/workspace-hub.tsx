@@ -13,9 +13,11 @@ import {
   CalendarMinus,
   Wallet,
   Receipt,
+  Award,
   ArrowRight,
   ArrowLeft,
   LogOut,
+  Lock,
   type LucideIcon,
 } from "lucide-react";
 import { LoginMosaic } from "@/components/auth/login-mosaic";
@@ -28,6 +30,7 @@ const ICONS: Record<string, LucideIcon> = {
   leave: CalendarMinus,
   wallet: Wallet,
   receipt: Receipt,
+  award: Award,
 };
 
 export interface HubOption {
@@ -35,6 +38,8 @@ export interface HubOption {
   desc: string;
   href: string;
   icon: string;
+  /** Only admins may open this option; non-admins see it locked. */
+  adminOnly?: boolean;
 }
 
 export function WorkspaceHub({
@@ -43,12 +48,14 @@ export function WorkspaceHub({
   from,
   to,
   options,
+  isAdmin = false,
 }: {
   title: string;
   subtitle: string;
   from: string;
   to: string;
   options: HubOption[];
+  isAdmin?: boolean;
 }) {
   const router = useRouter();
 
@@ -135,13 +142,9 @@ export function WorkspaceHub({
           <div className="grid grid-cols-2 gap-5 max-sm:grid-cols-1">
             {options.map((o) => {
               const Icon = ICONS[o.icon] ?? ShieldCheck;
-              return (
-                <Link
-                  key={o.label}
-                  href={o.href as Route}
-                  className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] p-6 shadow-lg transition-all duration-200 hover:-translate-y-1 max-sm:gap-4"
-                  style={{ background: `linear-gradient(145deg, ${from}, ${to})`, boxShadow: `0 22px 46px -22px ${to}cc` }}
-                >
+              const locked = !!o.adminOnly && !isAdmin;
+              const inner = (
+                <>
                   <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 42%)" }} />
                   <span className="relative inline-flex size-16 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm transition-transform group-hover:scale-105 max-sm:size-14">
                     <Icon size={28} strokeWidth={2.2} />
@@ -149,10 +152,29 @@ export function WorkspaceHub({
                   <div className="relative flex min-w-0 flex-1 flex-col">
                     <h2 className="text-[22px] font-black leading-none tracking-[-0.01em] text-white">{o.label}</h2>
                     <p className="mt-2 text-[13.5px] font-medium leading-snug text-white/85">{o.desc}</p>
-                    <span className="mt-4 inline-flex h-9 w-fit items-center gap-1.5 rounded-lg bg-white px-4 text-[13.5px] font-extrabold shadow-sm transition-transform group-hover:translate-x-0.5" style={{ color: to }}>
-                      Open <ArrowRight size={15} strokeWidth={2.7} />
-                    </span>
+                    {locked ? (
+                      <span className="mt-4 inline-flex h-9 w-fit items-center gap-1.5 rounded-lg bg-black/25 px-3.5 text-[13px] font-bold text-white/80 ring-1 ring-white/15">
+                        <Lock size={13} strokeWidth={2.5} /> Admin only
+                      </span>
+                    ) : (
+                      <span className="mt-4 inline-flex h-9 w-fit items-center gap-1.5 rounded-lg bg-white px-4 text-[13.5px] font-extrabold shadow-sm transition-transform group-hover:translate-x-0.5" style={{ color: to }}>
+                        Open <ArrowRight size={15} strokeWidth={2.7} />
+                      </span>
+                    )}
                   </div>
+                </>
+              );
+              const cardClass =
+                "group relative flex items-center gap-5 overflow-hidden rounded-[22px] p-6 shadow-lg transition-all duration-200 max-sm:gap-4" +
+                (locked ? " opacity-90" : " hover:-translate-y-1");
+              const cardStyle = { background: `linear-gradient(145deg, ${from}, ${to})`, boxShadow: `0 22px 46px -22px ${to}cc` };
+              return locked ? (
+                <div key={o.label} className={cardClass} style={cardStyle} aria-disabled="true">
+                  {inner}
+                </div>
+              ) : (
+                <Link key={o.label} href={o.href as Route} className={cardClass} style={cardStyle}>
+                  {inner}
                 </Link>
               );
             })}

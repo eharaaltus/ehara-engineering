@@ -140,5 +140,5 @@ export function outstandingExportFilename(
       : scope === "collection-template"
         ? "collection-import-template"
         : "outstanding";
-  return `aa-tech-${slug}-${iso}.${ext}`;
+  return `ehara-${slug}-${iso}.${ext}`;
 }

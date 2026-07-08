@@ -20,7 +20,7 @@ export default function ErrorBoundary({
 
   const washRgba = isForbidden
     ? "rgba(245, 158, 11, 0.10)" // amber wash for 403
-    : "rgba(30, 64, 175, 0.10)"; // aatech red wash for generic
+    : "rgba(30, 64, 175, 0.10)"; // brand wash for generic
 
   return (
     <main className="min-h-screen flex items-center justify-center px-8 py-24">

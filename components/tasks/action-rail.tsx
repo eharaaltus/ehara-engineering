@@ -315,7 +315,7 @@ function RoleBanner({
   if (!role && !adminOverride) return null;
 
   const lines: Array<{
-    tone: "blue" | "purple" | "aatech";
+    tone: "blue" | "purple" | "brand";
     icon: React.ReactNode;
     label: string;
     detail: string;
@@ -339,7 +339,7 @@ function RoleBanner({
   }
   if (!role && adminOverride) {
     lines.push({
-      tone: "aatech",
+      tone: "brand",
       icon: <Pencil size={13} strokeWidth={2.6} />,
       label: "Admin override",
       detail: "You're not on this task but can still act.",

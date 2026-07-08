@@ -4,13 +4,13 @@ import { csvResponse, MAX_EXPORT_ROWS, EXPORT_TOO_LARGE, exportFilename } from "
 describe("csvResponse", () => {
   it("returns 200 + text/csv + attachment disposition + UTF-8 BOM", async () => {
     const res = csvResponse({
-      filename: "aa-tech-tasks-2026-05-17.csv",
+      filename: "ehara-tasks-2026-05-17.csv",
       headers: ["a", "b"],
       rows: [["1", "2"], ["3", "4"]],
     });
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toMatch(/text\/csv/);
-    expect(res.headers.get("content-disposition")).toMatch(/aa-tech-tasks-2026-05-17\.csv/);
+    expect(res.headers.get("content-disposition")).toMatch(/ehara-tasks-2026-05-17\.csv/);
     // Verify BOM bytes on the wire (Response.text() consumes a leading BOM per the
     // UTF-8 decode spec, so we have to inspect raw bytes — what the browser saves to disk).
     const bytes = new Uint8Array(await res.arrayBuffer());
@@ -71,14 +71,14 @@ describe("csvResponse", () => {
 });
 
 describe("exportFilename", () => {
-  it("formats as aa-tech-<resource>-YYYY-MM-DD.csv", () => {
+  it("formats as ehara-<resource>-YYYY-MM-DD.csv", () => {
     expect(exportFilename("tasks", new Date("2026-05-17T10:30:00Z"))).toBe(
-      "aa-tech-tasks-2026-05-17.csv",
+      "ehara-tasks-2026-05-17.csv",
     );
   });
 
   it("uses today by default", () => {
     const today = new Date().toISOString().slice(0, 10);
-    expect(exportFilename("employees")).toBe(`aa-tech-employees-${today}.csv`);
+    expect(exportFilename("employees")).toBe(`ehara-employees-${today}.csv`);
   });
 });

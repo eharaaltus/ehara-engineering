@@ -1125,7 +1125,7 @@ export const pushSubscriptions = pgTable(
  */
 export const orgSettings = pgTable("org_settings", {
   id: integer("id").primaryKey().default(1),
-  companyName: text("company_name").notNull().default("A A Tech"),
+  companyName: text("company_name").notNull().default("Ehara Engineering"),
   logoUrl: text("logo_url"),
   digestHourIst: integer("digest_hour_ist").notNull().default(9),
   idleTimeoutMinutes: integer("idle_timeout_minutes").notNull().default(10),
@@ -2200,6 +2200,7 @@ export const npdProducts = pgTable("npd_products", {
   defaultDoerId: uuid("default_doer_id").references(() => employees.id, { onDelete: "set null" }),
   defaultSupervisorId: uuid("default_supervisor_id").references(() => employees.id, { onDelete: "set null" }),
   status: npdProductStatusEnum("status").notNull().default("Active"),
+  archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

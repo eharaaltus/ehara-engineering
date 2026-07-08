@@ -9,7 +9,7 @@ import type { TaskStatus, StatusColorToken } from "@/db/enums";
 
 type DayCol = { ymd: string; label: string; sub: string };
 type View = "agenda" | "list";
-const VIEW_STORAGE_KEY = "aatech.myday.view.v1";
+const VIEW_STORAGE_KEY = "ehara.myday.view.v1";
 
 /**
  * "My Day" — a personal task workspace with two views over the SAME filtered

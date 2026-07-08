@@ -2,12 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { npdProducts, npdTasks } from "@/db/schema";
 import { requireUser } from "@/lib/auth/current";
 import { NPD_ACTIVITIES } from "@/lib/npd/template";
 import { addDaysISO } from "@/lib/npd/status";
+
+type ActionResult = { ok: true } | { ok: false; error: string };
 
 function str(v: FormDataEntryValue | null): string | null {
   const s = v ? String(v).trim() : "";
@@ -27,10 +29,20 @@ export async function createNpdProduct(formData: FormData): Promise<void> {
   const doerId = str(formData.get("defaultDoerId")) ?? me.id;
   const supervisorId = str(formData.get("defaultSupervisorId")) ?? doerId;
 
+  // Product number = srNo. Auto-assign the next number if none supplied so
+  // every product is searchable by a stable number.
+  let srNo = int(formData.get("srNo"));
+  if (srNo == null) {
+    const rows = await db
+      .select({ next: sql<number>`coalesce(max(${npdProducts.srNo}), 0) + 1` })
+      .from(npdProducts);
+    srNo = rows[0]?.next ?? 1;
+  }
+
   const [prod] = await db
     .insert(npdProducts)
     .values({
-      srNo: int(formData.get("srNo")),
+      srNo,
       customer: str(formData.get("customer")),
       partName,
       partNo: str(formData.get("partNo")),
@@ -91,4 +103,62 @@ export async function updateNpdTask(formData: FormData): Promise<void> {
 
   if (productId) revalidatePath(`/npd/${productId}`);
   revalidatePath("/npd");
+}
+
+/** Edit a product's header fields (customer, part name/no, dates, doer/supervisor). */
+export async function updateNpdProduct(formData: FormData): Promise<ActionResult> {
+  await requireUser();
+  const id = str(formData.get("id"));
+  if (!id) return { ok: false, error: "Missing product id" };
+  const partName = str(formData.get("partName"));
+  if (!partName) return { ok: false, error: "Part name is required" };
+
+  try {
+    await db
+      .update(npdProducts)
+      .set({
+        srNo: int(formData.get("srNo")),
+        customer: str(formData.get("customer")),
+        partName,
+        partNo: str(formData.get("partNo")),
+        startDate: str(formData.get("startDate")),
+        targetEndDate: str(formData.get("targetEndDate")),
+        defaultDoerId: str(formData.get("defaultDoerId")),
+        defaultSupervisorId: str(formData.get("defaultSupervisorId")),
+        updatedAt: new Date(),
+      })
+      .where(eq(npdProducts.id, id));
+  } catch (err) {
+    return { ok: false, error: `DB: ${err instanceof Error ? err.message : String(err)}` };
+  }
+  revalidatePath("/npd");
+  revalidatePath(`/npd/${id}`);
+  return { ok: true };
+}
+
+/** Archive / unarchive a product (soft — its activities are kept). */
+export async function setNpdArchived(id: string, archived: boolean): Promise<ActionResult> {
+  await requireUser();
+  if (!id) return { ok: false, error: "Missing product id" };
+  try {
+    await db.update(npdProducts).set({ archived, updatedAt: new Date() }).where(eq(npdProducts.id, id));
+  } catch (err) {
+    return { ok: false, error: `DB: ${err instanceof Error ? err.message : String(err)}` };
+  }
+  revalidatePath("/npd");
+  return { ok: true };
+}
+
+/** Permanently delete a product AND its activities (FK cascade). Explicit, hard
+ *  delete — the UI must confirm. Prefer Archive to avoid data loss. */
+export async function deleteNpdProduct(id: string): Promise<ActionResult> {
+  await requireUser();
+  if (!id) return { ok: false, error: "Missing product id" };
+  try {
+    await db.delete(npdProducts).where(eq(npdProducts.id, id)); // npd_tasks cascade
+  } catch (err) {
+    return { ok: false, error: `DB: ${err instanceof Error ? err.message : String(err)}` };
+  }
+  revalidatePath("/npd");
+  return { ok: true };
 }

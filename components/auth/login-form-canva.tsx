@@ -130,7 +130,7 @@ export function LoginFormCanva() {
       </p>
 
       <div className="mt-7 space-y-4">
-        <Field label="Work email" type="email" autoComplete="email" required value={email} onChange={setEmail} placeholder="you@aatech.com" />
+        <Field label="Work email" type="email" autoComplete="email" required value={email} onChange={setEmail} placeholder="you@company.com" />
         <Field
           label="Password"
           type={showPw ? "text" : "password"}

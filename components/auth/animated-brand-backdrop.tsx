@@ -32,7 +32,7 @@ export function AnimatedBrandBackdrop() {
       {/* ── Brand-mark lane (orbits to the LEFT) ── */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="aatech-brand-mark"
+          className="ehara-brand-mark"
           style={{ width: "clamp(220px, 24vw, 420px)" }}
         >
           {/* The dedicated white-font variant of the brand mark — already
@@ -57,7 +57,7 @@ export function AnimatedBrandBackdrop() {
 
       {/* ── Italic-wordmark lane (orbits to the RIGHT) ── */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="aatech-brand-wordmark">
+        <div className="ehara-brand-wordmark">
           <div
             style={{
               fontFamily: "var(--font-display)",
@@ -112,7 +112,7 @@ export function AnimatedBrandBackdrop() {
          * lands in the correct spot on a 1280, 1440, 1920, or 2560
          * screen with no per-breakpoint tuning.
          */
-        @keyframes aatech-mark-orbit {
+        @keyframes ehara-mark-orbit {
           0%   { transform: translateX(0)                       scale(0.94); opacity: 0; }
           8%   { transform: translateX(0)                       scale(0.96); opacity: 0.55; }
           28%  { transform: translateX(calc(-25vw - 165px))     scale(1);    opacity: 0.95; }
@@ -124,7 +124,7 @@ export function AnimatedBrandBackdrop() {
            the card's RIGHT edge and the viewport's right edge:
              (3W + 660)/4 − W/2  =  (W + 660)/4  =  +25vw + 165px
            Same calc() pattern as the left lane, just positive. */
-        @keyframes aatech-wordmark-orbit {
+        @keyframes ehara-wordmark-orbit {
           0%   { transform: translateX(0)                       scale(0.94); opacity: 0; }
           8%   { transform: translateX(0)                       scale(0.96); opacity: 0.40; }
           28%  { transform: translateX(calc(25vw + 165px))      scale(1);    opacity: 0.70; }
@@ -134,38 +134,38 @@ export function AnimatedBrandBackdrop() {
         }
         /* Gentle vertical bob layered on the inner element so even
            during the long parked phase nothing feels frozen. */
-        @keyframes aatech-bob {
+        @keyframes ehara-bob {
           0%, 100% { transform: translateY(0); }
           50%      { transform: translateY(-8px); }
         }
 
-        .aatech-brand-mark {
-          animation: aatech-mark-orbit 22s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+        .ehara-brand-mark {
+          animation: ehara-mark-orbit 22s cubic-bezier(0.45, 0, 0.25, 1) infinite;
           will-change: transform, opacity;
         }
-        .aatech-brand-wordmark {
-          animation: aatech-wordmark-orbit 22s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+        .ehara-brand-wordmark {
+          animation: ehara-wordmark-orbit 22s cubic-bezier(0.45, 0, 0.25, 1) infinite;
           will-change: transform, opacity;
         }
-        .aatech-brand-mark > :global(img) {
-          animation: aatech-bob 6s ease-in-out infinite;
+        .ehara-brand-mark > :global(img) {
+          animation: ehara-bob 6s ease-in-out infinite;
         }
-        .aatech-brand-wordmark > :global(div) {
-          animation: aatech-bob 6s ease-in-out infinite 0.8s;
+        .ehara-brand-wordmark > :global(div) {
+          animation: ehara-bob 6s ease-in-out infinite 0.8s;
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .aatech-brand-mark,
-          .aatech-brand-wordmark,
-          .aatech-brand-mark > :global(img),
-          .aatech-brand-wordmark > :global(div) {
+          .ehara-brand-mark,
+          .ehara-brand-wordmark,
+          .ehara-brand-mark > :global(img),
+          .ehara-brand-wordmark > :global(div) {
             animation: none;
           }
-          .aatech-brand-mark {
+          .ehara-brand-mark {
             transform: translateX(calc(-25vw - 165px));
             opacity: 0.95;
           }
-          .aatech-brand-wordmark {
+          .ehara-brand-wordmark {
             transform: translateX(calc(25vw + 165px));
             opacity: 0.7;
           }
@@ -173,14 +173,14 @@ export function AnimatedBrandBackdrop() {
 
         /* Tighter parking + smaller scale on phones. */
         @media (max-width: 768px) {
-          .aatech-brand-mark {
-            animation-name: aatech-mark-orbit-mobile;
+          .ehara-brand-mark {
+            animation-name: ehara-mark-orbit-mobile;
           }
-          .aatech-brand-wordmark {
-            animation-name: aatech-wordmark-orbit-mobile;
+          .ehara-brand-wordmark {
+            animation-name: ehara-wordmark-orbit-mobile;
           }
         }
-        @keyframes aatech-mark-orbit-mobile {
+        @keyframes ehara-mark-orbit-mobile {
           0%   { transform: translateX(0)     scale(0.92); opacity: 0; }
           8%   { transform: translateX(0)     scale(0.94); opacity: 0.5; }
           28%  { transform: translateX(-30vw) scale(1);    opacity: 0.85; }
@@ -188,7 +188,7 @@ export function AnimatedBrandBackdrop() {
           88%  { transform: translateX(0)     scale(0.94); opacity: 0.5; }
           100% { transform: translateX(0)     scale(0.92); opacity: 0; }
         }
-        @keyframes aatech-wordmark-orbit-mobile {
+        @keyframes ehara-wordmark-orbit-mobile {
           0%   { transform: translateX(0)     scale(0.92); opacity: 0; }
           8%   { transform: translateX(0)     scale(0.94); opacity: 0.30; }
           28%  { transform: translateX(22vw)  scale(1);    opacity: 0.55; }

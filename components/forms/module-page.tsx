@@ -20,16 +20,17 @@ import { ModuleList } from "./module-list";
 /** Per-module decision wording + headline field. */
 const MODULE_UI: Record<ModuleKey, { grantLabel: string; approvedLabel: string; primaryKey: string }> = {
   reimbursement: { grantLabel: "Approve", approvedLabel: "Approved", primaryKey: "expense_for" },
-  reference: { grantLabel: "Mark Actioned", approvedLabel: "Actioned", primaryKey: "reference_name" },
-  breakthrough: { grantLabel: "Acknowledge", approvedLabel: "Acknowledged", primaryKey: "participant_first_name" },
+  incentive: { grantLabel: "Approve", approvedLabel: "Approved", primaryKey: "title" },
 };
 
 interface Props {
   module: ModuleKey;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+  /** Which workspace nav to show in the header (keeps workspaces separate). */
+  workspace?: "wms" | "employees";
 }
 
-export async function ModulePage({ module, searchParams }: Props) {
+export async function ModulePage({ module, searchParams, workspace = "wms" }: Props) {
   const me = await requireUser();
   const sp = await searchParams;
   const view = (Array.isArray(sp.view) ? sp.view[0] : sp.view) === "archived" ? "archived" : "active";
@@ -51,7 +52,7 @@ export async function ModulePage({ module, searchParams }: Props) {
 
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace={workspace} />
       <main className="mx-auto max-w-[900px] px-8 max-md:px-4 pt-8 pb-16">
         <header className="mb-6 flex items-end justify-between gap-3 flex-wrap">
           <div>

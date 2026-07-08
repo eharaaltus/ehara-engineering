@@ -158,7 +158,7 @@ export default function TermsPage() {
       <h2>12 · Contact</h2>
       <p>
         Questions, concerns, or notices under these terms can go to{" "}
-        <a href="mailto:danyalsayyed.altuscorp@gmail.com">danyalsayyed.altuscorp@gmail.com</a>.
+        <a href="mailto:ehara.altus@gmail.com">ehara.altus@gmail.com</a>.
       </p>
     </LegalShell>
   );

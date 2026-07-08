@@ -200,7 +200,7 @@ export default function PrivacyPage() {
       </p>
       <p>
         If you spot a security issue, please write to{" "}
-        <a href="mailto:danyalsayyed.altuscorp@gmail.com">danyalsayyed.altuscorp@gmail.com</a>{" "}
+        <a href="mailto:ehara.altus@gmail.com">ehara.altus@gmail.com</a>{" "}
         before disclosing it publicly. We will reply within 72 hours.
       </p>
 
@@ -215,7 +215,7 @@ export default function PrivacyPage() {
       <h2>12 · Contact</h2>
       <p>
         Privacy questions:{" "}
-        <a href="mailto:danyalsayyed.altuscorp@gmail.com">danyalsayyed.altuscorp@gmail.com</a>.
+        <a href="mailto:ehara.altus@gmail.com">ehara.altus@gmail.com</a>.
         Operational data requests (export your row, deactivate your account,
         correct a record): your Ehara Engineering administrator.
       </p>

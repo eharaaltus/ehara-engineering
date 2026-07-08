@@ -367,53 +367,34 @@ export type OverdueBucketId = (typeof OUTSTANDING_OVERDUE_BUCKETS)[number]["id"]
 // Seed roster values (admin-editable after seeding). Updated for iter-2 to
 // match the source sheet's master lists. BSU is intentionally dropped from the
 // fresh-seed product list (it stays in the DB for any already-imported rows).
+// Seed defaults for the Outstanding (receivables) rosters — the initial values
+// the optional `seed:outstanding-rosters` script inserts. Every list is
+// admin-editable at runtime via /admin/outstanding-* and /admin/clients.
+// Rebranded for Ehara Engineering (2026-07); confirm/adjust to your real billing
+// entities, receivable categories, banks and collection owners.
 export const SEED_RESPONSIBLES = [
-  "Anand Singh",
-  "Dhanashree Solkar",
-  "Jeevan Bharambe",
-  "Kiran Bhosale",
-  "Manan Vasa",
-  "Mishtie Kanani",
-  "Rohan Choudhary",
-  "Ruchita Ambre",
-  "Rutvisha Mehta",
-  "Sanket Thorat",
-  "Satish Sonawane",
-  "Siddesh Walve",
+  "Chintan Gada",
+  "Sachin Dhumale",
+  "Abhijeet Wagh",
+  "Abhijit Nimbare",
+  "Aayush Patil",
 ] as const;
 export const SEED_ENTITIES = [
-  "A A Tech",
-  "Unleashed",
-  "Cash",
-  "Khushboo",
-  "MJV HUF",
-  "JSV HUF",
-  "Dharav Enterprises",
-  "Colour Graphics",
-  "Smita Raut",
-  "Sunil Raut",
+  "Ehara Engineering",
 ] as const;
 export const SEED_PRODUCTS = [
-  "BSS",
-  "Billing",
-  "Commission",
-  "Consulting",
-  "PS",
-  "Rent",
-  "Retainer",
+  "Machined Components",
+  "Sheet Metal Parts",
+  "Sub-Assemblies",
+  "Tooling",
+  "Development / NPD",
+  "Job Work",
 ] as const;
 export const SEED_PAYMENT_MODES = [
-  "Kotak - A A Tech",
-  "Pay U",
-  "Jodo",
+  "Bank Transfer",
+  "NEFT/RTGS",
+  "Cheque",
   "Cash",
-  "Kotak - Unleashed",
-  "Kotak - Khushboo",
-  "Kotak - MJV HUF",
-  "Kotak - JSV HUF",
-  "Gpay - JSV HUF",
-  "Gpay - MJV",
-  "Gpay - CMV",
+  "UPI",
   "PDC",
-  "Barter",
 ] as const;

@@ -23,13 +23,13 @@ import { normalizeName } from "../lib/validators/employee";
 async function sendResetPasswordEmail(args: { email: string; resetLink: string }) {
   const key = process.env.RESEND_API_KEY;
   if (!key) return { id: null, error: "RESEND_API_KEY not set" };
-  const from = process.env.RESEND_FROM_EMAIL || "A A Tech Dashboard <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM_EMAIL || "Ehara Engineering Dashboard <onboarding@resend.dev>";
   try {
     const { data, error } = await new Resend(key).emails.send({
       from,
       to: args.email,
-      subject: "Reset your A A Tech password",
-      html: `<p>Welcome to A A Tech Dashboard. Set your password here:</p><p><a href="${args.resetLink}">${args.resetLink}</a></p>`,
+      subject: "Reset your Ehara Engineering password",
+      html: `<p>Welcome to Ehara Engineering Dashboard. Set your password here:</p><p><a href="${args.resetLink}">${args.resetLink}</a></p>`,
     });
     if (error) return { id: null, error: error.message };
     return { id: data?.id ?? null, error: null };

@@ -174,15 +174,22 @@ export const DEFAULT_PI_META: PiMeta = {
   freightNote: "Extra to your a/c",
 };
 
-/** Company / seller details on the Proforma Invoice (edit here if they change). */
+/**
+ * Company / seller details printed on every Proforma Invoice + quotation.
+ * ⚠️ ACTION REQUIRED — these are Ehara Engineering placeholders. Replace every
+ * "<…>" with Ehara's REAL registered details (legal name, address, GST, PAN,
+ * bank) before issuing any customer PI. Wrong GST/PAN/bank on an invoice is a
+ * legal/financial problem, so this is intentionally left blank rather than
+ * guessed. (Previously held AA Tech / Anant Avinya Technologies' details.)
+ */
 export const COMPANY = {
-  name: "ANANT AVINYA TECHNOLOGIES LLP.",
-  address: ["A-299, S Central Road, MIDC Industrial Area,", "Near Antony Motors, Mahape,", "Navi Mumbai 400701, India"],
-  email: "sales@aatech.co.in",
-  web: "www.aatech.co.in",
-  gstNo: "27ACEFA9263B1ZJ",
-  panNo: "ACEFA9263B",
-  bank: { name: "HDFC Bank Ltd, Sion (East) Branch, Mumbai", acNo: "99995544554455", ifsc: "HDFC0000163", micr: "400240030" },
+  name: "Ehara Engineering",
+  address: ["<Ehara Engineering — address line 1>", "<address line 2>", "<City, State PIN, India>"],
+  email: "<sales email>",
+  web: "<website>",
+  gstNo: "<Ehara GST No>",
+  panNo: "<Ehara PAN>",
+  bank: { name: "<Bank name & branch>", acNo: "<A/C No>", ifsc: "<IFSC>", micr: "<MICR>" },
 };
 
 export interface PiLine {

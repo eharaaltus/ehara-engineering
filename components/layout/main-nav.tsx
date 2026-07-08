@@ -68,6 +68,14 @@ export function MainNav({ activeTasks, isAdmin, variant }: Props) {
         active={pathname.startsWith("/npd")}
         variant={variant}
       />
+      {/* Outstanding — receivables / collections tracker. */}
+      <MainNavPill
+        href={"/outstanding" as Route}
+        label="Outstanding"
+        Icon={IndianRupee}
+        active={pathname.startsWith("/outstanding")}
+        variant={variant}
+      />
       {/* Projects / Production / Masters / Attendance removed from the top nav —
           they're reached via the portal workspaces now. */}
     </nav>

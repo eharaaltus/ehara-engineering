@@ -15,11 +15,13 @@ export default async function EmployeesHubPage() {
       subtitle="Attendance, leave, salary & the team roster."
       from="#14245c"
       to="#024a7d"
+      isAdmin={me.isAdmin}
       options={[
         { label: "Attendance", desc: "Daily attendance, check-in & check-out.", href: "/attendance", icon: "attendance" },
         { label: "Leave", desc: "Apply for and track leave requests.", href: "/attendance/leave", icon: "leave" },
-        { label: "Salary", desc: "Payroll, salary slips & compensation.", href: "/salary", icon: "wallet" },
+        { label: "Salary", desc: "Payroll, salary slips & compensation.", href: "/salary", icon: "wallet", adminOnly: true },
         { label: "Reimbursement", desc: "Submit & track expense claims.", href: "/reimbursement", icon: "receipt" },
+        { label: "Incentives", desc: "Claim performance incentives & track payout.", href: "/incentive", icon: "award" },
       ]}
     />
   );

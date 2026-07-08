@@ -71,9 +71,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         />
       </div>
 
-      {/* Faint Altus Corp watermark, fixed behind all app content */}
+      {/* Faint Ehara Engineering watermark, fixed behind all app content */}
       <img
-        src="/altus-corp-logo.png"
+        src="/logo-mark.png"
         alt=""
         aria-hidden
         draggable={false}

@@ -20,7 +20,7 @@ export default async function UserManualPage() {
 
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace="manual" />
       <main className="relative mx-auto max-w-[1200px] px-8 pb-20 pt-8 max-md:px-4">
         <PageHero
           eyebrow="Help"

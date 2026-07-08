@@ -11,17 +11,17 @@ describe("iter2 enums", () => {
   });
   it("installment states include due_soon", () => { expect(INSTALLMENT_STATES).toContain("due_soon"); });
   it("frequencies", () => { expect(SUBSCRIPTION_FREQUENCIES).toEqual(["10_days","15_days","30_days","weekly"]); });
-  it("responsibles = 12 names", () => {
-    expect(SEED_RESPONSIBLES).toHaveLength(12);
-    expect(SEED_RESPONSIBLES).toContain("Manan Vasa");
-    expect(SEED_RESPONSIBLES).toContain("Siddesh Walve");
+  it("responsibles seeded with Ehara staff", () => {
+    expect(SEED_RESPONSIBLES.length).toBeGreaterThan(0);
+    expect(SEED_RESPONSIBLES).toContain("Chintan Gada");
+    expect(SEED_RESPONSIBLES).toContain("Sachin Dhumale");
   });
-  it("rosters updated", () => {
-    expect(SEED_PRODUCTS).toContain("Billing");
-    expect(SEED_PRODUCTS).toContain("Retainer");
+  it("rosters rebranded for Ehara", () => {
+    expect(SEED_PRODUCTS).toContain("Tooling");
+    expect(SEED_PRODUCTS).toContain("Job Work");
     expect(SEED_PRODUCTS).not.toContain("BSU");
-    expect(SEED_ENTITIES).toContain("Dharav Enterprises");
-    expect(SEED_PAYMENT_MODES).toContain("Kotak - A A Tech");
-    expect(SEED_PAYMENT_MODES).toContain("Barter");
+    expect(SEED_ENTITIES).toContain("Ehara Engineering");
+    expect(SEED_PAYMENT_MODES).toContain("Bank Transfer");
+    expect(SEED_PAYMENT_MODES).toContain("PDC");
   });
 });

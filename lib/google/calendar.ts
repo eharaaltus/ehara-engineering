@@ -148,7 +148,7 @@ function toGoogleRecurrence(rule: string, allDay: boolean): string[] {
   return [`RRULE:${fixed}`];
 }
 
-const APP_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://wms.mananvasa.com").replace(/\/+$/, "");
+const APP_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://ehara-engineering.vercel.app").replace(/\/+$/, "");
 
 /** Build the Calendar API event body from a task. */
 export function taskToEvent(task: CalendarTask): Record<string, unknown> {

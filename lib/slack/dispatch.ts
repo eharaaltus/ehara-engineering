@@ -59,7 +59,7 @@ export async function sendSlackDigest(
   });
   if (!uid) return "skip";
   const SITE =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://aa-tech-dashboard.vercel.app";
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://ehara-engineering.vercel.app";
   const blocks = [
     {
       type: "header",

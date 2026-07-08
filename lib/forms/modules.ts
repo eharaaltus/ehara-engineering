@@ -10,13 +10,13 @@ import type { FormFieldDef } from "./field-types";
  * has its own native attendance/leave system.
  */
 
-export type ModuleKey = "reimbursement" | "reference" | "breakthrough";
+export type ModuleKey = "reimbursement" | "incentive";
 
-export const MODULE_KEYS: ModuleKey[] = ["reimbursement", "reference", "breakthrough"];
+export const MODULE_KEYS: ModuleKey[] = ["reimbursement", "incentive"];
 
 export interface ModuleDef {
   key: ModuleKey;
-  /** Route segment, e.g. /reimbursements. */
+  /** Route segment, e.g. /reimbursement. */
   path: string;
   title: string;
   subtitle: string;
@@ -30,7 +30,7 @@ export interface ModuleDef {
 
 /* Admin manual-field option lists (verbatim from the spec). */
 
-const PAID_THROUGH = ["98207 GPay", "Cash", "Bank Transfer"];
+const PAID_THROUGH = ["Cash", "Bank Transfer", "UPI", "Cheque"];
 
 const EXPENSE_HEAD = [
   "Conveyance",
@@ -39,76 +39,28 @@ const EXPENSE_HEAD = [
   "Repairs & Maintenance",
   "Staff Welfare",
   "Workshop Expenses",
+  "Freight & Transport",
+  "Tooling & Consumables",
   "Cell Phone Recharge",
-  "Manan Sir Personal",
   "Suspense",
   "Other",
 ];
 
-const TALLY_ENTITY = [
-  "Ehara Engineering",
-  "Colour Graphics",
-  "Dharav",
-  "JSV HUF",
-  "Khushboo Shah",
-  "MJV HUF",
-  "Unleashed",
-];
-
-const DESIGNATION = [
-  "CEO",
-  "Director",
-  "Partner",
-  "Proprietor",
-  "Founder",
-  "MD",
-  "Employee",
-  "Committee Mem",
-];
-
-const BUSINESS_CATEGORY = [
-  "Agent",
-  "B2B Trader",
-  "B2C Trader",
-  "Corporate",
-  "Distributor",
-  "ECommerce",
-  "Individual Business",
-  "Freelancer",
-  "MSME",
-  "Professional",
-  "Service Provider",
-  "SME",
-  "Start Up",
-  "Trade Association",
-  "Developer",
-  "Retail",
-  "Wholesale",
-  "Manufacturer",
-];
-
-const PROPOSED_SOLUTION = [
-  "2 Day Workshop",
-  "Collaboration",
-  "BSS",
-  "Consulting",
-  "Group Consulting",
-  "Inhouse PSO",
-  "Key Note",
-  "PS",
-  "Being Arjun",
-];
+// Admin-editable at runtime; seed with Ehara's billing entity. Add more GST
+// entities from the form editor as needed.
+const TALLY_ENTITY = ["Ehara Engineering"];
 
 /**
- * Sentinel option used by the admin "Assign Salesperson" field — the page
- * swaps it for the live list of Sales-department employees at render time.
+ * Sentinel option used by an admin "Assign Salesperson" field — the page swaps
+ * it for the live list of Sales-department employees at render time. Generic:
+ * add a field with this key to any form via the editor to auto-populate it.
  */
 export const SALESPERSON_FIELD_KEY = "assign_salesperson";
 
 export const MODULES: Record<ModuleKey, ModuleDef> = {
   reimbursement: {
     key: "reimbursement",
-    path: "/reimbursements",
+    path: "/reimbursement",
     title: "Reimbursements",
     subtitle: "Raise an expense for reimbursement and track its approval.",
     buttonLabel: "Request Reimbursement",
@@ -117,7 +69,6 @@ export const MODULES: Record<ModuleKey, ModuleDef> = {
       { key: "expense_for", label: "Expense For", type: "text", required: true, placeholder: "What was this spend for?" },
       { key: "amount", label: "Amount ₹", type: "number", required: true, placeholder: "e.g. 1500" },
       { key: "expense_date", label: "Expense Date", type: "date", required: true },
-      { key: "product", label: "Product Name", type: "product" },
       { key: "bill_url", label: "Bill / Receipt Link", type: "url", placeholder: "Drive / photo link" },
       { key: "notes", label: "Notes", type: "textarea" },
     ],
@@ -130,45 +81,41 @@ export const MODULES: Record<ModuleKey, ModuleDef> = {
       { key: "tally_entity", label: "Tally Entity", type: "select", options: TALLY_ENTITY },
     ],
   },
-  reference: {
-    key: "reference",
-    path: "/record-reference",
-    title: "Record Reference",
-    subtitle: "Log a business reference for the sales team to action.",
-    buttonLabel: "Record Reference",
-    icon: "Contact",
+  incentive: {
+    key: "incentive",
+    path: "/incentive",
+    title: "Incentives",
+    subtitle: "Claim a performance incentive and track its approval & payout.",
+    buttonLabel: "Request Incentive",
+    icon: "Award",
+    // Ehara defaults — all fields are admin-editable at runtime via the form
+    // editor, so adjust these to your actual incentive scheme without code.
     requestFields: [
-      { key: "reference_name", label: "Reference Name", type: "text", required: true },
-      { key: "organisation", label: "Organisation", type: "text" },
-      { key: "cell", label: "Cell No", type: "tel", placeholder: "+91 XXXXX XXXXX" },
-      { key: "email", label: "Email", type: "email" },
-      { key: "product", label: "Product Name", type: "product" },
+      {
+        key: "incentive_type",
+        label: "Incentive Type",
+        type: "select",
+        required: true,
+        options: [
+          "Production Target",
+          "Quality / Zero-Defect",
+          "On-Time Delivery",
+          "Cost Saving",
+          "Employee Referral",
+          "Other",
+        ],
+      },
+      { key: "title", label: "What is this incentive for?", type: "text", required: true, placeholder: "Short description" },
+      { key: "period", label: "Period / Month", type: "text", placeholder: "e.g. Jul 2026" },
+      { key: "claimed_amount", label: "Claimed Amount ₹", type: "number", placeholder: "e.g. 2500" },
+      { key: "evidence_url", label: "Supporting Link", type: "url", placeholder: "Drive / photo link" },
       { key: "notes", label: "Notes", type: "textarea" },
     ],
     adminFields: [
-      { key: SALESPERSON_FIELD_KEY, label: "Assign Salesperson", type: "select", required: true, options: [] },
-      { key: "designation", label: "Designation", type: "select", options: DESIGNATION },
-      { key: "business_category", label: "Business Category", type: "select", options: BUSINESS_CATEGORY },
-      { key: "nature_of_business", label: "Nature of Business", type: "text" },
-      { key: "proposed_solution", label: "Proposed Solution", type: "select", options: PROPOSED_SOLUTION },
-    ],
-  },
-  breakthrough: {
-    key: "breakthrough",
-    path: "/participant-breakthrough",
-    title: "Participant Breakthrough",
-    subtitle: "Capture a participant's breakthrough moment.",
-    buttonLabel: "Add",
-    icon: "Sparkles",
-    requestFields: [
-      { key: "participant_first_name", label: "Participant First Name", type: "text", required: true },
-      { key: "participant_last_name", label: "Participant Last Name", type: "text" },
-      { key: "workshop", label: "Workshop Name", type: "text" },
-      { key: "batch_no", label: "Batch No", type: "text" },
-      { key: "product", label: "Product Name", type: "product" },
-      { key: "breakthrough", label: "Breakthrough", type: "textarea", required: true, placeholder: "What shifted for them?" },
-    ],
-    adminFields: [
+      { key: "approved", label: "Approved", type: "select", required: true, options: ["Yes", "No"] },
+      { key: "approved_amount", label: "Approved Amount ₹", type: "number" },
+      { key: "payment_date", label: "Payment Date", type: "date" },
+      { key: "paid_through", label: "Paid Through", type: "select", options: ["Bank Transfer", "Cash", "UPI", "With Salary"] },
       { key: "admin_notes", label: "Notes", type: "text" },
     ],
   },

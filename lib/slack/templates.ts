@@ -75,7 +75,7 @@ export interface SlackCtx {
   statusLabel?: string;
 }
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aa-tech-dashboard.vercel.app";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ehara-engineering.vercel.app";
 
 export function buildSlackBlocks(
   kind: NotificationKind,

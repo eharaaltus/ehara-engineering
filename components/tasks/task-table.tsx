@@ -180,7 +180,7 @@ const COLUMN_LABELS: Record<string, string> = {
   ageDays: "Age",
 };
 
-const COLUMN_VIS_STORAGE_KEY = "aatech.tasks.columnVisibility.v1";
+const COLUMN_VIS_STORAGE_KEY = "ehara.tasks.columnVisibility.v1";
 
 type StatusLabels = Record<TaskStatus, string>;
 type StatusTones = Record<TaskStatus, StatusColorToken>;

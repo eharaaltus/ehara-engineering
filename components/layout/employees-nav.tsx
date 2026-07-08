@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, CalendarMinus, Wallet, Receipt } from "lucide-react";
+import { CalendarCheck, CalendarMinus, Wallet, Receipt, Award } from "lucide-react";
 import type { Route } from "next";
 import { MainNavPill } from "./main-nav-pill";
 
@@ -10,7 +10,7 @@ import { MainNavPill } from "./main-nav-pill";
  * Salary / Reimbursement pages show THEIR own tabs instead of the WMS pills,
  * keeping the workspaces separate. Reuses MainNavPill for identical styling.
  */
-export function EmployeesNav({ variant }: { variant?: "drawer" }) {
+export function EmployeesNav({ variant, isAdmin = false }: { variant?: "drawer"; isAdmin?: boolean }) {
   const pathname = usePathname();
 
   return (
@@ -36,18 +36,29 @@ export function EmployeesNav({ variant }: { variant?: "drawer" }) {
         active={pathname.startsWith("/attendance/leave")}
         variant={variant}
       />
-      <MainNavPill
-        href={"/salary" as Route}
-        label="Salary"
-        Icon={Wallet}
-        active={pathname.startsWith("/salary")}
-        variant={variant}
-      />
+      {/* Salary is admin-only (payroll) — hide the pill from non-admins so it
+          doesn't bounce them via requireAdmin(). */}
+      {isAdmin && (
+        <MainNavPill
+          href={"/salary" as Route}
+          label="Salary"
+          Icon={Wallet}
+          active={pathname.startsWith("/salary")}
+          variant={variant}
+        />
+      )}
       <MainNavPill
         href={"/reimbursement" as Route}
         label="Reimbursement"
         Icon={Receipt}
         active={pathname.startsWith("/reimbursement")}
+        variant={variant}
+      />
+      <MainNavPill
+        href={"/incentive" as Route}
+        label="Incentives"
+        Icon={Award}
+        active={pathname.startsWith("/incentive")}
         variant={variant}
       />
     </nav>

@@ -14,16 +14,16 @@ import { AdminPill } from "@/components/header/admin-pill";
 export async function MobileMenuServer({
   isAdmin,
   workspace = "wms",
-}: { isAdmin: boolean; workspace?: "wms" | "employees" }) {
+}: { isAdmin: boolean; workspace?: "wms" | "employees" | "manual" }) {
   return (
     <MobileMenu>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           {workspace === "employees" ? (
-            <EmployeesNav variant="drawer" />
-          ) : (
+            <EmployeesNav variant="drawer" isAdmin={isAdmin} />
+          ) : workspace === "wms" ? (
             <MainNavServer variant="drawer" />
-          )}
+          ) : null}
         </div>
         <div className="border-t pt-4 flex flex-col gap-3" style={{ borderColor: "var(--color-hairline)" }}>
           <div className="px-2">

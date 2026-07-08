@@ -22,10 +22,9 @@ describe("outstanding enums", () => {
     expect(OUTSTANDING_CONTRACT_STATUS).toEqual(["active", "closed", "written_off"]);
   });
   it("seed rosters non-empty", () => {
-    // iter-2 dropped BSU from the fresh-seed product list (see
-    // outstanding-enums-iter2.test.ts for the updated rosters).
-    expect(SEED_ENTITIES).toContain("A A Tech");
-    expect(SEED_PRODUCTS).toContain("BSS");
+    // Rebranded for Ehara Engineering — admin-editable defaults.
+    expect(SEED_ENTITIES).toContain("Ehara Engineering");
+    expect(SEED_PRODUCTS).toContain("Machined Components");
     expect(SEED_PAYMENT_MODES).toContain("Cash");
   });
   it("installment states", () => {

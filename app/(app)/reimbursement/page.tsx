@@ -1,20 +1,11 @@
-import { DashboardHeader } from "@/components/layout/header";
-import { DashboardFooter } from "@/components/layout/footer";
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { Receipt } from "lucide-react";
+import { ModulePage } from "@/components/forms/module-page";
 
 export const dynamic = "force-dynamic";
 
-export default function ReimbursementPage() {
-  return (
-    <>
-      <DashboardHeader generatedAt={new Date()} workspace="employees" />
-      <ComingSoon
-        title="Reimbursement"
-        description="Submit and track expense reimbursement claims — coming soon."
-        Icon={Receipt}
-      />
-      <DashboardFooter />
-    </>
-  );
+interface PageProps {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default function ReimbursementPage({ searchParams }: PageProps) {
+  return <ModulePage module="reimbursement" searchParams={searchParams} workspace="employees" />;
 }

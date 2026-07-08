@@ -90,5 +90,5 @@ export function richExportFilename(
   date: Date = new Date(),
 ): string {
   const iso = date.toISOString().slice(0, 10);
-  return `aa-tech-tasks-${iso}.${ext}`;
+  return `ehara-tasks-${iso}.${ext}`;
 }

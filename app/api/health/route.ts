@@ -90,7 +90,7 @@ export async function GET() {
   return Response.json(
     {
       ok: !hardDown,
-      service: "aa-tech-dashboard",
+      service: "ehara-engineering-wms",
       ts: new Date().toISOString(),
       checks,
     },

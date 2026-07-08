@@ -15,7 +15,7 @@ const TEMPLATE_HEADERS = [
 const TEMPLATE_EXAMPLE = [
   "Acme Corp", "Onboarding", "Important", "100", "2026-06-20", "Yes", "Yes",
   "Ship v2 portal & train the client team", "0", "", "Kickoff is Monday",
-  "https://docs.example.com/plan", "ananya@aatech.com",
+  "https://docs.example.com/plan", "name@company.com",
 ];
 
 function csvCell(v: string): string {

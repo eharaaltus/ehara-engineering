@@ -8,10 +8,11 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
   RadialBarChart, RadialBar, PolarAngleAxis,
 } from "recharts";
-import { X, ArrowUpRight, Check } from "lucide-react";
+import { X, ArrowUpRight, Check, SlidersHorizontal, RotateCcw } from "lucide-react";
 import { Donut } from "@/components/charts/donut";
-import { fmtDate, addDaysISO } from "@/lib/npd/status";
-import { computePortfolio, type NpdPortfolio, type EnrichedActivity, type NpdProductLite, type NpdTaskLite } from "@/lib/npd/dashboard";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { fmtDate, addDaysISO, computeHealth, NPD_STAGES, STAGE_SHORT } from "@/lib/npd/status";
+import { computePortfolio, enrichActivities, type NpdPortfolio, type EnrichedActivity, type NpdProductLite, type NpdTaskLite } from "@/lib/npd/dashboard";
 
 const TABS = [
   { key: "overview", label: "Overview" },
@@ -19,9 +20,19 @@ const TABS = [
   { key: "departments", label: "Departments" },
   { key: "efficiency", label: "Efficiency" },
   { key: "products", label: "Products" },
+  { key: "customers", label: "Customers" },
   { key: "timeline", label: "Timeline" },
   { key: "schedule", label: "Schedule" },
 ] as const;
+
+// Status filter value → which computed states it includes.
+const STATUS_STATES: Record<string, string[]> = {
+  Overdue: ["Overdue"],
+  Pending: ["OnTrack", "DueToday"],
+  Done: ["Done"],
+  "On Hold": ["OnHold"],
+  "N/A": ["NotApplicable"],
+};
 type TabKey = (typeof TABS)[number]["key"];
 
 const HEALTH_COLOR = { Good: "#16a34a", "At Risk": "#d97706", Critical: "#e11d2f" } as const;
@@ -36,15 +47,57 @@ export function NpdDashboardClient({ products, tasks }: { products: NpdProductLi
   const [tab, setTab] = React.useState<TabKey>("overview");
   const [drill, setDrill] = React.useState<Drill | null>(null);
   const [selected, setSelected] = React.useState<Set<string>>(() => new Set(products.map((p) => p.id)));
+  // Filters
+  const [fCustomer, setFCustomer] = React.useState<string[]>([]);
+  const [fDoer, setFDoer] = React.useState<string[]>([]);
+  const [fStage, setFStage] = React.useState<string[]>([]);
+  const [fStatus, setFStatus] = React.useState<string[]>([]);
+  const [fHealth, setFHealth] = React.useState<string[]>([]);
 
-  const filteredProducts = React.useMemo(() => products.filter((p) => selected.has(p.id)), [products, selected]);
-  const filteredTasks = React.useMemo(() => tasks.filter((t) => selected.has(t.productId)), [tasks, selected]);
+  // Filter option lists (from the raw data).
+  const customerOpts = React.useMemo(() => uniq(products.map((p) => p.customer)).map((v) => ({ value: v, label: v })), [products]);
+  const doerOpts = React.useMemo(() => uniq(tasks.map((t) => t.doerName ?? "Unassigned")).map((v) => ({ value: v, label: v })), [tasks]);
+  const stageOpts = NPD_STAGES.map((s) => ({ value: s, label: STAGE_SHORT[s] ?? s }));
+  const statusOpts = ["Overdue", "Pending", "Done", "On Hold", "N/A"].map((v) => ({ value: v, label: v }));
+  const healthOpts = ["Good", "At Risk", "Critical"].map((v) => ({ value: v, label: v }));
+
+  // Base health per product (from ALL its tasks) — drives the Health filter.
+  const healthById = React.useMemo(() => {
+    const byP = new Map<string, NpdTaskLite[]>();
+    for (const t of tasks) { const a = byP.get(t.productId) ?? []; a.push(t); byP.set(t.productId, a); }
+    const m = new Map<string, string>();
+    for (const pr of products) m.set(pr.id, computeHealth((byP.get(pr.id) ?? []).map((t) => ({ plannedDate: t.plannedDate, resolution: t.resolution, completionDate: t.completionDate, applicability: t.applicability }))).health);
+    return m;
+  }, [products, tasks]);
+  // Enriched state per task key — drives the Status filter.
+  const stateByKey = React.useMemo(() => {
+    const m = new Map<string, string>();
+    for (const a of enrichActivities(products, tasks)) m.set(`${a.productId}::${a.code}`, a.state);
+    return m;
+  }, [products, tasks]);
+
+  const filteredProducts = React.useMemo(() => products.filter((pr) =>
+    selected.has(pr.id)
+    && (fCustomer.length === 0 || (pr.customer != null && fCustomer.includes(pr.customer)))
+    && (fHealth.length === 0 || fHealth.includes(healthById.get(pr.id) ?? "Good"))
+  ), [products, selected, fCustomer, fHealth, healthById]);
+  const fpIds = React.useMemo(() => new Set(filteredProducts.map((x) => x.id)), [filteredProducts]);
+  const statusStates = React.useMemo(() => new Set(fStatus.flatMap((s) => STATUS_STATES[s] ?? [])), [fStatus]);
+  const filteredTasks = React.useMemo(() => tasks.filter((t) =>
+    fpIds.has(t.productId)
+    && (fDoer.length === 0 || fDoer.includes(t.doerName ?? "Unassigned"))
+    && (fStage.length === 0 || fStage.includes(t.stage))
+    && (fStatus.length === 0 || statusStates.has(stateByKey.get(`${t.productId}::${t.code}`) ?? ""))
+  ), [tasks, fpIds, fDoer, fStage, fStatus, statusStates, stateByKey]);
+
   const p = React.useMemo(() => computePortfolio(filteredProducts, filteredTasks), [filteredProducts, filteredTasks]);
   const acts = p.activities;
 
   const openDrill = (title: string, rows: EnrichedActivity[], subtitle?: string) => setDrill({ title, subtitle, rows });
   const toggle = (id: string) => setSelected((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const allOn = selected.size === products.length;
+  const filterCount = fCustomer.length + fDoer.length + fStage.length + fStatus.length + fHealth.length;
+  const clearFilters = () => { setFCustomer([]); setFDoer([]); setFStage([]); setFStatus([]); setFHealth([]); };
 
   return (
     <div>
@@ -67,6 +120,24 @@ export function NpdDashboardClient({ products, tasks }: { products: NpdProductLi
         </div>
       )}
 
+      {/* filter bar */}
+      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-hairline bg-surface-card p-2.5">
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-ink-subtle">
+          <SlidersHorizontal size={13} /> Filters
+        </span>
+        <MultiSelect options={customerOpts} selected={fCustomer} onChange={setFCustomer} placeholder="All Customers" className="min-w-[8rem] !text-[13px]" />
+        <MultiSelect options={doerOpts} selected={fDoer} onChange={setFDoer} placeholder="All Doers" className="min-w-[7rem] !text-[13px]" />
+        <MultiSelect options={stageOpts} selected={fStage} onChange={setFStage} placeholder="All Stages" className="min-w-[7rem] !text-[13px]" />
+        <MultiSelect options={statusOpts} selected={fStatus} onChange={setFStatus} placeholder="Any Status" className="min-w-[7rem] !text-[13px]" />
+        <MultiSelect options={healthOpts} selected={fHealth} onChange={setFHealth} placeholder="Any Health" className="min-w-[7rem] !text-[13px]" />
+        {filterCount > 0 && (
+          <button onClick={clearFilters} className="inline-flex items-center gap-1 rounded-lg border border-hairline px-2.5 py-1.5 text-[12px] font-bold text-ink-strong hover:border-[#e11d2f] hover:text-[#e11d2f]">
+            <RotateCcw size={12} /> Clear ({filterCount})
+          </button>
+        )}
+        <span className="ml-auto text-[12px] text-ink-subtle">{filteredProducts.length} product{filteredProducts.length === 1 ? "" : "s"} · {p.kpis.applicableActivities} activities</span>
+      </div>
+
       {/* tabs */}
       <div className="mb-5 flex gap-1 overflow-x-auto rounded-xl border border-hairline bg-surface-card p-1">
         {TABS.map((t) => (
@@ -83,6 +154,7 @@ export function NpdDashboardClient({ products, tasks }: { products: NpdProductLi
       {tab === "departments" && <Departments p={p} openDrill={openDrill} acts={acts} />}
       {tab === "efficiency" && <Efficiency p={p} openDrill={openDrill} acts={acts} />}
       {tab === "products" && <Products p={p} openDrill={openDrill} acts={acts} />}
+      {tab === "customers" && <Customers p={p} openDrill={openDrill} acts={acts} />}
       {tab === "timeline" && <Timeline products={filteredProducts} acts={acts} openDrill={openDrill} />}
       {tab === "schedule" && <Schedule p={p} openDrill={openDrill} acts={acts} />}
 
@@ -315,6 +387,57 @@ function Products({ p, openDrill, acts }: ViewProps) {
   );
 }
 
+/* ─────────────────────────── CUSTOMERS ─────────────────────────── */
+function Customers({ p, openDrill, acts }: ViewProps) {
+  const rows = p.customerBreakdown;
+  if (rows.length === 0) return <Card><p className="py-10 text-center text-ink-subtle">No customers to show.</p></Card>;
+  const max = Math.max(1, ...rows.map((r) => r.delayDays));
+  return (
+    <div className="space-y-4">
+      <Card title="Delay-days by customer">
+        <ResponsiveContainer width="100%" height={Math.max(160, rows.length * 46)}>
+          <BarChart layout="vertical" data={rows.map((r) => ({ name: r.customer, delay: r.delayDays }))} margin={{ top: 4, right: 24, bottom: 4, left: 40 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(15,23,42,0.06)" horizontal={false} />
+            <XAxis type="number" tick={{ fontSize: 11, fill: "#64748b" }} allowDecimals={false} />
+            <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} width={110} />
+            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(30,64,175,0.05)" }} formatter={(v: any) => [`${v} delay-days`, "Delay"]} />
+            <Bar dataKey="delay" radius={[0, 4, 4, 0]} cursor="pointer"
+              onClick={(d: any) => openDrill(`${d.name} · overdue`, acts.filter((a) => a.state === "Overdue" && a.partName && p.perProduct.some((pp) => pp.customer === d.name && pp.id === a.productId)))}>
+              {rows.map((_, i) => <Cell key={i} fill={i === 0 ? "#e11d2f" : "#1e40af"} />)}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </Card>
+      <Card title="Per-customer summary">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-[13.5px]">
+            <thead><tr className="border-b border-hairline text-[11px] uppercase tracking-wide text-ink-subtle">
+              <th className="py-2 pr-2 font-bold">Customer</th><th className="py-2 pr-2 font-bold text-right">Products</th>
+              <th className="py-2 pr-2 font-bold text-right">Activities</th><th className="py-2 pr-2 font-bold text-right">Done</th>
+              <th className="py-2 pr-2 font-bold text-right">Overdue</th><th className="py-2 pr-2 font-bold text-right">Delay-days</th>
+              <th className="py-2 pr-2 font-bold text-right">%</th><th className="py-2 font-bold">Progress</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.customer} className="border-b border-hairline/50 last:border-0">
+                  <td className="py-2.5 pr-2 font-semibold text-ink-strong">{r.customer}</td>
+                  <td className="py-2.5 pr-2 text-right text-ink-muted">{r.products}</td>
+                  <td className="py-2.5 pr-2 text-right text-ink-muted">{r.applicable}</td>
+                  <td className="py-2.5 pr-2 text-right font-bold text-[#16a34a]">{r.done}</td>
+                  <td className="py-2.5 pr-2 text-right font-bold" style={{ color: r.overdue ? "#e11d2f" : "inherit" }}>{r.overdue}</td>
+                  <td className="py-2.5 pr-2 text-right font-black" style={{ color: r.delayDays ? "#d97706" : "inherit" }}>{r.delayDays}</td>
+                  <td className="py-2.5 pr-2 text-right font-black text-ink-strong">{r.pctDone}%</td>
+                  <td className="py-2.5 w-40"><div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-track,#e2e8f0)]"><div className="h-full rounded-full" style={{ width: `${r.pctDone}%`, background: r.overdue ? "#e11d2f" : "#16a34a" }} /></div></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 /* ─────────────────────────── TIMELINE (Gantt) ─────────────────────────── */
 function Timeline({ products, acts, openDrill }: { products: NpdProductLite[]; acts: EnrichedActivity[]; openDrill: ViewProps["openDrill"] }) {
   const dated = acts.filter((a) => a.plannedDate);
@@ -416,6 +539,9 @@ function Schedule({ p, openDrill, acts }: ViewProps) {
 interface ViewProps { p: NpdPortfolio; openDrill: (title: string, rows: EnrichedActivity[], subtitle?: string) => void; acts: EnrichedActivity[]; }
 const tooltipStyle = { borderRadius: 12, border: "1px solid rgba(15,23,42,0.1)", fontSize: 12 } as const;
 
+function uniq(vals: (string | null | undefined)[]): string[] {
+  return [...new Set(vals.map((v) => v?.trim()).filter((v): v is string => !!v))].sort();
+}
 function daysBetween(fromISO: string, toISO: string): number {
   return Math.round((new Date(toISO + "T00:00:00Z").getTime() - new Date(fromISO + "T00:00:00Z").getTime()) / 86_400_000);
 }

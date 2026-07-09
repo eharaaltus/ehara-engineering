@@ -117,6 +117,17 @@ export interface ProductProgress {
   bottleneckStage: string | null;
 }
 
+/** Per-customer rollup (an OEM manufacturer tracks NPD by customer). */
+export interface CustomerBreakdown {
+  customer: string;
+  products: number;
+  applicable: number;
+  done: number;
+  overdue: number;
+  delayDays: number;
+  pctDone: number;
+}
+
 export interface UpcomingActivity {
   productId: string;
   partName: string;
@@ -150,6 +161,7 @@ export interface NpdPortfolio {
   stageBottleneck: StageBottleneck[]; // sorted by delayDays desc
   perProduct: ProductProgress[]; // sorted by delayDays desc
   doerWorkload: DoerWorkload[];
+  customerBreakdown: CustomerBreakdown[]; // sorted by delayDays desc
   delaySource: { internal: number; customer: number; internalDelayDays: number; customerDelayDays: number };
   /** Completion efficiency — for DONE activities that have both a planned +
    *  completion date: finished early / on the day / late. */
@@ -270,6 +282,22 @@ export function computePortfolio(
   }
   const doerWorkload = [...doerMap.values()].sort((a, b) => b.total - a.total);
 
+  // ── Per-customer breakdown ────────────────────────────────────────────────
+  const custMap = new Map<string, CustomerBreakdown>();
+  for (const pp of perProduct) {
+    const customer = pp.customer?.trim() || "—";
+    const c = custMap.get(customer) ?? { customer, products: 0, applicable: 0, done: 0, overdue: 0, delayDays: 0, pctDone: 0 };
+    c.products++;
+    c.applicable += pp.total;
+    c.done += pp.done;
+    c.overdue += pp.overdue;
+    c.delayDays += pp.delayDays;
+    custMap.set(customer, c);
+  }
+  const customerBreakdown = [...custMap.values()]
+    .map((c) => ({ ...c, pctDone: c.applicable ? Math.round((c.done / c.applicable) * 100) : 0 }))
+    .sort((a, b) => b.delayDays - a.delayDays);
+
   // ── Internal vs Customer delay split (D4) ─────────────────────────────────
   let internal = 0, customer = 0, internalDelayDays = 0, customerDelayDays = 0;
   for (const a of acts) {
@@ -340,7 +368,7 @@ export function computePortfolio(
       { label: "Pending", value: pendingActivities, color: "#1e40af" },
       { label: "On Hold", value: onHoldActivities, color: "#94a3b8" },
     ],
-    stageCompletion, stageBottleneck, perProduct, doerWorkload,
+    stageCompletion, stageBottleneck, perProduct, doerWorkload, customerBreakdown,
     delaySource: { internal, customer, internalDelayDays, customerDelayDays },
     efficiency,
     upcoming, overdue, activities: acts,

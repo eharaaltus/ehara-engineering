@@ -1,7 +1,7 @@
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
-import { PageHero } from "@/components/layout/page-hero";
-import { BookOpen, PlayCircle } from "lucide-react";
+import { ManualHero } from "./manual-hero";
+import { PlayCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -22,12 +22,7 @@ export default async function UserManualPage() {
     <>
       <DashboardHeader generatedAt={new Date()} workspace="manual" />
       <main className="relative mx-auto max-w-[1200px] px-8 pb-20 pt-8 max-md:px-4">
-        <PageHero
-          eyebrow="Help"
-          title="User Manual"
-          subtitle="Guides, walkthroughs, photos & videos for the Ehara Engineering WMS."
-          Icon={BookOpen}
-        />
+        <ManualHero />
 
         {!hasContent ? (
           <div className="mt-8 flex flex-col items-center justify-center rounded-[24px] border border-dashed border-slate-300 bg-white/60 px-6 py-20 text-center backdrop-blur">

@@ -10,12 +10,18 @@ const globalForDb = globalThis as unknown as {
   __pg?: ReturnType<typeof postgres>;
 };
 
+// Serverless (Vercel) vs persistent server. On Vercel each function invocation
+// is ephemeral: holding a big pool exhausts Supabase's connection limit, so we
+// hold ONE connection per warm instance and point DATABASE_URL at the
+// TRANSACTION pooler (:6543). A persistent self-hosted server keeps the larger
+// session-pooler pool (see note below).
+const isServerless = !!process.env.VERCEL;
+
 const client =
   globalForDb.__pg ??
   postgres(env.DATABASE_URL, {
-    // Harmless on the session pooler; also keeps us safe if DATABASE_URL is ever
-    // pointed at the transaction pooler (6543), where named prepared statements
-    // break. Session mode would allow prepares, but we don't rely on them.
+    // Harmless on the session pooler; also REQUIRED on the transaction pooler
+    // (6543), where named prepared statements break. We don't rely on prepares.
     prepare: false,
     // POOLER CHOICE — use the SESSION pooler (port 5432), not the transaction
     // pooler (6543). This app is a PERSISTENT server with its own connection
@@ -29,10 +35,10 @@ const client =
     // is the fix; keep DATABASE_URL on :5432.  (For a future serverless/Vercel
     // deploy, revisit: there 6543 with a small `max` is the right trade-off.)
     //
-    // `max` is connections held to the pooler. 10 gives headroom for the
-    // dashboard's ~15-query Promise.all without starving under a couple of
-    // concurrent renders.
-    max: 10,
+    // `max` is connections held to the pooler. On Vercel serverless: 1 per warm
+    // instance (many instances × big pool = exhaustion). On a persistent server:
+    // 10 gives headroom for the dashboard's ~15-query Promise.all.
+    max: isServerless ? 1 : 10,
     // Recycle idle sockets fast (10s): a pooled socket idle for more than a few
     // seconds can be dropped by the pooler/network while postgres-js still
     // believes it's live, and the next query on that dead socket hangs until TCP
@@ -46,9 +52,9 @@ const client =
     keep_alive: 20,
   });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForDb.__pg = client;
-}
+// Always cache on globalThis: prevents HMR connection leaks in dev AND lets a
+// warm Vercel serverless instance reuse the single connection across requests.
+globalForDb.__pg = client;
 
 // Phase 0.1 — opt-in slow-query logger. Enable in any environment by
 // setting SLOW_QUERY_MS (e.g. "300"). Disabled by default so production

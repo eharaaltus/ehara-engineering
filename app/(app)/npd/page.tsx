@@ -2,7 +2,7 @@ import { asc } from "drizzle-orm";
 import { Factory } from "lucide-react";
 import { db } from "@/lib/db";
 import { npdProducts, npdTasks, employees } from "@/db/schema";
-import { requireUser } from "@/lib/auth/current";
+import { requireAdmin } from "@/lib/auth/current";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
 import { NpdWorkspace, type WorkspaceProduct } from "@/components/npd/npd-workspace";
@@ -11,7 +11,7 @@ import type { NpdTaskLite } from "@/lib/npd/dashboard";
 export const dynamic = "force-dynamic";
 
 export default async function NpdPage() {
-  await requireUser();
+  await requireAdmin();
   const [products, tasks, emps] = await Promise.all([
     db.select().from(npdProducts).orderBy(asc(npdProducts.srNo)),
     db.select().from(npdTasks),
@@ -32,7 +32,7 @@ export default async function NpdPage() {
 
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace="npd" />
       <main className="mx-auto max-w-[1500px] px-6 max-md:px-4 pt-8 pb-16">
         <div className="mb-5">
           <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-subtle">New Product Development</div>

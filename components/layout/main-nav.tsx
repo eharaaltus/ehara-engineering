@@ -60,14 +60,7 @@ export function MainNav({ activeTasks, isAdmin, variant }: Props) {
           variant={variant}
         />
       )}
-      {/* Ehara NPD — New Product Development stage tracker */}
-      <MainNavPill
-        href={"/npd" as Route}
-        label="NPD"
-        Icon={Factory}
-        active={pathname.startsWith("/npd")}
-        variant={variant}
-      />
+      {/* NPD moved to its own admin-only workspace (portal → NPD). */}
       {/* Outstanding — receivables / collections tracker. */}
       <MainNavPill
         href={"/outstanding" as Route}

@@ -26,7 +26,7 @@ import { getCurrentEmployee } from "@/lib/auth/current";
 export async function DashboardHeader({
   generatedAt: _generatedAt,
   workspace = "wms",
-}: { generatedAt: Date; workspace?: "wms" | "employees" | "manual" }) {
+}: { generatedAt: Date; workspace?: "wms" | "employees" | "manual" | "npd" }) {
   const me = await getCurrentEmployee();
   const isAdmin = me?.isAdmin ?? false;
   const isEmployees = workspace === "employees";

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { eq, asc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { npdProducts, npdTasks, employees } from "@/db/schema";
-import { requireUser } from "@/lib/auth/current";
+import { requireAdmin } from "@/lib/auth/current";
 import { computeHealth, computeNpd, NPD_STAGES, computePredictedEnd, fmtDate } from "@/lib/npd/status";
 import { NpdTaskRow } from "@/components/npd/npd-task-row";
 import { DashboardHeader } from "@/components/layout/header";
@@ -13,7 +13,7 @@ import { DashboardFooter } from "@/components/layout/footer";
 export const dynamic = "force-dynamic";
 
 export default async function NpdDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireUser();
+  await requireAdmin();
   const { id } = await params;
 
   const [prod] = await db.select().from(npdProducts).where(eq(npdProducts.id, id));
@@ -36,7 +36,7 @@ export default async function NpdDetailPage({ params }: { params: Promise<{ id: 
 
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace="npd" />
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>

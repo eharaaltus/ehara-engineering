@@ -14,7 +14,7 @@ import { AdminPill } from "@/components/header/admin-pill";
 export async function MobileMenuServer({
   isAdmin,
   workspace = "wms",
-}: { isAdmin: boolean; workspace?: "wms" | "employees" | "manual" }) {
+}: { isAdmin: boolean; workspace?: "wms" | "employees" | "manual" | "npd" }) {
   return (
     <MobileMenu>
       <div className="flex flex-col gap-6">

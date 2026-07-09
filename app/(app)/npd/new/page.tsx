@@ -3,7 +3,7 @@ import type { Route } from "next";
 import { asc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { employees } from "@/db/schema";
-import { requireUser } from "@/lib/auth/current";
+import { requireAdmin } from "@/lib/auth/current";
 import { createNpdProduct } from "../actions";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
@@ -11,7 +11,7 @@ import { DashboardFooter } from "@/components/layout/footer";
 export const dynamic = "force-dynamic";
 
 export default async function NewNpdProductPage() {
-  await requireUser();
+  await requireAdmin();
   const emps = await db
     .select({ id: employees.id, name: employees.name })
     .from(employees)
@@ -23,7 +23,7 @@ export default async function NewNpdProductPage() {
 
   return (
     <>
-      <DashboardHeader generatedAt={new Date()} />
+      <DashboardHeader generatedAt={new Date()} workspace="npd" />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
       <div className="mb-6 flex items-end justify-between gap-3">
         <div>

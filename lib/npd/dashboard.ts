@@ -30,6 +30,8 @@ export interface NpdTaskLite {
   completionDate: string | null;
   applicability: string;
   doerName: string | null;
+  supervisorName?: string | null;
+  reasons?: string | null;
 }
 
 export interface NpdProductLite {
@@ -39,6 +41,7 @@ export interface NpdProductLite {
   partNo: string | null;
   customer: string | null;
   status: string;
+  startDate?: string | null;
   targetEndDate: string | null;
 }
 
@@ -52,6 +55,7 @@ export interface EnrichedActivity {
   code: string;
   activityPlan: string;
   doerName: string | null;
+  reasons: string | null;
   plannedDate: string | null;
   completionDate: string | null;
   applicability: string;
@@ -195,6 +199,7 @@ export function enrichActivities(
       code: t.code,
       activityPlan: t.activityPlan,
       doerName: t.doerName,
+      reasons: t.reasons ?? null,
       plannedDate: t.plannedDate,
       completionDate: t.completionDate,
       applicability: t.applicability,
@@ -379,6 +384,149 @@ function daysBetweenISO(fromISO: string, toISO: string): number {
   const a = new Date(fromISO + "T00:00:00Z").getTime();
   const b = new Date(toISO + "T00:00:00Z").getTime();
   return Math.round((b - a) / 86_400_000);
+}
+
+/* ══════════════ D1 + D2 — single-product deep-dive ══════════════ */
+export interface StageDelayRow {
+  stage: string; short: string; delayDays: number; delayed: number; applicable: number;
+  worstCode: string | null; worstDelay: number; risk: "Critical" | "At Risk" | "Clear";
+}
+export interface ProductDetail {
+  id: string; srNo: number | null; partName: string; partNo: string | null; customer: string | null;
+  doerName: string | null; supervisorName: string | null;
+  startDate: string | null; targetEndDate: string | null; predictedEnd: string | null;
+  status: "Completed" | "Delayed" | "On Track" | "Not Started";
+  currentStage: string | null;
+  kpis: { total: number; done: number; overdue: number; onTrack: number; onHold: number; pending: number; pctDone: number; delayDays: number };
+  keyInsight: string | null;
+  stageDelays: StageDelayRow[];   // all stages, sorted by delay desc
+  activities: EnrichedActivity[]; // full list, plan order
+  statusMix: { onTimeEarly: number; lateCompleted: number; overdue: number; pending: number };
+  onHold: EnrichedActivity[];
+  remaining: number;              // applicable not-done
+}
+
+export function computeProductDetail(
+  productId: string,
+  products: NpdProductLite[],
+  tasks: NpdTaskLite[],
+): ProductDetail | null {
+  const product = products.find((p) => p.id === productId);
+  if (!product) return null;
+  const pa = enrichActivities([product], tasks.filter((t) => t.productId === productId));
+  const app = pa.filter((a) => a.state !== "NotApplicable");
+  const done = app.filter((a) => a.state === "Done").length;
+  const overdue = app.filter((a) => a.state === "Overdue").length;
+  const onHold = app.filter((a) => a.state === "OnHold").length;
+  const onTrack = app.filter((a) => a.state === "OnTrack" || a.state === "DueToday").length;
+  const total = app.length;
+  const pending = Math.max(0, total - done - overdue - onHold);
+  const delayDays = pa.reduce((s, a) => s + a.delayDays, 0);
+
+  // Per-stage delay rows.
+  const stageDelays: StageDelayRow[] = NPD_STAGES.map((stage) => {
+    const sa = pa.filter((a) => a.stage === stage && a.state !== "NotApplicable");
+    const dd = sa.reduce((s, a) => s + a.delayDays, 0);
+    const delayed = sa.filter((a) => a.state === "Overdue").length;
+    let worstCode: string | null = null, worstDelay = 0;
+    for (const a of sa) if (a.delayDays > worstDelay) { worstDelay = a.delayDays; worstCode = a.code; }
+    const risk: StageDelayRow["risk"] = delayed >= 3 || dd >= 60 ? "Critical" : delayed > 0 ? "At Risk" : "Clear";
+    return { stage, short: STAGE_SHORT[stage] ?? stage, delayDays: dd, delayed, applicable: sa.length, worstCode, worstDelay, risk };
+  }).sort((a, b) => b.delayDays - a.delayDays);
+
+  const top = stageDelays.find((s) => s.delayDays > 0);
+  const keyInsight = top ? `${top.short} caused ${top.delayDays} delay-days (#1 bottleneck) — ${top.delayed}/${top.applicable} activities overdue.` : null;
+
+  // Current stage = first stage (plan order) with an open applicable activity.
+  let currentStage: string | null = null;
+  for (const stage of NPD_STAGES) {
+    const sa = pa.filter((a) => a.stage === stage && a.state !== "NotApplicable" && a.state !== "Done");
+    if (sa.length) { currentStage = STAGE_SHORT[stage] ?? stage; break; }
+  }
+
+  // Status mix (completion vs planned for done; overdue / pending otherwise).
+  let onTimeEarly = 0, lateCompleted = 0;
+  for (const a of app) {
+    if (a.state !== "Done") continue;
+    if (a.completionDate && a.plannedDate) {
+      daysBetweenISO(a.plannedDate, a.completionDate) > 0 ? lateCompleted++ : onTimeEarly++;
+    } else onTimeEarly++;
+  }
+
+  const status: ProductDetail["status"] = product.status === "Completed" || (total > 0 && done === total) ? "Completed"
+    : overdue > 0 ? "Delayed" : done === 0 ? "Not Started" : "On Track";
+
+  return {
+    id: product.id, srNo: product.srNo ?? null, partName: product.partName, partNo: product.partNo, customer: product.customer,
+    doerName: pa.find((a) => a.doerName)?.doerName ?? null,
+    supervisorName: tasks.find((t) => t.productId === productId && t.supervisorName)?.supervisorName ?? null,
+    startDate: product.startDate ?? null, targetEndDate: product.targetEndDate,
+    predictedEnd: computePredictedEnd(pa.map((a) => ({ plannedDate: a.plannedDate, resolution: a.resolution, completionDate: a.completionDate, applicability: a.applicability })), product.targetEndDate),
+    status, currentStage,
+    kpis: { total, done, overdue, onTrack, onHold, pending, pctDone: total ? Math.round((done / total) * 100) : 0, delayDays },
+    keyInsight, stageDelays, activities: pa,
+    statusMix: { onTimeEarly, lateCompleted, overdue, pending: onTrack },
+    onHold: pa.filter((a) => a.state === "OnHold"),
+    remaining: total - done,
+  };
+}
+
+/* ══════════════ D4 — single-department (stage) deep-dive ══════════════ */
+export interface DepartmentDetail {
+  stage: string; short: string;
+  kpis: { total: number; onTime: number; early: number; lateCompleted: number; overdueNow: number; pending: number; done: number };
+  efficiency: number;
+  internalDelays: number; customerDelays: number;
+  riskLevel: "Healthy" | "At Risk" | "Critical";
+  primaryCause: "Internal" | "Customer" | "Balanced" | "—";
+  byProduct: { productId: string; partName: string; tasks: number; done: number; overdue: number; pending: number; status: string }[];
+  topCritical: EnrichedActivity[];
+  onHold: EnrichedActivity[];
+}
+
+export function computeDepartmentDetail(
+  stage: string,
+  products: NpdProductLite[],
+  tasks: NpdTaskLite[],
+): DepartmentDetail {
+  const acts = enrichActivities(products, tasks).filter((a) => a.stage === stage && a.state !== "NotApplicable");
+  const done = acts.filter((a) => a.state === "Done");
+  const overdueNow = acts.filter((a) => a.state === "Overdue").length;
+  const onHold = acts.filter((a) => a.state === "OnHold");
+  const pending = acts.filter((a) => a.state === "OnTrack" || a.state === "DueToday").length;
+  let onTime = 0, early = 0, lateCompleted = 0;
+  for (const a of done) {
+    if (a.completionDate && a.plannedDate) {
+      const v = daysBetweenISO(a.plannedDate, a.completionDate);
+      if (v < 0) early++; else if (v === 0) onTime++; else lateCompleted++;
+    } else onTime++;
+  }
+  const scored = onTime + early + lateCompleted;
+  const efficiency = scored ? Math.round(((onTime + early) / scored) * 100) : 0;
+  let internalDelays = 0, customerDelays = 0;
+  for (const a of acts) if (a.state === "Overdue") (a.customer ? customerDelays++ : internalDelays++);
+  const riskLevel: DepartmentDetail["riskLevel"] = overdueNow >= 3 ? "Critical" : overdueNow > 0 ? "At Risk" : "Healthy";
+  const primaryCause = internalDelays === 0 && customerDelays === 0 ? "—"
+    : internalDelays > customerDelays ? "Internal" : customerDelays > internalDelays ? "Customer" : "Balanced";
+
+  const byMap = new Map<string, DepartmentDetail["byProduct"][number]>();
+  const nameById = new Map(products.map((p) => [p.id, p.partName]));
+  for (const a of acts) {
+    const r = byMap.get(a.productId) ?? { productId: a.productId, partName: nameById.get(a.productId) ?? "—", tasks: 0, done: 0, overdue: 0, pending: 0, status: "On Track" };
+    r.tasks++;
+    if (a.state === "Done") r.done++; else if (a.state === "Overdue") r.overdue++; else r.pending++;
+    byMap.set(a.productId, r);
+  }
+  const byProduct = [...byMap.values()].map((r) => ({ ...r, status: r.overdue > 0 ? "Delayed" : r.done === r.tasks ? "Complete" : "On Track" }));
+
+  return {
+    stage, short: STAGE_SHORT[stage] ?? stage,
+    kpis: { total: acts.length, onTime, early, lateCompleted, overdueNow, pending, done: done.length },
+    efficiency, internalDelays, customerDelays, riskLevel, primaryCause,
+    byProduct,
+    topCritical: acts.filter((a) => a.state === "Overdue").sort((a, b) => b.delayDays - a.delayDays),
+    onHold,
+  };
 }
 
 function toComputeInput(a: EnrichedActivity) {

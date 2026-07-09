@@ -28,6 +28,7 @@ export default async function NpdPage() {
     productId: t.productId, stage: t.stage, code: t.code, activityPlan: t.activityPlan,
     plannedDate: t.plannedDate, resolution: t.resolution, completionDate: t.completionDate,
     applicability: t.applicability, doerName: t.doerId ? nameById.get(t.doerId) ?? null : null,
+    supervisorName: t.supervisorId ? nameById.get(t.supervisorId) ?? null : null, reasons: t.reasons,
   }));
 
   return (

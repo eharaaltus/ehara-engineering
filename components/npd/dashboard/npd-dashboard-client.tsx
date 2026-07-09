@@ -12,12 +12,14 @@ import { X, ArrowUpRight, Check, SlidersHorizontal, RotateCcw } from "lucide-rea
 import { Donut } from "@/components/charts/donut";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { fmtDate, addDaysISO, computeHealth, NPD_STAGES, STAGE_SHORT } from "@/lib/npd/status";
-import { computePortfolio, enrichActivities, type NpdPortfolio, type EnrichedActivity, type NpdProductLite, type NpdTaskLite } from "@/lib/npd/dashboard";
+import { computePortfolio, enrichActivities, computeProductDetail, computeDepartmentDetail, type NpdPortfolio, type EnrichedActivity, type NpdProductLite, type NpdTaskLite, type ProductDetail, type DepartmentDetail } from "@/lib/npd/dashboard";
 
 const TABS = [
   { key: "overview", label: "Overview" },
+  { key: "product", label: "Product ▸" },
   { key: "delays", label: "Delays" },
   { key: "departments", label: "Departments" },
+  { key: "deptfocus", label: "Dept Focus ▸" },
   { key: "efficiency", label: "Efficiency" },
   { key: "products", label: "Products" },
   { key: "customers", label: "Customers" },
@@ -99,6 +101,12 @@ export function NpdDashboardClient({ products, tasks }: { products: NpdProductLi
   const filterCount = fCustomer.length + fDoer.length + fStage.length + fStatus.length + fHealth.length;
   const clearFilters = () => { setFCustomer([]); setFDoer([]); setFStage([]); setFStatus([]); setFHealth([]); };
 
+  // Deep-dive selectors (D1/D2 per-product, D4 per-department).
+  const [productSel, setProductSel] = React.useState<string>(products[0]?.id ?? "");
+  const [deptSel, setDeptSel] = React.useState<string>(NPD_STAGES[0]);
+  const productDetail = React.useMemo(() => computeProductDetail(productSel || products[0]?.id || "", products, tasks), [productSel, products, tasks]);
+  const deptDetail = React.useMemo(() => computeDepartmentDetail(deptSel, filteredProducts, filteredTasks), [deptSel, filteredProducts, filteredTasks]);
+
   return (
     <div>
       {/* product toggles */}
@@ -150,8 +158,14 @@ export function NpdDashboardClient({ products, tasks }: { products: NpdProductLi
       </div>
 
       {tab === "overview" && <Overview p={p} openDrill={openDrill} acts={acts} />}
+      {tab === "product" && (
+        <ProductDeepDive detail={productDetail} products={products} sel={productSel || products[0]?.id || ""} onSel={setProductSel} openDrill={openDrill} />
+      )}
       {tab === "delays" && <Delays p={p} openDrill={openDrill} acts={acts} />}
       {tab === "departments" && <Departments p={p} openDrill={openDrill} acts={acts} />}
+      {tab === "deptfocus" && (
+        <DeptDeepDive detail={deptDetail} sel={deptSel} onSel={setDeptSel} openDrill={openDrill} />
+      )}
       {tab === "efficiency" && <Efficiency p={p} openDrill={openDrill} acts={acts} />}
       {tab === "products" && <Products p={p} openDrill={openDrill} acts={acts} />}
       {tab === "customers" && <Customers p={p} openDrill={openDrill} acts={acts} />}
@@ -536,6 +550,172 @@ function Schedule({ p, openDrill, acts }: ViewProps) {
 }
 
 /* ─────────────────────────── shared ─────────────────────────── */
+/* ─────────────────────────── PRODUCT DEEP-DIVE (D1 + D2) ─────────────────────────── */
+function ProductDeepDive({ detail, products, sel, onSel, openDrill }: {
+  detail: ProductDetail | null; products: NpdProductLite[]; sel: string; onSel: (id: string) => void;
+  openDrill: (title: string, rows: EnrichedActivity[], subtitle?: string) => void;
+}) {
+  const statusColor = { Completed: "#16a34a", Delayed: "#e11d2f", "On Track": "#1e40af", "Not Started": "#94a3b8" } as const;
+  return (
+    <div className="space-y-4">
+      {/* selector */}
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-hairline bg-surface-card p-2.5">
+        <span className="text-[11px] font-bold uppercase tracking-wide text-ink-subtle">Product</span>
+        <select value={sel} onChange={(e) => onSel(e.target.value)} className="rounded-lg border border-hairline bg-white px-3 py-1.5 text-[14px] font-semibold text-ink-strong outline-none focus:border-[#1e40af]">
+          {products.map((pr) => <option key={pr.id} value={pr.id}>#{pr.srNo ?? "?"} · {pr.partName}{pr.customer ? ` (${pr.customer})` : ""}</option>)}
+        </select>
+      </div>
+      {!detail ? <Card><p className="py-10 text-center text-ink-subtle">No product selected.</p></Card> : (
+        <>
+          {/* header strip */}
+          <div className="grid gap-3 sm:grid-cols-4">
+            <Info label="Current Stage" value={detail.currentStage ?? (detail.status === "Completed" ? "Completed" : "—")} />
+            <Info label="Doer / Supervisor" value={`${detail.doerName ?? "—"}${detail.supervisorName ? ` / ${detail.supervisorName}` : ""}`} />
+            <Info label="Target · Predicted" value={`${fmtDate(detail.targetEndDate)} · ${fmtDate(detail.predictedEnd)}`} tone={detail.predictedEnd && detail.targetEndDate && detail.predictedEnd > detail.targetEndDate ? "#e11d2f" : "#16a34a"} />
+            <div className="rounded-xl border border-hairline bg-surface-card px-3 py-2.5 text-center">
+              <div className="text-[10.5px] font-bold uppercase tracking-wide text-ink-subtle">Status</div>
+              <span className="mt-1 inline-flex rounded-full px-3 py-0.5 text-[13px] font-black text-white" style={{ background: statusColor[detail.status] }}>{detail.status}</span>
+            </div>
+          </div>
+          {/* KPIs */}
+          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-7">
+            <Mini label="Total" value={detail.kpis.total} />
+            <Mini label="Done" value={detail.kpis.done} color="#16a34a" />
+            <Mini label="Overdue" value={detail.kpis.overdue} color={detail.kpis.overdue ? "#e11d2f" : undefined} />
+            <Mini label="On Track" value={detail.kpis.onTrack} color="#1e40af" />
+            <Mini label="On Hold" value={detail.kpis.onHold} />
+            <Mini label="% Done" value={`${detail.kpis.pctDone}%`} />
+            <Mini label="Delay-days" value={detail.kpis.delayDays} color={detail.kpis.delayDays ? "#d97706" : undefined} />
+          </div>
+          {detail.keyInsight && (
+            <div className="rounded-xl border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-[14px] font-semibold text-[#991b1b]">Key insight: {detail.keyInsight}</div>
+          )}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {/* stage delay comparison */}
+            <Card title="Stage delay comparison">
+              <div className="space-y-2 py-1">
+                {detail.stageDelays.map((s) => (
+                  <button key={s.stage} onClick={() => openDrill(`${s.short} · overdue`, detail.activities.filter((a) => a.stage === s.stage && a.state === "Overdue"))}
+                    className="flex w-full items-center gap-2 text-left">
+                    <span className="w-20 shrink-0 text-[12px] font-semibold text-ink-strong">{s.short}</span>
+                    <div className="h-3 flex-1 overflow-hidden rounded-full bg-[var(--color-surface-track,#e2e8f0)]">
+                      <div className="h-full rounded-full" style={{ width: `${Math.min(100, (s.delayDays / Math.max(1, detail.stageDelays[0]?.delayDays || 1)) * 100)}%`, background: RISK_COLOR[s.risk] }} />
+                    </div>
+                    <span className="w-16 text-right text-[12px] font-black" style={{ color: s.delayDays ? "#d97706" : "var(--color-ink-subtle)" }}>{s.delayDays}d</span>
+                    <span className="w-10 text-right text-[11px] text-ink-subtle">{s.delayed}/{s.applicable}</span>
+                  </button>
+                ))}
+              </div>
+            </Card>
+            {/* status mix */}
+            <Card title="Status mix">
+              <DonutBlock center={`${detail.kpis.total}`} centerLabel="activities" slices={[
+                { label: "On-time / Early", value: detail.statusMix.onTimeEarly, color: "#16a34a" },
+                { label: "Late completed", value: detail.statusMix.lateCompleted, color: "#d97706" },
+                { label: "Overdue", value: detail.statusMix.overdue, color: "#e11d2f" },
+                { label: "Pending", value: detail.statusMix.pending, color: "#1e40af" },
+              ]} />
+              <p className="mt-2 rounded-lg bg-[var(--color-surface-track,#f1f5f9)] px-3 py-2 text-[12.5px] text-ink-muted">
+                If all delays resolved today → complete by <b className="text-ink-strong">{fmtDate(detail.predictedEnd)}</b> · {detail.remaining} remaining · {detail.kpis.delayDays} total delay-days.
+              </p>
+            </Card>
+          </div>
+          {/* full activity list */}
+          <Card title={`All ${detail.activities.length} activities`}>
+            <ActivityList rows={detail.activities} />
+          </Card>
+          {/* on-hold reasons */}
+          {detail.onHold.length > 0 && (
+            <Card title={`On hold (${detail.onHold.length}) — reasons`}>
+              <table className="w-full text-left text-[13px]">
+                <thead><tr className="border-b border-hairline text-[11px] uppercase tracking-wide text-ink-subtle"><th className="py-2 pr-2 font-bold">Stage</th><th className="py-2 pr-2 font-bold">Activity</th><th className="py-2 font-bold">Reason</th></tr></thead>
+                <tbody>{detail.onHold.map((a, i) => (
+                  <tr key={i} className="border-b border-hairline/50 last:border-0"><td className="py-2 pr-2 text-ink-subtle">{a.stageShort}</td><td className="py-2 pr-2 text-ink-muted"><b>{a.code}</b> {a.activityPlan}</td><td className="py-2 text-ink-muted">{a.reasons ?? "—"}</td></tr>
+                ))}</tbody>
+              </table>
+            </Card>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ─────────────────────────── DEPARTMENT DEEP-DIVE (D4) ─────────────────────────── */
+function DeptDeepDive({ detail, sel, onSel, openDrill }: {
+  detail: DepartmentDetail; sel: string; onSel: (s: string) => void;
+  openDrill: (title: string, rows: EnrichedActivity[], subtitle?: string) => void;
+}) {
+  const riskColor = { Healthy: "#16a34a", "At Risk": "#d97706", Critical: "#e11d2f" } as const;
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-hairline bg-surface-card p-2.5">
+        <span className="text-[11px] font-bold uppercase tracking-wide text-ink-subtle">Department</span>
+        <select value={sel} onChange={(e) => onSel(e.target.value)} className="rounded-lg border border-hairline bg-white px-3 py-1.5 text-[14px] font-semibold text-ink-strong outline-none focus:border-[#1e40af]">
+          {NPD_STAGES.map((s) => <option key={s} value={s}>{STAGE_SHORT[s] ?? s}</option>)}
+        </select>
+      </div>
+      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-7">
+        <Mini label="Total" value={detail.kpis.total} />
+        <Mini label="On Time" value={detail.kpis.onTime} color="#16a34a" />
+        <Mini label="Early" value={detail.kpis.early} color="#16a34a" />
+        <Mini label="Late Done" value={detail.kpis.lateCompleted} color={detail.kpis.lateCompleted ? "#d97706" : undefined} />
+        <Mini label="Overdue" value={detail.kpis.overdueNow} color={detail.kpis.overdueNow ? "#e11d2f" : undefined} />
+        <Mini label="Pending" value={detail.kpis.pending} />
+        <Mini label="Efficiency" value={`${detail.efficiency}%`} />
+      </div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card title="Efficiency"><Gauge value={detail.efficiency} /></Card>
+        <Card title="Delay source">
+          <div className="flex items-center justify-around gap-3 py-4">
+            <ClickStat label="Internal" value={detail.internalDelays} sub="overdue" color="#e11d2f" onClick={() => openDrill(`${detail.short} · internal overdue`, detail.topCritical.filter((a) => !a.customer))} />
+            <ClickStat label="Customer" value={detail.customerDelays} sub="overdue" color="#1e40af" onClick={() => openDrill(`${detail.short} · customer overdue`, detail.topCritical.filter((a) => a.customer))} />
+          </div>
+          <p className="text-center text-[12.5px] text-ink-subtle">Primary cause: <b className="text-ink-strong">{detail.primaryCause}</b></p>
+        </Card>
+        <Card title="Risk">
+          <div className="flex h-full flex-col items-center justify-center py-6">
+            <span className="rounded-full px-4 py-1.5 text-[15px] font-black text-white" style={{ background: riskColor[detail.riskLevel] }}>{detail.riskLevel}</span>
+            <p className="mt-2 text-[12.5px] text-ink-subtle">{detail.kpis.overdueNow} overdue · {detail.kpis.pending} pending</p>
+          </div>
+        </Card>
+      </div>
+      <Card title="Performance by product">
+        {detail.byProduct.length === 0 ? <p className="py-6 text-center text-ink-subtle">No activities in this department.</p> : (
+          <table className="w-full text-left text-[13.5px]">
+            <thead><tr className="border-b border-hairline text-[11px] uppercase tracking-wide text-ink-subtle"><th className="py-2 pr-2 font-bold">Product</th><th className="py-2 pr-2 font-bold text-right">Tasks</th><th className="py-2 pr-2 font-bold text-right">Done</th><th className="py-2 pr-2 font-bold text-right">Overdue</th><th className="py-2 pr-2 font-bold text-right">Pending</th><th className="py-2 font-bold">Status</th></tr></thead>
+            <tbody>{detail.byProduct.map((r) => (
+              <tr key={r.productId} className="border-b border-hairline/50 last:border-0">
+                <td className="py-2.5 pr-2 font-semibold text-ink-strong">{r.partName}</td>
+                <td className="py-2.5 pr-2 text-right text-ink-muted">{r.tasks}</td>
+                <td className="py-2.5 pr-2 text-right font-bold text-[#16a34a]">{r.done}</td>
+                <td className="py-2.5 pr-2 text-right font-bold" style={{ color: r.overdue ? "#e11d2f" : "inherit" }}>{r.overdue}</td>
+                <td className="py-2.5 pr-2 text-right text-ink-muted">{r.pending}</td>
+                <td className="py-2.5"><span className="text-[12px] font-bold" style={{ color: r.status === "Delayed" ? "#e11d2f" : r.status === "Complete" ? "#16a34a" : "#1e40af" }}>{r.status}</span></td>
+              </tr>
+            ))}</tbody>
+          </table>
+        )}
+      </Card>
+      <Card title={`Critical activities in ${detail.short} (${detail.topCritical.length})`}>
+        <ActivityList rows={detail.topCritical} showProduct />
+      </Card>
+      {detail.onHold.length > 0 && (
+        <Card title={`On hold (${detail.onHold.length}) — reasons`}>
+          <ActivityList rows={detail.onHold} showProduct />
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function Info({ label, value, tone }: { label: string; value: string; tone?: string }) {
+  return <div className="rounded-xl border border-hairline bg-surface-card px-3 py-2.5"><div className="text-[10.5px] font-bold uppercase tracking-wide text-ink-subtle">{label}</div><div className="mt-0.5 truncate text-[14px] font-bold" style={{ color: tone ?? "var(--color-ink-strong)" }}>{value}</div></div>;
+}
+function Mini({ label, value, color }: { label: string; value: string | number; color?: string }) {
+  return <div className="rounded-xl border border-hairline bg-surface-card px-2 py-2 text-center"><div className="text-[19px] font-black leading-none" style={{ color: color ?? "var(--color-ink-strong)" }}>{value}</div><div className="mt-1 text-[10px] font-bold uppercase tracking-wide text-ink-subtle">{label}</div></div>;
+}
+
 interface ViewProps { p: NpdPortfolio; openDrill: (title: string, rows: EnrichedActivity[], subtitle?: string) => void; acts: EnrichedActivity[]; }
 const tooltipStyle = { borderRadius: 12, border: "1px solid rgba(15,23,42,0.1)", fontSize: 12 } as const;
 

@@ -62,7 +62,7 @@ export function NpdWorkspace({
   // Dashboard runs over non-archived products (its own toggles refine further).
   const dashProducts: NpdProductLite[] = products
     .filter((p) => !p.archived)
-    .map((p) => ({ id: p.id, srNo: p.srNo, partName: p.partName, partNo: p.partNo, customer: p.customer, status: p.status, targetEndDate: p.targetEndDate }));
+    .map((p) => ({ id: p.id, srNo: p.srNo, partName: p.partName, partNo: p.partNo, customer: p.customer, status: p.status, startDate: p.startDate, targetEndDate: p.targetEndDate }));
   const dashTasks = tasks.filter((t) => dashProducts.some((d) => d.id === t.productId));
 
   return (

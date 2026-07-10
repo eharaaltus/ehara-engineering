@@ -1,5 +1,5 @@
 {
-  "//region": "Functions MUST run in Mumbai (bom1), colocated with the Supabase ap-south-1 project — the default (iad1, Washington DC) adds ~1.4s of cross-continent latency to EVERY query and makes the dashboard crawl. NOTE: the `regions` key here is Pro/Enterprise-only and FAILS the build on Hobby, so set it in the Vercel dashboard instead: Settings -> Functions -> Function Region -> Asia Pacific -> Mumbai (bom1).",
+  "regions": ["bom1"],
   "crons": [
     { "path": "/api/cron/digest",                 "schedule": "30 4 * * *" },
     { "path": "/api/cron/materialize-recurring",  "schedule": "0 2 * * *" },

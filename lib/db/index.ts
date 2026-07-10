@@ -10,6 +10,16 @@ const globalForDb = globalThis as unknown as {
   __pg?: ReturnType<typeof postgres>;
 };
 
+// REGION — Vercel functions must run in Mumbai (bom1), colocated with the
+// Supabase ap-south-1 project. The Vercel default (iad1, Washington DC) puts
+// ~1.4s of cross-continent round trip on EVERY query, and the dashboard fires
+// ~15 of them, so it crawls. Pinned via `"regions": ["bom1"]` in vercel.json.
+// (vercel.json is schema-validated and rejects unknown keys — do NOT try to
+// document it there with a "//comment" key; that fails the deploy outright.)
+// Verify with: curl -I <site>/api/health | grep -i x-vercel-id
+//   bom1::bom1::…  = function ran in Mumbai (correct)
+//   bom1::iad1::…  = only the EDGE was Mumbai; the function still ran in DC.
+//
 // Serverless (Vercel) vs persistent server. On Vercel each function invocation
 // is ephemeral: holding a big pool exhausts Supabase's connection limit, so we
 // hold ONE connection per warm instance and point DATABASE_URL at the

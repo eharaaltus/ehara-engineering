@@ -1,4 +1,6 @@
 {
+  "//regions": "Run functions in Mumbai (bom1), colocated with the Supabase ap-south-1 project. The default (iad1, Washington DC) added ~1s of cross-continent latency to EVERY query, which timed out the dashboard's multi-query pages.",
+  "regions": ["bom1"],
   "crons": [
     { "path": "/api/cron/digest",                 "schedule": "30 4 * * *" },
     { "path": "/api/cron/materialize-recurring",  "schedule": "0 2 * * *" },

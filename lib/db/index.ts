@@ -35,10 +35,14 @@ const client =
     // is the fix; keep DATABASE_URL on :5432.  (For a future serverless/Vercel
     // deploy, revisit: there 6543 with a small `max` is the right trade-off.)
     //
-    // `max` is connections held to the pooler. On Vercel serverless: 1 per warm
-    // instance (many instances × big pool = exhaustion). On a persistent server:
-    // 10 gives headroom for the dashboard's ~15-query Promise.all.
-    max: isServerless ? 1 : 10,
+    // `max` is connections held to the pooler.
+    //   Serverless (Vercel): 5. A Vercel function handles ONE request at a time,
+    //   so 5 lets the dashboard's ~15-query Promise.all run 5-wide instead of
+    //   serialising (max:1 serialised them and blew the function timeout), while
+    //   staying small enough that many instances don't exhaust the transaction
+    //   pooler. Requires DATABASE_URL on the transaction pooler (:6543).
+    //   Persistent server: 10 (headroom for the same Promise.all).
+    max: isServerless ? 5 : 10,
     // Recycle idle sockets fast (10s): a pooled socket idle for more than a few
     // seconds can be dropped by the pooler/network while postgres-js still
     // believes it's live, and the next query on that dead socket hangs until TCP

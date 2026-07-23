@@ -2189,6 +2189,15 @@ export const npdProductStatusEnum = pgEnum("npd_product_status", [
   "Cancelled",
 ]);
 
+/** Which side made the most recent edit to a mirrored row. */
+export const npdSyncSourceEnum = pgEnum("npd_sync_source", ["app", "sheet"]);
+/** Which way a sync operation moved data. */
+export const npdSyncDirectionEnum = pgEnum("npd_sync_direction", [
+  "push", // app  → sheet
+  "pull", // sheet → app (full reconcile)
+  "hook", // sheet → app (single-row onEdit webhook)
+]);
+
 export const npdProducts = pgTable("npd_products", {
   id: uuid("id").primaryKey().defaultRandom(),
   srNo: integer("sr_no"),
@@ -2197,12 +2206,18 @@ export const npdProducts = pgTable("npd_products", {
   partNo: text("part_no"),
   startDate: date("start_date"),
   targetEndDate: date("target_end_date"),
+  /** The ORIGINAL committed target, frozen at creation. `targetEndDate` may be
+   *  re-planned; comparing the two is the product's schedule variance — the one
+   *  number a spreadsheet can never tell you, because re-planning overwrites
+   *  the promise you originally made to the customer. */
+  baselineEndDate: date("baseline_end_date"),
   defaultDoerId: uuid("default_doer_id").references(() => employees.id, { onDelete: "set null" }),
   defaultSupervisorId: uuid("default_supervisor_id").references(() => employees.id, { onDelete: "set null" }),
   status: npdProductStatusEnum("status").notNull().default("Active"),
   archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedSource: npdSyncSourceEnum("updated_source").notNull().default("app"),
 });
 
 export const npdTasks = pgTable(
@@ -2218,15 +2233,54 @@ export const npdTasks = pgTable(
     doerId: uuid("doer_id").references(() => employees.id, { onDelete: "set null" }),
     supervisorId: uuid("supervisor_id").references(() => employees.id, { onDelete: "set null" }),
     plannedDate: date("planned_date"),
+    /** The date this activity was ORIGINALLY planned for, frozen when the
+     *  product was created and never edited again. `plannedDate` is the live,
+     *  re-plannable commitment; the gap between the two is slip.
+     *
+     *  Without this column the tracker cannot see its most dangerous failure:
+     *  the plan that is never late because someone keeps pushing the date. Every
+     *  activity stays green, the product ships three months late, and no report
+     *  ever showed a problem. The Google Sheet has exactly this blind spot. */
+    baselineDate: date("baseline_date"),
     resolution: npdResolutionEnum("resolution").notNull().default("Open"),
     completionDate: date("completion_date"),
     drawingLink: text("drawing_link"),
     applicability: npdApplicabilityEnum("applicability").notNull().default("Applicable"),
     reasons: text("reasons"),
     sortOrder: integer("sort_order").notNull().default(0),
+    /** Last time this row changed, from EITHER side (app or Google Sheet). The
+     *  sheet↔app mirror resolves conflicts last-write-wins on this column, so a
+     *  row edited in the sheet at 10:05 beats an app edit from 10:04. */
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    /** Where the most recent edit came from — lets the push-back loop skip rows
+     *  that the sheet itself just told us about (prevents echo/ping-pong). */
+    updatedSource: npdSyncSourceEnum("updated_source").notNull().default("app"),
   },
   (t) => [index("npd_tasks_product_idx").on(t.productId)],
 );
 
+/** Audit trail for every Google-Sheet mirror operation, in both directions.
+ *  Surfaced on the NPD page as "Sheet synced 2 min ago · 74 rows" so the team
+ *  can see at a glance whether the mirror is healthy without opening logs. */
+export const npdSyncLog = pgTable(
+  "npd_sync_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    direction: npdSyncDirectionEnum("direction").notNull(),
+    /** "ok" | "error" */
+    ok: boolean("ok").notNull().default(true),
+    productsPushed: integer("products_pushed").notNull().default(0),
+    tasksPushed: integer("tasks_pushed").notNull().default(0),
+    rowsApplied: integer("rows_applied").notNull().default(0),
+    rowsSkipped: integer("rows_skipped").notNull().default(0),
+    error: text("error"),
+    durationMs: integer("duration_ms"),
+    triggeredById: uuid("triggered_by_id").references(() => employees.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("npd_sync_log_created_idx").on(t.createdAt)],
+);
+
 export type NpdProduct = typeof npdProducts.$inferSelect;
 export type NpdTask = typeof npdTasks.$inferSelect;
+export type NpdSyncLog = typeof npdSyncLog.$inferSelect;

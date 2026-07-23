@@ -223,16 +223,16 @@ function WorkspaceCard({ ws, locked }: { ws: WorkspaceDef; locked: boolean }) {
       {/* subtle sheen */}
       <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 42%)" }} />
 
-      {/* LEFT — clear logo on a white panel (the PNGs aren't transparent) */}
-      {ws.logo ? (
-        <span className="relative inline-flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-3 shadow-lg ring-1 ring-white/50 transition-transform group-hover:scale-[1.04] max-md:size-24 max-sm:size-20">
+      {/* LEFT — a white icon panel, identical treatment whether it's a brand PNG
+          or a lucide icon, so every card matches. Icon-only cards tint the glyph
+          in the workspace's own colour on the same white tile. */}
+      <span className="relative inline-flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-3 shadow-lg ring-1 ring-white/50 transition-transform group-hover:scale-[1.04] max-md:size-24 max-sm:size-20">
+        {ws.logo ? (
           <img src={ws.logo} alt="" className="h-full w-full object-contain" />
-        </span>
-      ) : (
-        <span className="relative inline-flex size-16 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
-          <Icon size={28} strokeWidth={2.2} />
-        </span>
-      )}
+        ) : (
+          <Icon size={52} strokeWidth={2.1} style={{ color: ws.from }} />
+        )}
+      </span>
 
       {/* RIGHT — title, description, actions */}
       <div className="relative flex min-w-0 flex-1 flex-col">

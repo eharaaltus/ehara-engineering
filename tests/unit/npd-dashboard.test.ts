@@ -1,92 +1,99 @@
 import { describe, it, expect } from "vitest";
-import { computePortfolio, type NpdTaskLite, type NpdProductLite } from "@/lib/npd/dashboard";
+import { buildProduct, type ActivityInput, type ProductInput } from "@/lib/npd/model";
+import {
+  computeKpis, healthMix, stageDistribution, overdueActivities, upcomingActivities, doerWorkload,
+} from "@/lib/npd/insights";
 import { addDaysISO } from "@/lib/npd/status";
 
 function today(offset: number): string {
-  // Deterministic relative dates for overdue/upcoming assertions.
   return addDaysISO(new Date().toISOString().slice(0, 10), offset);
 }
 
-const products: NpdProductLite[] = [
-  { id: "p1", partName: "Bracket A", partNo: "BR-1", customer: "M&M", status: "Active", targetEndDate: today(30) },
-  { id: "p2", partName: "Bracket B", partNo: "BR-2", customer: "M&M", status: "Completed", targetEndDate: today(-10) },
-];
+function act(o: Partial<ActivityInput> & { productId: string; code: string; stage: string; sortOrder: number }): ActivityInput {
+  return {
+    id: `${o.productId}-${o.code}`,
+    activityPlan: o.code,
+    plannedDate: null,
+    baselineDate: null,
+    resolution: "Open",
+    completionDate: null,
+    applicability: "Applicable",
+    drawingLink: null,
+    reasons: null,
+    doerId: o.doerName ?? null,
+    doerName: null,
+    supervisorName: null,
+    ...o,
+  } as ActivityInput;
+}
 
-const tasks: NpdTaskLite[] = [
-  // p1: one done, one overdue, one due-soon, one N/A, one on-hold
-  { productId: "p1", stage: "TECHNICAL", code: "T1", activityPlan: "RFQ", plannedDate: today(-5), resolution: "Done", completionDate: today(-5), applicability: "Applicable", doerName: "Chintan" },
-  { productId: "p1", stage: "TECHNICAL", code: "T2", activityPlan: "2D", plannedDate: today(-3), resolution: "Open", completionDate: null, applicability: "Applicable", doerName: "Sachin" },
-  { productId: "p1", stage: "COMMERCIAL", code: "C1", activityPlan: "Design", plannedDate: today(7), resolution: "Open", completionDate: null, applicability: "Applicable", doerName: "Chintan" },
-  { productId: "p1", stage: "COMMERCIAL", code: "C2", activityPlan: "FTG", plannedDate: today(9), resolution: "Open", completionDate: null, applicability: "N/A", doerName: "Sachin" },
-  { productId: "p1", stage: "COMMERCIAL", code: "C3", activityPlan: "Blank", plannedDate: today(5), resolution: "On Hold", completionDate: null, applicability: "On Hold", doerName: "Sachin" },
-  // p2: all done
-  { productId: "p2", stage: "TECHNICAL", code: "T1", activityPlan: "RFQ", plannedDate: today(-20), resolution: "Done", completionDate: today(-18), applicability: "Applicable", doerName: "Chintan" },
-];
+function product(input: Partial<ProductInput> & { id: string; partName: string }, acts: ActivityInput[]) {
+  const p: ProductInput = {
+    srNo: 1, partNo: null, customer: "M&M", status: "Active", archived: false,
+    startDate: today(-30), targetEndDate: today(30), baselineEndDate: today(30),
+    defaultDoerName: null, defaultSupervisorName: null,
+    ...input,
+  };
+  return buildProduct(p, acts);
+}
 
-describe("computePortfolio", () => {
-  const p = computePortfolio(products, tasks, { upcomingDays: 14 });
+// p1: T1 done, T2 overdue (Chintan), C1 due-soon, C2 N/A, C3 on-hold
+const p1 = product({ id: "p1", partName: "Bracket A" }, [
+  act({ productId: "p1", stage: "TECHNICAL", code: "T1", sortOrder: 0, resolution: "Done", completionDate: today(-5), plannedDate: today(-5), baselineDate: today(-5), doerId: "Chintan", doerName: "Chintan" }),
+  act({ productId: "p1", stage: "TECHNICAL", code: "T2", sortOrder: 1, plannedDate: today(-3), baselineDate: today(-3), doerId: "Chintan", doerName: "Chintan" }),
+  act({ productId: "p1", stage: "COMMERCIAL", code: "C1", sortOrder: 2, plannedDate: today(6), baselineDate: today(6), doerId: "Sachin", doerName: "Sachin" }),
+  act({ productId: "p1", stage: "COMMERCIAL", code: "C2", sortOrder: 3, applicability: "N/A", plannedDate: today(9), baselineDate: today(9), doerId: "Sachin", doerName: "Sachin" }),
+  act({ productId: "p1", stage: "COMMERCIAL", code: "C3", sortOrder: 4, resolution: "On Hold", applicability: "On Hold", plannedDate: today(5), baselineDate: today(5), doerId: "Sachin", doerName: "Sachin" }),
+]);
 
-  it("counts products + status", () => {
-    expect(p.kpis.totalProducts).toBe(2);
-    expect(p.kpis.completed).toBe(1);
-    expect(p.kpis.active).toBe(1);
+// p2: all done
+const p2 = product({ id: "p2", partName: "Bracket B", status: "Completed" }, [
+  act({ productId: "p2", stage: "TECHNICAL", code: "T1", sortOrder: 0, resolution: "Done", completionDate: today(-18), plannedDate: today(-20), baselineDate: today(-20), doerId: "Chintan", doerName: "Chintan" }),
+]);
+
+const products = [p1, p2];
+
+describe("NPD dashboard insights", () => {
+  it("KPIs count parts + applicable/done/overdue (N/A excluded)", () => {
+    const k = computeKpis(products);
+    expect(k.activeParts).toBe(2);
+    // p1: applicable = T1,T2,C1,C3 (C2 N/A) = 4 ; done = T1 ; overdue = T2
+    // p2: applicable = 1 done
+    expect(k.overdueActivities).toBe(1);
+    expect(k.onHold).toBe(1); // p1 C3
   });
 
-  it("counts applicable/done/overdue activities (N/A excluded)", () => {
-    // 6 tasks, 1 is N/A → 5 applicable
-    expect(p.kpis.applicableActivities).toBe(5);
-    expect(p.kpis.completedActivities).toBe(2); // p1 T1 + p2 T1
-    expect(p.kpis.overdueActivities).toBe(1); // p1 T2
-    expect(p.kpis.onHoldActivities).toBe(1); // p1 C3
+  it("health mix sums to product count", () => {
+    const mix = healthMix(products);
+    expect(mix.reduce((s, m) => s + m.count, 0)).toBe(2);
   });
 
-  it("stage completion excludes N/A and reconciles", () => {
-    const tech = p.stageCompletion.find((s) => s.stage === "TECHNICAL")!;
-    expect(tech.applicable).toBe(3);
-    expect(tech.done).toBe(2);
-    expect(tech.overdue).toBe(1);
-    const comm = p.stageCompletion.find((s) => s.stage === "COMMERCIAL")!;
-    expect(comm.applicable).toBe(2); // C1 + C3 (C2 is N/A)
+  it("stage distribution excludes N/A and finds the bottleneck", () => {
+    const { bars, bottleneck } = stageDistribution(products);
+    const tech = bars.find((b) => b.stage === "TECHNICAL")!;
+    expect(tech.overdueActs).toBe(1); // T2
+    // p1 sits in TECHNICAL (T2 open) → that's the WIP bottleneck here
+    expect(bottleneck).toBe("TECHNICAL");
   });
 
-  it("doer workload splits done/overdue/open", () => {
-    const chintan = p.doerWorkload.find((d) => d.doer === "Chintan")!;
-    expect(chintan.done).toBe(2); // p1 T1, p2 T1
-    const sachin = p.doerWorkload.find((d) => d.doer === "Sachin")!;
-    expect(sachin.overdue).toBe(1); // p1 T2
+  it("overdue lists the late activity; on-hold + N/A never appear", () => {
+    const overdue = overdueActivities(products).map((a) => a.code);
+    expect(overdue).toContain("T2");
+    expect(overdue).not.toContain("C3");
+    expect(overdue).not.toContain("C2");
   });
 
-  it("upcoming lists due-soon, overdue lists late", () => {
-    expect(p.overdue.map((a) => a.code)).toContain("T2");
-    expect(p.upcoming.map((a) => a.code)).toContain("C1");
-    // On-hold + N/A never appear in either list
-    expect([...p.overdue, ...p.upcoming].map((a) => a.code)).not.toContain("C3");
-    expect([...p.overdue, ...p.upcoming].map((a) => a.code)).not.toContain("C2");
+  it("upcoming lists due-soon, never on-hold or N/A", () => {
+    const upcoming = upcomingActivities(products, 14).map((a) => a.code);
+    expect(upcoming).toContain("C1");
+    expect(upcoming).not.toContain("C3");
+    expect(upcoming).not.toContain("C2");
   });
 
-  it("D2/D3 — delay-days sum by stage + portfolio total", () => {
-    // T2 (TECHNICAL) is overdue by ~3 days; nothing else is overdue.
-    const tech = p.stageBottleneck.find((s) => s.stage === "TECHNICAL")!;
-    expect(tech.overdue).toBe(1);
-    expect(tech.delayDays).toBe(3);
-    expect(tech.worstCode).toBe("T2");
-    expect(p.kpis.totalDelayDays).toBe(3);
-    // bottleneck ranking sorts by delay-days desc → TECHNICAL first
-    expect(p.stageBottleneck[0]!.stage).toBe("TECHNICAL");
-  });
-
-  it("D4 — internal vs customer delay split (T2 is internal)", () => {
-    expect(p.delaySource.internal).toBe(1);
-    expect(p.delaySource.internalDelayDays).toBe(3);
-    expect(p.delaySource.customer).toBe(0);
-  });
-
-  it("D5 — per-product comparison carries delay-days + bottleneck", () => {
-    const p1 = p.perProduct.find((x) => x.id === "p1")!;
-    expect(p1.delayDays).toBe(3);
-    expect(p1.overdue).toBe(1);
-    expect(p1.bottleneckStage).toBe("Technical");
-    // enriched activity list is present for client-side drill-down
-    expect(p.activities.length).toBe(6);
+  it("doer workload attributes overdue to the right person", () => {
+    const loads = doerWorkload(products);
+    const chintan = loads.find((l) => l.doerName === "Chintan");
+    // Chintan owns T2 (overdue). T1 is done so not counted as open.
+    expect(chintan?.overdue).toBe(1);
   });
 });

@@ -3,6 +3,7 @@ import postgres from "postgres";
 import { env } from "@/lib/env";
 import * as schema from "@/db/schema";
 import { withSlowQueryLog } from "./slow-query";
+import { withDbRetry } from "./retry";
 
 // Cache the postgres client on globalThis so Next.js HMR doesn't leak
 // connections on every save. In production this just runs once.
@@ -82,6 +83,12 @@ const slowMs = slowEnvVar
     : NaN;
 const tracedClient = Number.isFinite(slowMs) ? withSlowQueryLog(client, slowMs) : client;
 
-export const db = drizzle(tracedClient, { schema });
+// Wrap the (optionally traced) client so a transient connection blip retries
+// silently instead of surfacing the "That didn't go through" error boundary.
+// Retries only connection-level failures where the statement never ran (safe
+// for writes); real query errors and transactions are untouched. See ./retry.
+const resilientClient = withDbRetry(tracedClient);
+
+export const db = drizzle(resilientClient, { schema });
 export * from "@/db/schema";
 export type { Employee, NewEmployee, Task, NewTask } from "@/db/schema";

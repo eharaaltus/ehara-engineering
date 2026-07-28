@@ -66,7 +66,7 @@ export function ProductDetail({ product, employees }: { product: Product; employ
           <MicroGrid product={product} cell={12} />
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7">
           <Metric label="Applicable" value={product.applicable} />
           <Metric label="Done" value={product.done} tone="green" />
           <Metric label="Overdue" value={product.overdue} tone={product.overdue ? "red" : undefined} />
@@ -85,8 +85,8 @@ export function ProductDetail({ product, employees }: { product: Product; employ
           </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {product.gateBlockers.map((a) => (
-              <span key={a.id} className="rounded-md bg-white/70 px-2 py-1 text-[11.5px] font-bold" style={{ color: "var(--color-amber-deep)" }}>
-                {a.code} · {a.activityPlan.slice(0, 40)}{a.activityPlan.length > 40 ? "…" : ""}
+              <span key={a.id} className="inline-block max-w-[280px] truncate rounded-md bg-white/70 px-2 py-1 align-middle text-[11.5px] font-bold" style={{ color: "var(--color-amber-deep)" }} title={`${a.code} · ${a.activityPlan}`}>
+                <span style={{ fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}>{a.code}</span> · {a.activityPlan}
               </span>
             ))}
           </div>
@@ -103,7 +103,7 @@ function Metric({ label, value, tone, hint }: { label: string; value: React.Reac
   const body = (
     <div className="rounded-xl border bg-[var(--color-surface-soft)] px-3 py-2.5" style={{ borderColor: "var(--color-hairline)" }}>
       <div className="text-[10px] font-black uppercase tracking-wide text-ink-subtle">{label}</div>
-      <div className="mt-0.5 text-[22px] font-black leading-none tabular-nums" style={{ color }}>{value}</div>
+      <div className="mt-1 text-[24px] font-black leading-none tabular-nums" style={{ color, fontFamily: "var(--font-display), system-ui, sans-serif", letterSpacing: "-0.02em" }}>{value}</div>
     </div>
   );
   return hint ? <Tip content={hint}>{body}</Tip> : body;
@@ -114,7 +114,7 @@ function DateMetric({ label, value, tone, suffix, hint }: { label: string; value
   const body = (
     <div className="rounded-xl border bg-[var(--color-surface-soft)] px-3 py-2.5" style={{ borderColor: "var(--color-hairline)" }}>
       <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wide text-ink-subtle"><CalendarClock size={11} /> {label}</div>
-      <div className="mt-0.5 text-[15px] font-black leading-tight" style={{ color }}>{fmtDate(value)}{suffix && <span className="ml-1 text-[11px]">{suffix}</span>}</div>
+      <div className="mt-1 whitespace-nowrap text-[15px] font-black leading-tight" style={{ color, fontFamily: "var(--font-display), system-ui, sans-serif", letterSpacing: "-0.01em" }}>{fmtDate(value)}{suffix && <span className="ml-1 text-[11px]">{suffix}</span>}</div>
     </div>
   );
   return hint ? <Tip content={hint}>{body}</Tip> : body;

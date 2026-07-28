@@ -13,7 +13,7 @@ export default async function NpdDashboardPage() {
   return (
     <>
       <DashboardHeader generatedAt={new Date()} workspace="npd" />
-      <main className="relative mx-auto max-w-[1600px] px-8 pb-16 pt-8 max-md:px-4">
+      <main className="relative mx-auto max-w-[1600px] px-8 pb-16 pt-4 max-md:px-4">
         <div
           aria-hidden
           className="pointer-events-none fixed inset-0 -z-10 opacity-[0.5]"

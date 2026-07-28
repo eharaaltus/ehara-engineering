@@ -14,7 +14,7 @@ export default async function NpdPage() {
     <>
       <DashboardHeader generatedAt={new Date()} workspace="npd" />
 
-      <main className="relative mx-auto max-w-[1600px] px-8 pb-16 pt-8 max-md:px-4">
+      <main className="relative mx-auto max-w-[1600px] px-8 pb-16 pt-4 max-md:px-4">
         {/* The app's ambient dot-grid backdrop — same as Sales/Quotation. */}
         <div
           aria-hidden

@@ -76,12 +76,12 @@ function StageSection({
 
       {open && (
         <div className="thin-scroll overflow-x-auto border-t" style={{ borderColor: "var(--color-hairline)" }}>
-          <table className="w-full border-collapse text-[13px]" style={{ minWidth: compact ? 640 : 780 }}>
+          <table className="w-full border-collapse text-[13px]" style={{ minWidth: compact ? 680 : 820 }}>
             <thead>
               <tr style={{ background: "var(--color-surface-soft)" }}>
                 <Th className="w-[44px]">ID</Th>
                 <Th>Activity</Th>
-                <Th className="w-[120px]">Doer</Th>
+                <Th className="w-[150px]">Doer</Th>
                 <Th className="w-[116px]">Planned</Th>
                 <Th className="w-[92px]">Status</Th>
                 <Th className="w-[108px]">Resolution</Th>
@@ -118,12 +118,12 @@ function DetailRow({ a, employees, compact }: { a: Activity; employees: Emp[]; c
       style={{ borderColor: "var(--color-hairline)" }}
     >
       <Td>
-        <span className="rounded px-1 py-0.5 text-[10px] font-black" style={{ background: "var(--color-surface-track)", color: "var(--color-ink)" }}>
+        <span className="rounded px-1 py-0.5 text-[10px] font-black tabular-nums" style={{ background: "var(--color-surface-track)", color: "var(--color-ink)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}>
           {a.code}
         </span>
       </Td>
       <Td>
-        <span className={`block font-semibold text-ink-strong ${dim ? "line-through" : ""}`}>{a.activityPlan}</span>
+        <span className={`block text-[12.5px] font-semibold leading-tight text-ink-strong ${dim ? "line-through" : ""}`}>{a.activityPlan}</span>
         {a.reasons && <span className="block text-[11px] italic text-ink-subtle">{a.reasons}</span>}
         {a.slipDays > 0 && <span className="mt-0.5 inline-block"><SlipChip days={a.slipDays} /></span>}
       </Td>

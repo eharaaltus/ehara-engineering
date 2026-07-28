@@ -157,7 +157,7 @@ export function ListDrawer({
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
               {products.length === 0 ? (
-                <div className="p-10 text-center text-[13px] text-ink-subtle">Nothing here — all clear. 🎉</div>
+                <div className="px-6 py-16 text-center text-[13px] text-ink-subtle">Nothing here — all clear. 🎉</div>
               ) : (
                 <div className="space-y-2">
                   {products.map((p) => (
@@ -203,7 +203,7 @@ function Metric({
       <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wide text-ink-subtle">
         {icon && <CalendarClock size={10} />} {label}
       </div>
-      <div className="mt-0.5 text-[16px] font-black leading-none tabular-nums" style={{ color }}>
+      <div className="mt-1 whitespace-nowrap text-[16px] font-black leading-none tabular-nums" style={{ color, fontFamily: "var(--font-display), system-ui, sans-serif", letterSpacing: "-0.02em" }}>
         {value}{suffix && <span className="ml-1 text-[11px]">{suffix}</span>}
       </div>
     </div>

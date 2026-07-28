@@ -210,7 +210,7 @@ function Portfolio({ products, label, showCustomers = false }: { products: Produ
             <div className="space-y-2">
               {loads.map((l) => (
                 <div key={l.doerName} className="flex items-center gap-3">
-                  <span className="w-28 shrink-0 truncate text-[12px] font-bold text-ink-strong">{l.doerName}</span>
+                  <span className="w-36 shrink-0 truncate text-[12px] font-bold text-ink-strong">{l.doerName}</span>
                   <div className="flex h-5 flex-1 overflow-hidden rounded-md" style={{ background: "var(--color-surface-track)" }}>
                     <Tip content={`${l.overdue} overdue`}><div className="h-full" style={{ width: `${(l.overdue / maxLoad) * 100}%`, background: "var(--color-red)" }} /></Tip>
                     <Tip content={`${l.dueSoon} due this week`}><div className="h-full" style={{ width: `${(l.dueSoon / maxLoad) * 100}%`, background: "var(--color-amber)" }} /></Tip>
@@ -405,7 +405,7 @@ function ActivityList({ rows, empty, more = 0, showProduct = false }: { rows: Ac
         const overdue = a.state === "Overdue";
         return (
           <Link key={a.id} href={`/npd/${a.productId}` as Route} className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-[var(--color-surface-soft)]">
-            <span className="rounded px-1 py-0.5 text-[10px] font-black" style={{ background: "var(--color-surface-track)", color: "var(--color-ink)" }}>{a.code}</span>
+            <span className="shrink-0 rounded px-1 py-0.5 text-[10px] font-black tabular-nums" style={{ background: "var(--color-surface-track)", color: "var(--color-ink)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}>{a.code}</span>
             <span className="min-w-0 flex-1 truncate text-[12.5px] font-semibold text-ink-strong">
               {a.activityPlan}
               {showProduct && <span className="ml-1 text-ink-subtle">· {a.productName}</span>}
@@ -442,7 +442,7 @@ function Kpi({ label, value, tone = "ok", icon, small, suffix }: { label: string
   return (
     <div className="rounded-xl border bg-white px-3 py-2.5 shadow-sm" style={{ borderColor: "var(--color-hairline-strong)" }}>
       <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wide text-ink-subtle">{icon}<span className="truncate">{label}</span></div>
-      <div className={`mt-0.5 font-black leading-none tabular-nums ${small ? "text-[15px]" : "text-[22px]"}`} style={{ color }}>
+      <div className={`mt-1 font-black leading-none tabular-nums ${small ? "text-[15px]" : "text-[24px]"}`} style={{ color, fontFamily: "var(--font-display), system-ui, sans-serif", letterSpacing: "-0.02em" }}>
         {value}{suffix && <span className="ml-1 text-[11px]">{suffix}</span>}
       </div>
     </div>
@@ -463,7 +463,7 @@ function Pill({ n, tone }: { n: number; tone: "red" | "ok" }) {
 }
 
 function Prompt({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-2xl border border-dashed bg-white p-14 text-center text-[13px] font-semibold text-ink-subtle" style={{ borderColor: "var(--color-hairline-strong)" }}>{children}</div>;
+  return <div className="rounded-2xl border border-dashed bg-white px-6 py-16 text-center text-[13px] font-semibold text-ink-subtle" style={{ borderColor: "var(--color-hairline-strong)" }}>{children}</div>;
 }
 function Empty({ children }: { children: React.ReactNode }) {
   return <div className="py-6 text-center text-[12.5px] text-ink-subtle">{children}</div>;

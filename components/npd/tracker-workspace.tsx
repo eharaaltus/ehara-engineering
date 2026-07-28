@@ -282,17 +282,17 @@ export function TrackerWorkspace({
             className="premium-card thin-scroll overflow-x-auto rounded-2xl border bg-white"
             style={{ borderColor: "var(--color-hairline-strong)" }}
           >
-            <table className="w-full min-w-[1240px] border-collapse text-[13px]">
+            <table className="w-full min-w-[1300px] border-collapse text-[13px]">
               <thead>
                 <tr style={{ background: "var(--color-surface-soft)" }}>
                   <Th className="w-[36px] px-2">
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} aria-label="Select all" />
                   </Th>
-                  <Th className="w-[150px]">Product</Th>
+                  <Th className="w-[184px]">Product</Th>
                   <Th className="w-[68px]">Stage</Th>
                   <Th className="w-[44px]">ID</Th>
                   <Th>Activity</Th>
-                  <Th className="w-[112px]">Doer</Th>
+                  <Th className="w-[152px]">Doer</Th>
                   <Th className="w-[108px]">Planned</Th>
                   <Th className="w-[94px]" hint="WORKING days — weekends and the company holiday calendar are excluded. The sheet's TODAY()−planned subtraction counts Sundays and Diwali as working days.">
                     Days left
@@ -493,7 +493,7 @@ function Row({
         <input type="checkbox" checked={checked} onChange={() => onToggle(a.id)} aria-label={`Select ${a.code}`} />
       </Td>
       <Td>
-        <Link href={`/npd/${a.productId}` as Route} className="block truncate text-[12px] font-bold text-ink-strong hover:text-[#1e40af]">
+        <Link href={`/npd/${a.productId}` as Route} className="block max-w-[176px] truncate text-[12px] font-bold text-ink-strong hover:text-[#1e40af]">
           <span className="text-ink-subtle">#{a.productSrNo ?? "—"}</span> {a.productPartName}
         </Link>
       </Td>
@@ -502,17 +502,17 @@ function Row({
       </Td>
       <Td>
         <span
-          className="rounded px-1 py-0.5 text-[10px] font-black"
-          style={{ background: "var(--color-surface-track)", color: "var(--color-ink)" }}
+          className="rounded px-1 py-0.5 text-[10px] font-black tabular-nums"
+          style={{ background: "var(--color-surface-track)", color: "var(--color-ink)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}
         >
           {a.code}
         </span>
       </Td>
       <Td>
-        <span className={`block truncate font-semibold text-ink-strong ${dim ? "line-through" : ""}`} title={a.activityPlan}>
+        <span className={`block max-w-[360px] truncate text-[12.5px] font-semibold leading-tight text-ink-strong ${dim ? "line-through" : ""}`} title={a.activityPlan}>
           {a.activityPlan}
         </span>
-        {a.reasons && <span className="block truncate text-[11px] italic text-ink-subtle">{a.reasons}</span>}
+        {a.reasons && <span className="mt-0.5 block max-w-[360px] truncate text-[11px] italic leading-tight text-ink-subtle">{a.reasons}</span>}
         {a.blocksGate && a.state === "Overdue" && (
           <span
             className="mt-0.5 inline-flex items-center gap-0.5 rounded px-1 py-px text-[9px] font-black uppercase tracking-wide"
@@ -891,7 +891,7 @@ function EmptyState({ tab }: { tab: TabId }) {
   };
   return (
     <div
-      className="rounded-2xl border border-dashed bg-white p-14 text-center text-[13px] text-ink-subtle"
+      className="rounded-2xl border border-dashed bg-white px-6 py-16 text-center text-[13px] text-ink-subtle"
       style={{ borderColor: "var(--color-hairline-strong)" }}
     >
       {msg[tab]}

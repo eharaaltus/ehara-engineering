@@ -281,13 +281,13 @@ function TableView({
   return (
     <Panel>
       <div className="thin-scroll overflow-x-auto">
-        <table className="w-full min-w-[1120px] border-collapse text-[13px]">
+        <table className="w-full min-w-[1160px] border-collapse text-[13px]">
           <thead>
             <tr style={{ background: "var(--color-surface-soft)" }}>
               <Th className="w-[54px]">#</Th>
               <Th>Part</Th>
-              <Th className="w-[110px]">Customer</Th>
-              <Th className="w-[152px]">Stage</Th>
+              <Th className="w-[124px]">Customer</Th>
+              <Th className="w-[196px]">Stage</Th>
               <Th className="w-[78px]" hint="All 36 activities — one column per stage, plan order downwards. Hover any cell.">36 acts</Th>
               <Th className="w-[140px]">Progress</Th>
               <Th className="w-[72px] text-center">Overdue</Th>
@@ -305,18 +305,18 @@ function TableView({
                 style={{ borderColor: "var(--color-hairline)" }}
               >
                 <Td>
-                  <span className="rounded-md px-1.5 py-0.5 text-[11px] font-black" style={{ background: "var(--color-blue-bg)", color: "var(--color-brand-blue)" }}>
+                  <span className="rounded-md px-1.5 py-0.5 text-[11px] font-black tabular-nums" style={{ background: "var(--color-blue-bg)", color: "var(--color-brand-blue)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}>
                     {p.srNo ?? "—"}
                   </span>
                 </Td>
                 <Td>
-                  <div className="flex items-center gap-1.5 font-bold text-ink-strong">
+                  <div className="flex min-w-0 max-w-[280px] items-center gap-1.5 font-bold text-ink-strong">
                     <HealthDot product={p} />
-                    <span className="truncate group-hover:text-[var(--color-brand-blue)]">{p.partName}</span>
+                    <span className="min-w-0 flex-1 truncate group-hover:text-[var(--color-brand-blue)]">{p.partName}</span>
                   </div>
-                  {p.partNo && <div className="mt-0.5 text-[11px] text-ink-subtle">{p.partNo}</div>}
+                  {p.partNo && <div className="mt-0.5 max-w-[280px] truncate text-[11px] text-ink-subtle">{p.partNo}</div>}
                 </Td>
-                <Td className="text-ink-muted">{p.customer ?? "—"}</Td>
+                <Td className="text-ink-muted"><span className="block max-w-[124px] truncate">{p.customer ?? "—"}</span></Td>
                 <Td><StageChevrons product={p} /></Td>
                 <Td><MicroGrid product={p} cell={7} /></Td>
                 <Td><ProgressBar pct={p.pct} overdue={p.overdue} /></Td>
@@ -332,7 +332,7 @@ function TableView({
                 <Td>
                   {p.nextUp ? (
                     <Tip content={`${p.nextUp.code} · ${p.nextUp.activityPlan} · ${p.nextUp.doerName ?? "unassigned"}`}>
-                      <span className="block truncate text-[12px]">
+                      <span className="block max-w-[142px] truncate text-[12px]">
                         <b className="text-ink-strong">{p.nextUp.code}</b> <span className="text-ink-subtle">{fmtDate(p.nextUp.plannedDate)}</span>
                       </span>
                     </Tip>
@@ -395,7 +395,7 @@ function GatesView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
           <table className="w-full min-w-[900px] border-collapse text-[13px]">
             <thead>
               <tr style={{ background: "var(--color-surface-soft)" }}>
-                <Th>Part</Th>
+                <Th className="w-[200px]">Part</Th>
                 {NPD_STAGES.map((s) => <Th key={s} className="text-center">{STAGE_SHORT[s]}</Th>)}
                 <Th className="w-[128px]">Gate now</Th>
               </tr>
@@ -404,11 +404,11 @@ function GatesView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
               {products.map((p) => (
                 <tr key={p.id} className="border-t" style={{ borderColor: "var(--color-hairline)" }}>
                   <Td>
-                    <button onClick={() => onOpen(p)} className="flex items-center gap-1.5 text-left font-bold text-ink-strong transition-colors hover:text-[var(--color-brand-blue)]">
+                    <button onClick={() => onOpen(p)} className="flex min-w-0 max-w-full items-center gap-1.5 text-left font-bold text-ink-strong transition-colors hover:text-[var(--color-brand-blue)]">
                       <HealthDot product={p} />
-                      <span className="truncate">{p.partName}</span>
+                      <span className="min-w-0 flex-1 truncate">{p.partName}</span>
                     </button>
-                    <div className="text-[11px] text-ink-subtle">{p.customer ?? "—"}</div>
+                    <div className="truncate text-[11px] text-ink-subtle">{p.customer ?? "—"}</div>
                   </Td>
                   {p.stages.map((s) => (
                     <Td key={s.stage} className="p-1.5 text-center"><GateCell product={p} stage={s} /></Td>
@@ -491,7 +491,7 @@ function BoardView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
 
   return (
     <div className="kanban-scroll overflow-x-auto pb-3">
-      <div className="flex gap-3" style={{ minWidth: 7 * 232 }}>
+      <div className="flex gap-3" style={{ minWidth: 8 * 232 + 7 * 12 }}>
         {cols.map((c) => {
           const clogged = c.items.length === maxWip && maxWip > 1;
           return (
@@ -532,8 +532,8 @@ function BoardCard({ p, onOpen }: { p: Product; onOpen: (p: Product) => void }) 
       className="premium-card rounded-xl border bg-white p-3 text-left transition-transform hover:-translate-y-0.5"
       style={{ borderColor: "var(--color-hairline-strong)", borderLeft: `3px solid ${m.color}` }}
     >
-      <div className="flex items-start justify-between gap-1.5">
-        <span className="truncate text-[13px] font-extrabold text-ink-strong">{p.partName}</span>
+      <div className="flex min-w-0 items-start justify-between gap-1.5">
+        <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-ink-strong">{p.partName}</span>
         <HealthDot product={p} />
       </div>
       <div className="mt-0.5 truncate text-[11px] text-ink-subtle">{p.customer ?? "—"} · #{p.srNo ?? "—"}</div>
@@ -608,7 +608,7 @@ function Td({ children, className = "", onClick }: { children?: React.ReactNode;
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-2xl border border-dashed bg-white p-14 text-center text-[13px] text-ink-subtle" style={{ borderColor: "var(--color-hairline-strong)" }}>{children}</div>;
+  return <div className="rounded-2xl border border-dashed bg-white px-6 py-16 text-center text-[13px] text-ink-subtle" style={{ borderColor: "var(--color-hairline-strong)" }}>{children}</div>;
 }
 
 function exportCsv(products: Product[]) {

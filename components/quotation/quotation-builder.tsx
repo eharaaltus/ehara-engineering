@@ -580,7 +580,7 @@ function QuotationPrint({
 
       {/* brand footer */}
       <div style={{ marginTop: 10, borderTop: "2px solid #1e40af", paddingTop: 4, textAlign: "center", fontSize: 7.5, fontWeight: 700, letterSpacing: "0.1em", color: "#14245c" }}>
-        ANANT AVINYA TECHNOLOGIES · POWERED BY ALTUS CORP
+        EHARA ENGINEERING · POWERED BY ALTUS CORP
       </div>
     </div>
   );

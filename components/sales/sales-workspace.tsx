@@ -191,7 +191,7 @@ export function SalesWorkspace({
         <>
           <PageHero
             eyebrow="Production System"
-            title="AA-Tech Production System"
+            title="Ehara Production System"
             subtitle="Pick a module — open its Form to add an entry, or its Register to view stored data."
             Icon={TrendingUp}
             actions={

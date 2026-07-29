@@ -28,23 +28,23 @@ const globalForDb = globalThis as unknown as {
 // session-pooler pool (see note below).
 const isServerless = !!process.env.VERCEL;
 
-// Pick the correct Supabase pooler for the runtime, no matter which port the
-// DATABASE_URL env var happens to carry — so a deploy can NEVER be broken again
-// by the wrong port. Serverless (Vercel) MUST use the TRANSACTION pooler (:6543):
-// session mode (:5432) gives every function instance its own dedicated backend
-// and exhausts Supabase's small session pool under load (the "database being
-// slow / didn't go through" outages). A persistent local dev server is the
-// opposite — it wants the SESSION pooler (:5432); the transaction pooler wedges
-// it under the dashboard's parallel-query burst. This normalises both.
-function resolvePoolerUrl(url: string, serverless: boolean): string {
+// Force the SESSION pooler (:5432) everywhere, regardless of which port the
+// DATABASE_URL env var carries — so a wrong port can't break a deploy. This app
+// is proven on session mode: the dashboard's query pattern and every feature
+// work on it. The TRANSACTION pooler (:6543) makes the dashboard hang forever
+// (verified: the "loading…" outage appeared the moment we forced :6543). We
+// instead prevent session-pool EXHAUSTION (the earlier "didn't go through"
+// outages) by holding a tiny number of connections per serverless instance
+// (`max` below) + auto-retry — and by raising the Supabase pool size for
+// headroom.
+function resolvePoolerUrl(url: string): string {
   if (!url.includes("pooler.supabase.com")) return url; // non-pooler / direct — leave untouched
-  const wantPort = serverless ? "6543" : "5432";
-  return url.replace(/(pooler\.supabase\.com):(?:5432|6543)\//, `$1:${wantPort}/`);
+  return url.replace(/(pooler\.supabase\.com):6543\//, "$1:5432/");
 }
-const connectionString = resolvePoolerUrl(env.DATABASE_URL, isServerless);
+const connectionString = resolvePoolerUrl(env.DATABASE_URL);
 if (connectionString !== env.DATABASE_URL) {
   // eslint-disable-next-line no-console
-  console.info(`[db] using ${isServerless ? "transaction (:6543)" : "session (:5432)"} pooler for this runtime`);
+  console.info("[db] normalised DATABASE_URL to the session pooler (:5432)");
 }
 
 const client =
@@ -72,7 +72,12 @@ const client =
     //   staying small enough that many instances don't exhaust the transaction
     //   pooler. Requires DATABASE_URL on the transaction pooler (:6543).
     //   Persistent server: 10 (headroom for the same Promise.all).
-    max: isServerless ? 5 : 10,
+    // Serverless: ONE connection per warm instance. A Vercel function serves one
+    // request at a time; postgres-js pipelines the dashboard's parallel queries
+    // down that single socket, so 1 is fast AND keeps the tiny Supabase session
+    // pool (default 15) from exhausting when many instances (and route
+    // prefetches) are warm at once. Persistent local server: 5.
+    max: isServerless ? 1 : 5,
     // Recycle idle sockets fast (10s): a pooled socket idle for more than a few
     // seconds can be dropped by the pooler/network while postgres-js still
     // believes it's live, and the next query on that dead socket hangs until TCP

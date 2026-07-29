@@ -210,7 +210,7 @@ function PiPrint({
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <img src="/logo-mark.png?v=6" alt="" style={{ height: 50, width: "auto" }} />
           <div style={{ fontSize: 17, fontWeight: 800, lineHeight: 1.06, color: "#0a0a0a" }}>
-            ANANT AVINYA<br />TECHNOLOGIES LLP.
+            Ehara<br />Engineering
           </div>
         </div>
         <div style={{ textAlign: "right", fontSize: 8, color: "#334155", lineHeight: 1.45 }}>

@@ -520,6 +520,7 @@ function Row({
           onSave={(v) => save("doerId", v || null)}
           options={[{ v: "", l: "— unassigned" }, ...employees.map((e) => ({ v: e.id, l: e.name }))]}
           color={!a.doerId ? "var(--color-amber-deep)" : undefined}
+          minW="min-w-[150px]"
         />
       </Td>
       <Td>
@@ -573,18 +574,21 @@ function Row({
 
 /** Single click = edit. Saves on change — no Save button, no modal, no spinner. */
 function InlineSelect({
-  value, onSave, options, color,
+  value, onSave, options, color, minW = "",
 }: {
   value: string;
   onSave: (v: string) => void;
   options: { v: string; l: string }[];
   color?: string;
+  /** Optional min-width class so a native <select> can't collapse and clip its
+   *  value in an auto-layout table (e.g. long doer names → "Sa…"). */
+  minW?: string;
 }) {
   return (
     <select
       value={value}
       onChange={(e) => onSave(e.target.value)}
-      className="w-full cursor-pointer rounded-md border border-transparent bg-transparent px-1 py-1 text-[12px] font-bold transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none"
+      className={`w-full ${minW} cursor-pointer rounded-md border border-transparent bg-transparent px-1 py-1 text-[12px] font-bold transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none`}
       style={{ color: color ?? "var(--color-ink)" }}
     >
       {options.map((o) => (

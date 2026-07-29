@@ -274,7 +274,7 @@ export function TrackerWorkspace({
             className="premium-card thin-scroll overflow-x-auto rounded-2xl border bg-white"
             style={{ borderColor: "var(--color-hairline-strong)" }}
           >
-            <table className="w-full min-w-[1300px] border-collapse text-[13px]">
+            <table className="w-full min-w-[1320px] border-collapse text-[14px]">
               <thead>
                 <tr style={{ background: "var(--color-surface-soft)" }}>
                   <Th className="w-[36px] px-2">
@@ -305,6 +305,7 @@ export function TrackerWorkspace({
                     onToggle={toggle}
                     employees={employees}
                     grouped={groupBy !== "none"}
+                    groupBy={groupBy}
                   />
                 ))}
               </tbody>
@@ -412,7 +413,7 @@ function MoreTabs({
 }
 
 function Group({
-  label, items, selected, onToggle, employees, grouped,
+  label, items, selected, onToggle, employees, grouped, groupBy,
 }: {
   label: string;
   items: Activity[];
@@ -420,8 +421,12 @@ function Group({
   onToggle: (id: string) => void;
   employees: Emp[];
   grouped: boolean;
+  groupBy: "product" | "stage" | "doer" | "none";
 }) {
-  const [open, setOpen] = React.useState(true);
+  // Collapsed by default when grouped — only the product headers show, so the
+  // list reads as a short index of products; click one to expand its activities.
+  // An ungrouped (flat) list stays open, since there's no header to expand.
+  const [open, setOpen] = React.useState(!grouped);
   const overdue = items.filter((a) => a.state === "Overdue").length;
 
   return (
@@ -429,10 +434,10 @@ function Group({
       {grouped && (
         <tr className="border-t" style={{ background: "var(--color-surface-soft)", borderColor: "var(--color-hairline-strong)" }}>
           <td colSpan={12} className="px-2.5 py-2">
-            <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 text-[12px] font-black text-ink-strong">
-              {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+            <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 text-[13.5px] font-black text-ink-strong">
+              {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
               {label}
-              <span className="rounded-full bg-white px-1.5 py-px text-[10px] font-bold text-ink-subtle">{items.length}</span>
+              <span className="rounded-full bg-white px-1.5 py-px text-[11px] font-bold text-ink-subtle">{items.length}</span>
               {overdue > 0 && (
                 <span
                   className="rounded-full px-1.5 py-px text-[10px] font-black"
@@ -446,19 +451,22 @@ function Group({
         </tr>
       )}
       {open && items.map((a) => (
-        <Row key={a.id} a={a} checked={selected.has(a.id)} onToggle={onToggle} employees={employees} />
+        <Row key={a.id} a={a} checked={selected.has(a.id)} onToggle={onToggle} employees={employees} hideProduct={groupBy === "product"} />
       ))}
     </>
   );
 }
 
 function Row({
-  a, checked, onToggle, employees,
+  a, checked, onToggle, employees, hideProduct,
 }: {
   a: Activity;
   checked: boolean;
   onToggle: (id: string) => void;
   employees: Emp[];
+  /** When grouped by product, the product name lives in the group header, so
+   *  the per-row Product cell is left blank to avoid repeating it on every row. */
+  hideProduct?: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
@@ -484,27 +492,31 @@ function Row({
       <Td className="px-2">
         <input type="checkbox" checked={checked} onChange={() => onToggle(a.id)} aria-label={`Select ${a.code}`} />
       </Td>
+      {hideProduct ? (
+        <Td />
+      ) : (
+        <Td>
+          <Link href={`/npd/${a.productId}` as Route} className="block max-w-[184px] truncate text-[13px] font-bold text-ink-strong hover:text-[#1e40af]">
+            <span className="text-ink-subtle">#{a.productSrNo ?? "—"}</span> {a.productPartName}
+          </Link>
+        </Td>
+      )}
       <Td>
-        <Link href={`/npd/${a.productId}` as Route} className="block max-w-[176px] truncate text-[12px] font-bold text-ink-strong hover:text-[#1e40af]">
-          <span className="text-ink-subtle">#{a.productSrNo ?? "—"}</span> {a.productPartName}
-        </Link>
-      </Td>
-      <Td>
-        <span className="text-[11px] font-bold text-ink-subtle">{STAGE_SHORT[a.stage] ?? a.stage}</span>
+        <span className="text-[12px] font-bold text-ink-subtle">{STAGE_SHORT[a.stage] ?? a.stage}</span>
       </Td>
       <Td>
         <span
-          className="rounded px-1 py-0.5 text-[10px] font-black tabular-nums"
+          className="rounded px-1.5 py-0.5 text-[11px] font-black tabular-nums"
           style={{ background: "var(--color-surface-track)", color: "var(--color-ink)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}
         >
           {a.code}
         </span>
       </Td>
       <Td>
-        <span className={`block max-w-[360px] truncate text-[12.5px] font-semibold leading-tight text-ink-strong ${dim ? "line-through" : ""}`} title={a.activityPlan}>
+        <span className={`block max-w-[380px] truncate text-[13.5px] font-semibold leading-tight text-ink-strong ${dim ? "line-through" : ""}`} title={a.activityPlan}>
           {a.activityPlan}
         </span>
-        {a.reasons && <span className="mt-0.5 block max-w-[360px] truncate text-[11px] italic leading-tight text-ink-subtle">{a.reasons}</span>}
+        {a.reasons && <span className="mt-0.5 block max-w-[380px] truncate text-[12px] italic leading-tight text-ink-subtle">{a.reasons}</span>}
         {a.blocksGate && a.state === "Overdue" && (
           <span
             className="mt-0.5 inline-flex items-center gap-0.5 rounded px-1 py-px text-[9px] font-black uppercase tracking-wide"
@@ -528,7 +540,7 @@ function Row({
           type="date"
           defaultValue={a.plannedDate ?? ""}
           onChange={(e) => save("plannedDate", e.target.value || null)}
-          className="w-full rounded-md border border-transparent bg-transparent px-1 py-1 text-[12px] font-semibold text-ink-strong transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none"
+          className="w-full rounded-md border border-transparent bg-transparent px-1 py-1 text-[13px] font-semibold text-ink-strong transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none"
         />
       </Td>
       <Td><StateChip a={a} /></Td>
@@ -588,7 +600,7 @@ function InlineSelect({
     <select
       value={value}
       onChange={(e) => onSave(e.target.value)}
-      className={`w-full ${minW} cursor-pointer rounded-md border border-transparent bg-transparent px-1 py-1 text-[12px] font-bold transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none`}
+      className={`w-full ${minW} cursor-pointer rounded-md border border-transparent bg-transparent px-1 py-1 text-[13px] font-bold transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none`}
       style={{ color: color ?? "var(--color-ink)" }}
     >
       {options.map((o) => (
@@ -932,7 +944,7 @@ function Th({
     children
   );
   return (
-    <th className={`px-2.5 py-2.5 text-left text-[10.5px] font-black uppercase tracking-[0.06em] text-ink-subtle ${className}`}>
+    <th className={`px-2.5 py-2.5 text-left text-[11.5px] font-black uppercase tracking-[0.06em] text-ink-subtle ${className}`}>
       {inner}
     </th>
   );

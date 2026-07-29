@@ -258,7 +258,7 @@ function TableView({
   return (
     <Panel>
       <div className="thin-scroll overflow-x-auto">
-        <table className="w-full min-w-[1160px] border-collapse text-[13px]">
+        <table className="w-full min-w-[1200px] border-collapse text-[14px]">
           <thead>
             <tr style={{ background: "var(--color-surface-soft)" }}>
               <Th className="w-[54px]">#</Th>
@@ -578,7 +578,7 @@ function Panel({ children }: { children: React.ReactNode }) {
 
 function Th({ children, className = "", hint }: { children?: React.ReactNode; className?: string; hint?: string }) {
   const inner = hint ? <Tip content={hint}><span className="cursor-help border-b border-dotted border-current">{children}</span></Tip> : children;
-  return <th className={`px-2.5 py-2.5 text-left text-[10.5px] font-black uppercase tracking-[0.06em] text-ink-subtle ${className}`}>{inner}</th>;
+  return <th className={`px-2.5 py-2.5 text-left text-[11.5px] font-black uppercase tracking-[0.06em] text-ink-subtle ${className}`}>{inner}</th>;
 }
 function Td({ children, className = "", onClick }: { children?: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent) => void }) {
   return <td className={`px-2.5 py-2.5 align-middle ${className}`} onClick={onClick}>{children}</td>;

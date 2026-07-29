@@ -76,7 +76,7 @@ function StageSection({
 
       {open && (
         <div className="thin-scroll overflow-x-auto border-t" style={{ borderColor: "var(--color-hairline)" }}>
-          <table className="w-full border-collapse text-[13px]" style={{ minWidth: compact ? 680 : 820 }}>
+          <table className="w-full border-collapse text-[14px]" style={{ minWidth: compact ? 700 : 840 }}>
             <thead>
               <tr style={{ background: "var(--color-surface-soft)" }}>
                 <Th className="w-[44px]">ID</Th>
@@ -118,13 +118,13 @@ function DetailRow({ a, employees, compact }: { a: Activity; employees: Emp[]; c
       style={{ borderColor: "var(--color-hairline)" }}
     >
       <Td>
-        <span className="rounded px-1 py-0.5 text-[10px] font-black tabular-nums" style={{ background: "var(--color-surface-track)", color: "var(--color-ink)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}>
+        <span className="rounded px-1.5 py-0.5 text-[11px] font-black tabular-nums" style={{ background: "var(--color-surface-track)", color: "var(--color-ink)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}>
           {a.code}
         </span>
       </Td>
       <Td>
-        <span className={`block text-[12.5px] font-semibold leading-tight text-ink-strong ${dim ? "line-through" : ""}`}>{a.activityPlan}</span>
-        {a.reasons && <span className="block text-[11px] italic text-ink-subtle">{a.reasons}</span>}
+        <span className={`block text-[13.5px] font-semibold leading-tight text-ink-strong ${dim ? "line-through" : ""}`}>{a.activityPlan}</span>
+        {a.reasons && <span className="block text-[12px] italic text-ink-subtle">{a.reasons}</span>}
         {a.slipDays > 0 && <span className="mt-0.5 inline-block"><SlipChip days={a.slipDays} /></span>}
       </Td>
       <Td>
@@ -141,7 +141,7 @@ function DetailRow({ a, employees, compact }: { a: Activity; employees: Emp[]; c
           type="date"
           defaultValue={a.plannedDate ?? ""}
           onChange={(e) => save("plannedDate", e.target.value || null)}
-          className="w-full rounded-md border border-transparent bg-transparent px-1 py-1 text-[12px] font-semibold text-ink-strong transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none"
+          className="w-full rounded-md border border-transparent bg-transparent px-1 py-1 text-[13px] font-semibold text-ink-strong transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none"
         />
       </Td>
       <Td><StateChip a={a} /></Td>
@@ -196,7 +196,7 @@ function InlineSelect({
     <select
       value={value}
       onChange={(e) => onSave(e.target.value)}
-      className={`w-full ${minW} cursor-pointer rounded-md border border-transparent bg-transparent px-1 py-1 text-[12px] font-bold transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none`}
+      className={`w-full ${minW} cursor-pointer rounded-md border border-transparent bg-transparent px-1 py-1 text-[13px] font-bold transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none`}
       style={{ color: color ?? "var(--color-ink)" }}
     >
       {options.map((o) => (
@@ -207,7 +207,7 @@ function InlineSelect({
 }
 
 function Th({ children, className = "" }: { children?: React.ReactNode; className?: string }) {
-  return <th className={`px-2.5 py-2 text-left text-[10.5px] font-black uppercase tracking-[0.06em] text-ink-subtle ${className}`}>{children}</th>;
+  return <th className={`px-2.5 py-2 text-left text-[11.5px] font-black uppercase tracking-[0.06em] text-ink-subtle ${className}`}>{children}</th>;
 }
 function Td({ children, className = "" }: { children?: React.ReactNode; className?: string }) {
   return <td className={`px-2.5 py-2 align-middle ${className}`}>{children}</td>;

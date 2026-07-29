@@ -180,7 +180,7 @@ export function StateChip({ a }: { a: Activity }) {
       }
     >
       <span
-        className="inline-flex items-center gap-1 whitespace-nowrap rounded-md px-1.5 py-[3px] text-[11px] font-bold leading-none"
+        className="inline-flex items-center gap-1 whitespace-nowrap rounded-md px-2 py-[3px] text-[12px] font-bold leading-none"
         style={{ background: m.bg, color: m.color }}
       >
         {m.glyph && <span aria-hidden>{m.glyph}</span>}
@@ -256,11 +256,11 @@ export function ProgressBar({ pct, overdue }: { pct: number; overdue: number }) 
 
 /** Slip — the number the spreadsheet structurally cannot show. */
 export function SlipChip({ days, label = "slip" }: { days: number; label?: string }) {
-  if (days <= 0) return <span className="text-[11px] text-ink-subtle">—</span>;
+  if (days <= 0) return <span className="text-[12px] text-ink-subtle">—</span>;
   return (
     <Tip content={`The PLAN moved ${days} working days later than the frozen baseline. Nothing here is “overdue” — the date was pushed instead. That is the failure a spreadsheet can’t see.`}>
       <span
-        className="inline-flex items-center gap-0.5 whitespace-nowrap rounded-md px-1.5 py-[3px] text-[11px] font-bold"
+        className="inline-flex items-center gap-0.5 whitespace-nowrap rounded-md px-2 py-[3px] text-[12px] font-bold"
         style={{ background: "var(--color-amber-bg)", color: "var(--color-amber-deep)" }}
       >
         ▲ {days}d {label}

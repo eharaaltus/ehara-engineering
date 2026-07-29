@@ -28,9 +28,28 @@ const globalForDb = globalThis as unknown as {
 // session-pooler pool (see note below).
 const isServerless = !!process.env.VERCEL;
 
+// Pick the correct Supabase pooler for the runtime, no matter which port the
+// DATABASE_URL env var happens to carry — so a deploy can NEVER be broken again
+// by the wrong port. Serverless (Vercel) MUST use the TRANSACTION pooler (:6543):
+// session mode (:5432) gives every function instance its own dedicated backend
+// and exhausts Supabase's small session pool under load (the "database being
+// slow / didn't go through" outages). A persistent local dev server is the
+// opposite — it wants the SESSION pooler (:5432); the transaction pooler wedges
+// it under the dashboard's parallel-query burst. This normalises both.
+function resolvePoolerUrl(url: string, serverless: boolean): string {
+  if (!url.includes("pooler.supabase.com")) return url; // non-pooler / direct — leave untouched
+  const wantPort = serverless ? "6543" : "5432";
+  return url.replace(/(pooler\.supabase\.com):(?:5432|6543)\//, `$1:${wantPort}/`);
+}
+const connectionString = resolvePoolerUrl(env.DATABASE_URL, isServerless);
+if (connectionString !== env.DATABASE_URL) {
+  // eslint-disable-next-line no-console
+  console.info(`[db] using ${isServerless ? "transaction (:6543)" : "session (:5432)"} pooler for this runtime`);
+}
+
 const client =
   globalForDb.__pg ??
-  postgres(env.DATABASE_URL, {
+  postgres(connectionString, {
     // Harmless on the session pooler; also REQUIRED on the transaction pooler
     // (6543), where named prepared statements break. We don't rely on prepares.
     prepare: false,

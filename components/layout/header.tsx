@@ -1,6 +1,7 @@
 import { LayoutGrid } from "lucide-react";
 import { MainNavServer } from "./main-nav-server";
 import { EmployeesNav } from "./employees-nav";
+import { NpdNav } from "./npd-nav";
 import { MobileMenuServer } from "./mobile-menu-server";
 import { HeaderStatusBar } from "./header-clock";
 import { UserMenuServer } from "@/components/header/user-menu-server";
@@ -31,7 +32,8 @@ export async function DashboardHeader({
   const isAdmin = me?.isAdmin ?? false;
   const isEmployees = workspace === "employees";
   const isWms = workspace === "wms";
-  const moduleCount = isEmployees ? 4 : isWms ? 6 + (isAdmin ? 1 : 0) : 1; // primary nav modules in reach
+  const isNpd = workspace === "npd";
+  const moduleCount = isEmployees ? 4 : isWms ? 6 + (isAdmin ? 1 : 0) : isNpd ? 4 : 1; // primary nav modules in reach
   // Back-link target for the "Workspace" wayfinding button.
   const workspaceHref = isEmployees ? "/portal/employees" : "/portal";
 
@@ -148,7 +150,7 @@ export async function DashboardHeader({
 
           <div className="flex-1 min-w-0 overflow-x-auto nav-scroll max-md:hidden">
             <div className="flex w-max mx-auto">
-              {isEmployees ? <EmployeesNav isAdmin={isAdmin} /> : isWms ? <MainNavServer /> : null}
+              {isEmployees ? <EmployeesNav isAdmin={isAdmin} /> : isWms ? <MainNavServer /> : isNpd ? <NpdNav /> : null}
             </div>
           </div>
 

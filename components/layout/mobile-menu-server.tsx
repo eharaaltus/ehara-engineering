@@ -1,6 +1,7 @@
 import { MobileMenu } from "./mobile-menu";
 import { MainNavServer } from "./main-nav-server";
 import { EmployeesNav } from "./employees-nav";
+import { NpdNav } from "./npd-nav";
 import { LiveIndicator } from "./live-indicator";
 import { AdminPill } from "@/components/header/admin-pill";
 
@@ -23,6 +24,8 @@ export async function MobileMenuServer({
             <EmployeesNav variant="drawer" isAdmin={isAdmin} />
           ) : workspace === "wms" ? (
             <MainNavServer variant="drawer" />
+          ) : workspace === "npd" ? (
+            <NpdNav variant="drawer" />
           ) : null}
         </div>
         <div className="border-t pt-4 flex flex-col gap-3" style={{ borderColor: "var(--color-hairline)" }}>

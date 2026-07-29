@@ -208,14 +208,6 @@ export function TrackerWorkspace({
           { label: "Blocking a gate", value: totals.gate, icon: Lock, from: "#7c3aed", to: "#a855f7" },
           { label: "My work", value: totals.mine, icon: UserCog, from: "#0f766e", to: "#14b8a6" },
         ]}
-        actions={
-          <Link
-            href={"/npd" as Route}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[13.5px] font-extrabold text-ink-strong shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-blue)] hover:text-[var(--color-brand-blue)]"
-          >
-            <Boxes size={16} strokeWidth={2.5} /> Products
-          </Link>
-        }
       />
 
       {/* ── Quick-filter tabs: five daily ones as pills, the rest in "More". A

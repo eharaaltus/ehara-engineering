@@ -18,8 +18,8 @@ import * as React from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import {
-  Search, Plus, Table2, Columns3, ShieldCheck, Factory, Download, X, Lock,
-  AlertTriangle, ListChecks, Boxes, Flame, ChevronRight, BarChart3, Archive,
+  Search, Table2, Columns3, ShieldCheck, Factory, Download, X, Lock,
+  AlertTriangle, Boxes, Flame, ChevronRight, Archive,
 } from "lucide-react";
 import { PageHero } from "@/components/layout/page-hero";
 import { HEALTH_ORDER, HEALTH_META, BRAND, type Health, type Product } from "@/lib/npd/model";
@@ -111,29 +111,6 @@ export function ProductsWorkspace({ products, employees }: { products: Product[]
         title="Products"
         subtitle="Every part across 6 stages and 36 activities. Click any product to open it on the right — details and its task tracker, no page change."
         Icon={Factory}
-        actions={
-          <>
-            <Link
-              href={"/npd/dashboard" as Route}
-              className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[13.5px] font-extrabold text-ink-strong shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-blue)] hover:text-[var(--color-brand-blue)]"
-            >
-              <BarChart3 size={16} strokeWidth={2.5} /> Dashboard
-            </Link>
-            <Link
-              href={"/npd/tracker" as Route}
-              className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[13.5px] font-extrabold text-ink-strong shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-blue)] hover:text-[var(--color-brand-blue)]"
-            >
-              <ListChecks size={16} strokeWidth={2.5} /> Task Tracker
-            </Link>
-            <Link
-              href={"/npd/new" as Route}
-              className="inline-flex h-11 items-center gap-2 rounded-xl px-5 text-[14px] font-extrabold text-white shadow-lg transition-all hover:-translate-y-0.5"
-              style={{ background: BRAND.gradient, boxShadow: "0 14px 30px -14px rgba(30,64,175,0.6)" }}
-            >
-              <Plus size={17} strokeWidth={2.8} /> New Product
-            </Link>
-          </>
-        }
       />
 
       {/* ── Clickable KPI cards — each drills into the products behind it ─── */}

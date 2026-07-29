@@ -67,14 +67,6 @@ export function DashboardWorkspace({ products, employees }: { products: Product[
         title="Dashboard"
         subtitle="Everything on one screen — switch the scope to see the whole portfolio, one customer, one product, or one person."
         Icon={BarChart3}
-        actions={
-          <Link
-            href={"/npd" as Route}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[13.5px] font-extrabold text-ink-strong shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-blue)] hover:text-[var(--color-brand-blue)]"
-          >
-            <Boxes size={16} strokeWidth={2.5} /> Products
-          </Link>
-        }
       />
 
       {/* Scope selector */}

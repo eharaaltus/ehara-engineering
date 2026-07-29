@@ -67,6 +67,34 @@ const MORE_TABS: TabDef[] = [
 
 const TABS: TabDef[] = [...PRIMARY_TABS, ...MORE_TABS];
 
+// Each stage gets a distinct soft brand-palette chip so the 6 stages read at a
+// glance instead of as identical grey text.
+const STAGE_STYLE: Record<string, { color: string; bg: string }> = {
+  TECHNICAL: { color: "var(--color-blue-deep)", bg: "var(--color-blue-bg)" },
+  COMMERCIAL: { color: "var(--color-purple-deep)", bg: "var(--color-purple-bg)" },
+  "TOOL DEVELOPMENT": { color: "var(--color-amber-deep)", bg: "var(--color-amber-bg)" },
+  "PART SUBMISSION": { color: "var(--color-teal-deep)", bg: "var(--color-teal-bg)" },
+  "PPAP & PTR DOCUMENT": { color: "var(--color-rose-deep)", bg: "var(--color-rose-bg)" },
+  "PRE PRODUCTION HANDOVER": { color: "var(--color-indigo-deep)", bg: "var(--color-indigo-bg)" },
+};
+const stageStyle = (stage: string) =>
+  STAGE_STYLE[stage] ?? { color: "var(--color-ink-muted)", bg: "var(--color-surface-track)" };
+
+/** A small colour-coded initials chip for a doer — same idea as the dashboard's
+ *  workload avatars, with a deterministic colour per name. */
+function DoerAvatar({ name }: { name: string | null }) {
+  if (!name) {
+    return <span className="grid size-[22px] shrink-0 place-items-center rounded-full bg-[var(--color-surface-track)] text-[10px] font-black text-ink-subtle">–</span>;
+  }
+  const initials = name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  const hue = [...name].reduce((h, c) => (h + c.charCodeAt(0) * 7) % 360, 0);
+  return (
+    <span className="grid size-[22px] shrink-0 place-items-center rounded-full text-[10px] font-black text-white" style={{ background: `hsl(${hue} 52% 42%)` }}>
+      {initials}
+    </span>
+  );
+}
+
 export function TrackerWorkspace({
   products,
   employees,
@@ -274,17 +302,17 @@ export function TrackerWorkspace({
             className="premium-card thin-scroll overflow-x-auto rounded-2xl border bg-white"
             style={{ borderColor: "var(--color-hairline-strong)" }}
           >
-            <table className="w-full min-w-[1320px] border-collapse text-[14px]">
+            <table className="w-full min-w-[1380px] border-collapse text-[14px]">
               <thead>
                 <tr style={{ background: "var(--color-surface-soft)" }}>
                   <Th className="w-[36px] px-2">
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} aria-label="Select all" />
                   </Th>
-                  <Th className="w-[184px]">Product</Th>
+                  {groupBy !== "product" && <Th>Product</Th>}
                   <Th className="w-[68px]">Stage</Th>
                   <Th className="w-[44px]">ID</Th>
                   <Th>Activity</Th>
-                  <Th className="w-[152px]">Doer</Th>
+                  <Th className="w-[178px]">Doer</Th>
                   <Th className="w-[108px]">Planned</Th>
                   <Th className="w-[94px]" hint="WORKING days — weekends and the company holiday calendar are excluded. The sheet's TODAY()−planned subtraction counts Sundays and Diwali as working days.">
                     Days left
@@ -432,10 +460,10 @@ function Group({
   return (
     <>
       {grouped && (
-        <tr className="border-t" style={{ background: "var(--color-surface-soft)", borderColor: "var(--color-hairline-strong)" }}>
-          <td colSpan={12} className="px-2.5 py-2">
-            <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 text-[13.5px] font-black text-ink-strong">
-              {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+        <tr className="border-t transition-colors hover:bg-[var(--color-surface-track)]" style={{ background: "var(--color-surface-soft)", borderColor: "var(--color-hairline-strong)", boxShadow: overdue > 0 ? "inset 4px 0 0 var(--color-red)" : "inset 4px 0 0 var(--color-brand-blue)" }}>
+          <td colSpan={12} className="px-3 py-3">
+            <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center gap-2 text-left text-[13.5px] font-black text-ink-strong">
+              {open ? <ChevronDown size={16} className="shrink-0 text-ink-subtle" /> : <ChevronRight size={16} className="shrink-0 text-ink-subtle" />}
               {label}
               <span className="rounded-full bg-white px-1.5 py-px text-[11px] font-bold text-ink-subtle">{items.length}</span>
               {overdue > 0 && (
@@ -480,21 +508,23 @@ function Row({
   }
 
   const dim = a.state === "NotApplicable";
+  const st = stageStyle(a.stage);
 
   return (
     <tr
-      className={`border-t transition-colors hover:bg-[var(--color-surface-soft)] ${dim ? "opacity-55" : ""} ${pending ? "animate-pulse" : ""}`}
+      className={`border-t transition-colors hover:bg-[var(--color-blue-bg)] ${dim ? "opacity-55" : ""} ${pending ? "animate-pulse" : ""}`}
       style={{
         borderColor: "var(--color-hairline)",
         ...(checked ? { background: "var(--color-blue-bg)" } : {}),
+        // A gate-blocking overdue activity gets a quiet red left-rail instead of
+        // a loud badge on every row.
+        ...(a.blocksGate && a.state === "Overdue" ? { boxShadow: "inset 3px 0 0 var(--color-red)" } : {}),
       }}
     >
       <Td className="px-2">
         <input type="checkbox" checked={checked} onChange={() => onToggle(a.id)} aria-label={`Select ${a.code}`} />
       </Td>
-      {hideProduct ? (
-        <Td />
-      ) : (
+      {!hideProduct && (
         <Td>
           <Link href={`/npd/${a.productId}` as Route} className="block max-w-[184px] truncate text-[13px] font-bold text-ink-strong hover:text-[#1e40af]">
             <span className="text-ink-subtle">#{a.productSrNo ?? "—"}</span> {a.productPartName}
@@ -502,12 +532,14 @@ function Row({
         </Td>
       )}
       <Td>
-        <span className="text-[12px] font-bold text-ink-subtle">{STAGE_SHORT[a.stage] ?? a.stage}</span>
+        <span className="inline-flex items-center whitespace-nowrap rounded-md px-2 py-1 text-[11.5px] font-bold" style={{ background: st.bg, color: st.color }}>
+          {STAGE_SHORT[a.stage] ?? a.stage}
+        </span>
       </Td>
       <Td>
         <span
           className="rounded px-1.5 py-0.5 text-[11px] font-black tabular-nums"
-          style={{ background: "var(--color-surface-track)", color: "var(--color-ink)", fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}
+          style={{ background: st.bg, color: st.color, fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}
         >
           {a.code}
         </span>
@@ -518,22 +550,22 @@ function Row({
         </span>
         {a.reasons && <span className="mt-0.5 block max-w-[380px] truncate text-[12px] italic leading-tight text-ink-subtle">{a.reasons}</span>}
         {a.blocksGate && a.state === "Overdue" && (
-          <span
-            className="mt-0.5 inline-flex items-center gap-0.5 rounded px-1 py-px text-[9px] font-black uppercase tracking-wide"
-            style={{ background: "var(--color-red-bg)", color: "var(--color-red-deep)" }}
-          >
-            <AlertTriangle size={9} /> blocking gate
+          <span className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-bold" style={{ color: "var(--color-red-deep)" }}>
+            <Lock size={11} strokeWidth={2.6} /> Blocking gate
           </span>
         )}
       </Td>
       <Td>
-        <InlineSelect
-          value={a.doerId ?? ""}
-          onSave={(v) => save("doerId", v || null)}
-          options={[{ v: "", l: "— unassigned" }, ...employees.map((e) => ({ v: e.id, l: e.name }))]}
-          color={!a.doerId ? "var(--color-amber-deep)" : undefined}
-          minW="min-w-[150px]"
-        />
+        <div className="flex items-center gap-2">
+          <DoerAvatar name={a.doerName} />
+          <InlineSelect
+            value={a.doerId ?? ""}
+            onSave={(v) => save("doerId", v || null)}
+            options={[{ v: "", l: "— unassigned" }, ...employees.map((e) => ({ v: e.id, l: e.name }))]}
+            color={!a.doerId ? "var(--color-amber-deep)" : undefined}
+            minW="min-w-[128px]"
+          />
+        </div>
       </Td>
       <Td>
         <input
@@ -951,7 +983,7 @@ function Th({
 }
 
 function Td({ children, className = "" }: { children?: React.ReactNode; className?: string }) {
-  return <td className={`px-2.5 py-2 align-middle ${className}`}>{children}</td>;
+  return <td className={`px-2.5 py-2.5 align-middle ${className}`}>{children}</td>;
 }
 
 function exportCsv(rows: Activity[]) {

@@ -119,7 +119,7 @@ export function SetPasswordForm() {
           });
           if (!res.ok) throw new Error("session-exchange-failed");
           setStatus("done");
-          router.replace("/" as Route);
+          router.replace("/portal" as Route);
         } catch (signInErr) {
           // Password was set, but auto-sign-in failed — fall back to
           // sending the user to /login with their password ready.

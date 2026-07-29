@@ -9,7 +9,7 @@ import { getCurrentEmployee } from "@/lib/auth/current";
 export default async function ForgotPasswordPage() {
   const me = await getCurrentEmployee();
   if (me && me.isActive) {
-    redirect("/" as Route);
+    redirect("/portal" as Route);
   }
 
   return (

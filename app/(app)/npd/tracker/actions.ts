@@ -5,7 +5,6 @@ import { eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { npdTasks, npdProducts, holidays } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/current";
-import { isSheetSyncEnabled, pushProducts } from "@/lib/npd/sheet-sync";
 import { addWorkdays, makeCalendar, todayISO } from "@/lib/npd/workdays";
 
 export type Result = { ok: true; message: string } | { ok: false; error: string };
@@ -16,18 +15,6 @@ async function calendar() {
     .from(holidays)
     .where(eq(holidays.isActive, true));
   return makeCalendar(hols.map((h) => h.d));
-}
-
-/** Push to the sheet without letting a sheet failure fail the user's save. The
- *  DB is the system of record; the mirror is best-effort and self-heals on the
- *  next push or the "Sync" button. */
-async function mirror(productIds: string[]): Promise<void> {
-  if (!isSheetSyncEnabled()) return;
-  try {
-    await pushProducts(productIds);
-  } catch {
-    /* logged inside pushProducts */
-  }
 }
 
 function revalidate() {
@@ -65,7 +52,6 @@ export async function updateActivity(id: string, field: Field, value: string | n
   const v = value?.trim() || null;
   const patch: Partial<typeof npdTasks.$inferInsert> = {
     updatedAt: new Date(),
-    updatedSource: "app",
   };
 
   switch (field) {
@@ -102,7 +88,6 @@ export async function updateActivity(id: string, field: Field, value: string | n
   }
 
   await db.update(npdTasks).set(patch).where(eq(npdTasks.id, id));
-  await mirror([existing.productId]);
   revalidate();
   return { ok: true, message: "Saved" };
 }
@@ -122,12 +107,9 @@ export async function bulkSetResolution(
       resolution,
       completionDate: resolution === "Done" ? todayISO() : null,
       updatedAt: new Date(),
-      updatedSource: "app",
     })
     .where(inArray(npdTasks.id, ids));
 
-  const products = await productIdsFor(ids);
-  await mirror(products);
   revalidate();
   return { ok: true, message: `${ids.length} activit${ids.length === 1 ? "y" : "ies"} set to ${resolution}` };
 }
@@ -153,11 +135,9 @@ export async function bulkSetApplicability(
       applicability,
       reasons: reason?.trim() || null,
       updatedAt: new Date(),
-      updatedSource: "app",
     })
     .where(inArray(npdTasks.id, ids));
 
-  await mirror(await productIdsFor(ids));
   revalidate();
   return { ok: true, message: `${ids.length} activit${ids.length === 1 ? "y" : "ies"} set to ${applicability}` };
 }
@@ -175,11 +155,9 @@ export async function bulkAssign(
     .set({
       ...(role === "doer" ? { doerId: employeeId } : { supervisorId: employeeId }),
       updatedAt: new Date(),
-      updatedSource: "app",
     })
     .where(inArray(npdTasks.id, ids));
 
-  await mirror(await productIdsFor(ids));
   revalidate();
   return { ok: true, message: `Reassigned ${ids.length} activit${ids.length === 1 ? "y" : "ies"}` };
 }
@@ -213,22 +191,27 @@ export async function bulkShiftDates(
   const cal = await calendar();
   const rows = await db.select().from(npdTasks).where(inArray(npdTasks.id, ids));
 
-  let moved = 0;
-  for (const t of rows) {
-    if (!t.plannedDate) continue;
-    await db
-      .update(npdTasks)
-      .set({
-        plannedDate: addWorkdays(t.plannedDate, days, cal),
-        reasons: reason.trim(),
-        updatedAt: new Date(),
-        updatedSource: "app",
-      })
-      .where(eq(npdTasks.id, t.id));
-    moved++;
-  }
+  // Each row lands on its own new date, so this can't collapse into one
+  // statement — but it must not be a sequential await either. Shifting 14
+  // activities was 14 serialised round trips; issuing them together turns that
+  // into roughly one round trip's wall-clock. The pool (max 18) absorbs the
+  // fan-out, and a partial failure is no worse than the serial version's.
+  const movable = rows.filter((t) => t.plannedDate);
+  const now = new Date();
+  await Promise.all(
+    movable.map((t) =>
+      db
+        .update(npdTasks)
+        .set({
+          plannedDate: addWorkdays(t.plannedDate!, days, cal),
+          reasons: reason.trim(),
+          updatedAt: now,
+        })
+        .where(eq(npdTasks.id, t.id)),
+    ),
+  );
+  const moved = movable.length;
 
-  await mirror([...new Set(rows.map((r) => r.productId))]);
   revalidate();
   return {
     ok: true,
@@ -289,17 +272,18 @@ export async function cascadeReschedule(
     return { ok: false, error: "A reason is required before shifting a schedule." };
   }
 
-  for (const p of preview) {
-    await db
-      .update(npdTasks)
-      .set({
-        plannedDate: p.to,
-        reasons: reason.trim(),
-        updatedAt: new Date(),
-        updatedSource: "app",
-      })
-      .where(eq(npdTasks.id, p.id));
-  }
+  // Issued together rather than one-at-a-time — a cascade routinely touches a
+  // dozen-plus activities, and serialising those round trips is what made the
+  // action feel like it had hung.
+  const stamp = new Date();
+  await Promise.all(
+    preview.map((p) =>
+      db
+        .update(npdTasks)
+        .set({ plannedDate: p.to, reasons: reason.trim(), updatedAt: stamp })
+        .where(eq(npdTasks.id, p.id)),
+    ),
+  );
 
   // The product's target date has to move with its last activity, or the
   // portfolio keeps advertising a date the plan itself no longer believes.
@@ -310,20 +294,10 @@ export async function cascadeReschedule(
       .set({
         targetEndDate: addWorkdays(product.targetEndDate, days, cal),
         updatedAt: new Date(),
-        updatedSource: "app",
       })
       .where(eq(npdProducts.id, anchor.productId));
   }
 
-  await mirror([anchor.productId]);
   revalidate();
   return { ok: true, preview, applied: true };
-}
-
-async function productIdsFor(ids: string[]): Promise<string[]> {
-  const rows = await db
-    .select({ productId: npdTasks.productId })
-    .from(npdTasks)
-    .where(inArray(npdTasks.id, ids));
-  return [...new Set(rows.map((r) => r.productId))];
 }

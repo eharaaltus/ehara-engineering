@@ -2189,9 +2189,22 @@ export const npdProductStatusEnum = pgEnum("npd_product_status", [
   "Cancelled",
 ]);
 
-/** Which side made the most recent edit to a mirrored row. */
+/* ── RETIRED: Google-Sheet mirror ──────────────────────────────────────────
+ * NPD ran as a two-way mirror of a Google Sheet until 2026-07-31, when it was
+ * cut over to run purely on Postgres like the rest of the WMS. The Apps Script
+ * round trip sat in the critical path of every inline edit (~1.5s at its floor,
+ * several seconds to upsert a product and its 36 activities), which is what made
+ * marking an activity "Done" take seconds.
+ *
+ * The app no longer reads or writes ANY of the objects below. They are kept
+ * declared — rather than dropped — so drizzle-kit doesn't generate a destructive
+ * migration against live tables that still hold historical rows. Drop them in a
+ * dedicated migration once the sync history is confirmed disposable.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/** RETIRED. Which side made the most recent edit to a mirrored row. */
 export const npdSyncSourceEnum = pgEnum("npd_sync_source", ["app", "sheet"]);
-/** Which way a sync operation moved data. */
+/** RETIRED. Which way a sync operation moved data. */
 export const npdSyncDirectionEnum = pgEnum("npd_sync_direction", [
   "push", // app  → sheet
   "pull", // sheet → app (full reconcile)
@@ -2217,6 +2230,8 @@ export const npdProducts = pgTable("npd_products", {
   archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  /** RETIRED with the sheet mirror. NOT NULL DEFAULT 'app', so leaving it
+   *  declared and unwritten is harmless; the app no longer sets it. */
   updatedSource: npdSyncSourceEnum("updated_source").notNull().default("app"),
 });
 
@@ -2248,20 +2263,16 @@ export const npdTasks = pgTable(
     applicability: npdApplicabilityEnum("applicability").notNull().default("Applicable"),
     reasons: text("reasons"),
     sortOrder: integer("sort_order").notNull().default(0),
-    /** Last time this row changed, from EITHER side (app or Google Sheet). The
-     *  sheet↔app mirror resolves conflicts last-write-wins on this column, so a
-     *  row edited in the sheet at 10:05 beats an app edit from 10:04. */
+    /** Last time this row changed. */
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-    /** Where the most recent edit came from — lets the push-back loop skip rows
-     *  that the sheet itself just told us about (prevents echo/ping-pong). */
+    /** RETIRED with the sheet mirror. NOT NULL DEFAULT 'app'; no longer written. */
     updatedSource: npdSyncSourceEnum("updated_source").notNull().default("app"),
   },
   (t) => [index("npd_tasks_product_idx").on(t.productId)],
 );
 
-/** Audit trail for every Google-Sheet mirror operation, in both directions.
- *  Surfaced on the NPD page as "Sheet synced 2 min ago · 74 rows" so the team
- *  can see at a glance whether the mirror is healthy without opening logs. */
+/** RETIRED. Audit trail of the old Google-Sheet mirror operations. No code
+ *  reads or writes this any more; kept so the historical rows survive. */
 export const npdSyncLog = pgTable(
   "npd_sync_log",
   {

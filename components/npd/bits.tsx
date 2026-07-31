@@ -140,11 +140,17 @@ export function HealthDot({ product, showLabel = false }: { product: Product; sh
  * The user should never have to press "refresh" — they open the page and it is
  * already up to date, and it stays up to date while they look at it. This
  * silently re-runs the server components (which re-read the database, picking up
- * anything the Google-Sheet webhook wrote) on an interval, and immediately
- * whenever the tab regains focus. Client state — the view, filters, the tab —
- * is preserved, because router.refresh() only re-fetches server data.
+ * whatever a teammate changed) on an interval, and immediately whenever the tab
+ * regains focus. Client state — the view, filters, the tab — is preserved,
+ * because router.refresh() only re-fetches server data.
+ *
+ * 60s, not 20s: every tick re-runs loadPortfolio (all products + all activities
+ * + employees + holidays). At 20s that was a standing background query load on
+ * every open NPD tab for changes that, now the Google-Sheet mirror is gone, can
+ * only come from another person in this app. The focus listener still makes
+ * switching back to the tab feel instant.
  */
-export function AutoRefresh({ intervalMs = 20_000 }: { intervalMs?: number }) {
+export function AutoRefresh({ intervalMs = 60_000 }: { intervalMs?: number }) {
   const router = useRouter();
   React.useEffect(() => {
     const tick = () => {

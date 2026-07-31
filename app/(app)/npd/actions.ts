@@ -8,7 +8,6 @@ import { npdProducts, npdTasks, holidays } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/current";
 import { NPD_ACTIVITIES } from "@/lib/npd/template";
 import { addWorkdays, makeCalendar } from "@/lib/npd/workdays";
-import { deleteFromSheet, pushProduct } from "@/lib/npd/sheet-sync";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -91,14 +90,6 @@ export async function createNpdProduct(formData: FormData): Promise<void> {
     })),
   );
 
-  // Mirror into the Google Sheet. Best-effort: a sheet outage must never lose
-  // the user their product.
-  try {
-    await pushProduct(prod.id);
-  } catch {
-    /* pushProduct logs its own failures to npd_sync_log */
-  }
-
   revalidatePath("/npd");
   revalidatePath("/npd/tracker");
   redirect(`/npd/${prod.id}`);
@@ -129,16 +120,10 @@ export async function updateNpdTask(formData: FormData): Promise<void> {
       drawingLink: str(formData.get("drawingLink")),
       reasons: str(formData.get("reasons")),
       updatedAt: new Date(),
-      updatedSource: "app",
     })
     .where(eq(npdTasks.id, id));
 
   if (productId) {
-    try {
-      await pushProduct(productId);
-    } catch {
-      /* mirror is best-effort; the DB already has the truth */
-    }
     revalidatePath(`/npd/${productId}`);
   }
   revalidatePath("/npd");
@@ -166,18 +151,12 @@ export async function updateNpdProduct(formData: FormData): Promise<ActionResult
         defaultDoerId: str(formData.get("defaultDoerId")),
         defaultSupervisorId: str(formData.get("defaultSupervisorId")),
         updatedAt: new Date(),
-        updatedSource: "app",
         // `baselineEndDate` is deliberately absent. Editing a product must never
         // move the frozen commitment — that is the whole reason it exists.
       })
       .where(eq(npdProducts.id, id));
   } catch (err) {
     return { ok: false, error: `DB: ${err instanceof Error ? err.message : String(err)}` };
-  }
-  try {
-    await pushProduct(id);
-  } catch {
-    /* best-effort mirror */
   }
   revalidatePath("/npd");
   revalidatePath("/npd/tracker");
@@ -247,11 +226,6 @@ export async function duplicateNpdProduct(id: string): Promise<ActionResult & { 
       );
     }
 
-    try {
-      await pushProduct(copy.id);
-    } catch {
-      /* best-effort mirror */
-    }
     revalidatePath("/npd");
     revalidatePath("/npd/tracker");
     return { ok: true, newId: copy.id };
@@ -279,24 +253,10 @@ export async function deleteNpdProduct(id: string): Promise<ActionResult> {
   await requireAdmin();
   if (!id) return { ok: false, error: "Missing product id" };
 
-  // Collect the activity UIDs BEFORE the cascade removes them — afterwards there
-  // is nothing left to tell the sheet to delete, and its rows would linger as
-  // orphans that no future sync could ever match or clean up.
-  const taskIds = await db
-    .select({ id: npdTasks.id })
-    .from(npdTasks)
-    .where(eq(npdTasks.productId, id));
-
   try {
     await db.delete(npdProducts).where(eq(npdProducts.id, id)); // npd_tasks cascade
   } catch (err) {
     return { ok: false, error: `DB: ${err instanceof Error ? err.message : String(err)}` };
-  }
-
-  try {
-    await deleteFromSheet([id, ...taskIds.map((t) => t.id)]);
-  } catch {
-    /* best-effort mirror */
   }
 
   revalidatePath("/npd");

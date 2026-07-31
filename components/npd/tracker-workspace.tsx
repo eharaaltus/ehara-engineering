@@ -7,9 +7,9 @@
  * activities by opening one product at a time, which is exactly the thing the
  * spreadsheet's flat Task_Tracker tab did better. This is that tab, with the
  * things a spreadsheet can't do: live quick-filters with counts, working-day
- * maths, inline editing that writes straight to Postgres AND the sheet, and bulk
- * actions — above all "shift these dates by N working days", which turns a
- * fourteen-edit afternoon into one action with a recorded reason.
+ * maths, inline editing that writes straight to Postgres, and bulk actions —
+ * above all "shift these dates by N working days", which turns a fourteen-edit
+ * afternoon into one action with a recorded reason.
  */
 
 import * as React from "react";
@@ -295,7 +295,7 @@ export function TrackerWorkspace({
                   <Th>Activity</Th>
                   <Th className="w-[178px]">Doer</Th>
                   <Th className="w-[108px]">Planned</Th>
-                  <Th className="w-[94px]" hint="WORKING days — weekends and the company holiday calendar are excluded. The sheet's TODAY()−planned subtraction counts Sundays and Diwali as working days.">
+                  <Th className="w-[94px]" hint="WORKING days — weekends and the company holiday calendar are excluded, so a Friday task showing 3 days really does have 3 days of work left, not one.">
                     Days left
                   </Th>
                   <Th className="w-[106px]">Resolution</Th>
@@ -480,9 +480,29 @@ function Row({
   const router = useRouter();
   const [pending, start] = React.useTransition();
 
+  // The editable cells are bound to SERVER data, so before this existed a click
+  // on "Done" left the <select> showing the old value until the round trip came
+  // back — the change appeared to happen seconds after you made it. useOptimistic
+  // shows your choice immediately and hands control back to the server value the
+  // moment the transition settles (so a rejected save visibly reverts).
+  const [shown, showOptimistic] = React.useOptimistic(
+    {
+      resolution: a.resolution,
+      applicability: a.applicability,
+      doerId: a.doerId ?? "",
+      plannedDate: a.plannedDate ?? "",
+    },
+    (prev, patch: Partial<Record<Field, string>>) => ({ ...prev, ...patch }),
+  );
+
   function save(field: Field, value: string | null) {
     start(async () => {
+      showOptimistic({ [field]: value ?? "" });
       const res = await updateActivity(a.id, field, value);
+      // revalidatePath inside the action refreshes this route, but the derived
+      // columns (state chip, slip, gate flags, tab counts) are computed a level
+      // up, so nudge the router to re-pull them. This now runs BEHIND the
+      // optimistic value rather than in front of it.
       if (res.ok) router.refresh();
       else fireToast({ message: res.error, type: "error" });
     });
@@ -540,10 +560,10 @@ function Row({
         <div className="flex items-center gap-2">
           <DoerAvatar name={a.doerName} />
           <InlineSelect
-            value={a.doerId ?? ""}
+            value={shown.doerId}
             onSave={(v) => save("doerId", v || null)}
             options={[{ v: "", l: "— unassigned" }, ...employees.map((e) => ({ v: e.id, l: e.name }))]}
-            color={!a.doerId ? "var(--color-amber-deep)" : undefined}
+            color={!shown.doerId ? "var(--color-amber-deep)" : undefined}
             minW="min-w-[128px]"
           />
         </div>
@@ -551,7 +571,7 @@ function Row({
       <Td>
         <input
           type="date"
-          defaultValue={a.plannedDate ?? ""}
+          value={shown.plannedDate}
           onChange={(e) => save("plannedDate", e.target.value || null)}
           className="w-full rounded-md border border-transparent bg-transparent px-1 py-1 text-[13px] font-semibold text-ink-strong transition hover:border-[var(--color-hairline-strong)] hover:bg-white focus:border-[var(--color-brand-blue)] focus:bg-white focus:outline-none"
         />
@@ -559,7 +579,7 @@ function Row({
       <Td><StateChip a={a} /></Td>
       <Td>
         <InlineSelect
-          value={a.resolution}
+          value={shown.resolution}
           onSave={(v) => save("resolution", v)}
           options={[{ v: "Open", l: "Open" }, { v: "Done", l: "Done" }, { v: "On Hold", l: "On Hold" }]}
           color={STATE_META[a.state].color}
@@ -567,7 +587,7 @@ function Row({
       </Td>
       <Td>
         <InlineSelect
-          value={a.applicability}
+          value={shown.applicability}
           onSave={(v) => save("applicability", v)}
           options={[{ v: "Applicable", l: "Applicable" }, { v: "N/A", l: "N/A" }, { v: "On Hold", l: "On Hold" }]}
         />

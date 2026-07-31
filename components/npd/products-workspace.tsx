@@ -552,7 +552,7 @@ function KpiCard({
 
 function LiveTag() {
   return (
-    <Tip content="This page refreshes on its own — anything you or the team change (here or in the Google Sheet) shows up automatically. No refresh button needed.">
+    <Tip content="This page refreshes on its own — anything you or the team change shows up automatically. No refresh button needed.">
       <span className="inline-flex h-10 cursor-default items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-[12px] font-bold text-ink-subtle shadow-sm">
         <span className="relative flex size-2">
           <span className="absolute inline-flex size-full animate-ping rounded-full opacity-70" style={{ background: "var(--color-green)" }} />

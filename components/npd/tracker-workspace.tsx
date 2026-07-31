@@ -235,6 +235,7 @@ export function TrackerWorkspace({
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            autoComplete="off"
             placeholder="Search activity, code, part, doer…"
             className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-[13.5px] text-ink-strong shadow-sm outline-none transition focus:border-[var(--color-brand-blue)] focus:ring-2 focus:ring-[rgba(30,64,175,0.10)]"
           />
@@ -822,6 +823,7 @@ function ShiftDialog({ ids, onClose, onDone }: { ids: string[]; onClose: () => v
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
+            autoComplete="off"
             placeholder="e.g. Tool vendor delayed T1 delivery by 2 weeks"
             className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-[13px] outline-none transition focus:border-[var(--color-brand-blue)] focus:ring-2 focus:ring-[rgba(30,64,175,0.10)]"
           />
@@ -870,6 +872,7 @@ function ReasonDialog({
       <input
         value={reason}
         onChange={(e) => setReason(e.target.value)}
+        autoComplete="off"
         placeholder="Reason…"
         className="mt-3 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-[13px] outline-none transition focus:border-[var(--color-brand-blue)] focus:ring-2 focus:ring-[rgba(30,64,175,0.10)]"
       />

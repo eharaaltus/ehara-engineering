@@ -159,6 +159,7 @@ export function ProductsWorkspace({ products, employees }: { products: Product[]
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            autoComplete="off"
             placeholder="Search part, number, customer…"
             className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-[13.5px] text-ink-strong shadow-sm outline-none transition focus:border-[var(--color-brand-blue)] focus:ring-2 focus:ring-[rgba(30,64,175,0.10)]"
           />

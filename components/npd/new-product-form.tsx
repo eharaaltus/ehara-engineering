@@ -86,36 +86,43 @@ export function NewProductForm({ employees }: { employees: Emp[] }) {
         </div>
       </div>
 
+      {/* autoComplete="off" on the form AND on each field: the browser was
+          recording submitted values as form history and offering them back as a
+          dropdown under Part Name / Part No. Part identifiers are not personal
+          data the browser should be remembering across products, and the
+          suggestion list sits directly over the next field. Chrome honours the
+          form-level attribute inconsistently, so the fields repeat it. */}
       <form
         ref={formRef}
         onSubmit={onSubmit}
+        autoComplete="off"
         className="premium-card mt-6 rounded-2xl border bg-white p-6"
         style={{ borderColor: "var(--color-hairline-strong)" }}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="md:col-span-2">
             <label className={LABEL}>Part Name *</label>
-            <input name="partName" required className={INPUT} placeholder="e.g. Air Filter Bracket" />
+            <input name="partName" required autoComplete="off" className={INPUT} placeholder="e.g. Air Filter Bracket" />
           </div>
           <div>
             <label className={LABEL}>Part No</label>
-            <input name="partNo" className={INPUT} placeholder="e.g. 2700N" />
+            <input name="partNo" autoComplete="off" className={INPUT} placeholder="e.g. 2700N" />
           </div>
           <div>
             <label className={LABEL}>Customer</label>
-            <input name="customer" className={INPUT} placeholder="e.g. M&M" />
+            <input name="customer" autoComplete="off" className={INPUT} placeholder="e.g. M&M" />
           </div>
           <div>
             <label className={LABEL}>Product No</label>
-            <input type="number" name="srNo" className={INPUT} placeholder="auto if blank" />
+            <input type="number" name="srNo" autoComplete="off" className={INPUT} placeholder="auto if blank" />
           </div>
           <div>
             <label className={LABEL}>Start Date *</label>
-            <input type="date" name="startDate" required className={INPUT} />
+            <input type="date" name="startDate" required autoComplete="off" className={INPUT} />
           </div>
           <div>
             <label className={LABEL}>Target End Date</label>
-            <input type="date" name="targetEndDate" className={INPUT} />
+            <input type="date" name="targetEndDate" autoComplete="off" className={INPUT} />
             <p className="mt-1 text-[11px] text-ink-subtle">
               Leave blank to derive it from the standard 36-activity timeline.
             </p>

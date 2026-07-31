@@ -162,13 +162,16 @@ export function EditProductDialog({
           <p className="mt-1 text-[12px] text-ink-subtle">
             The frozen baseline never moves here — that’s deliberate. To re-plan dates, shift the activities (which records the slip).
           </p>
-          <form onSubmit={submit} className="mt-4 space-y-3">
+          {/* autoComplete="off" throughout — same reasoning as the New Product
+              form: the browser was saving these as form history and offering
+              them back in a dropdown that covers the next field. */}
+          <form onSubmit={submit} autoComplete="off" className="mt-4 space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div><label className={label}>Product No</label><input name="srNo" type="number" defaultValue={product.srNo ?? ""} className={field} /></div>
-              <div><label className={label}>Part No</label><input name="partNo" defaultValue={product.partNo ?? ""} className={field} /></div>
+              <div><label className={label}>Product No</label><input name="srNo" type="number" autoComplete="off" defaultValue={product.srNo ?? ""} className={field} /></div>
+              <div><label className={label}>Part No</label><input name="partNo" autoComplete="off" defaultValue={product.partNo ?? ""} className={field} /></div>
             </div>
-            <div><label className={label}>Part Name *</label><input name="partName" defaultValue={product.partName} required className={field} /></div>
-            <div><label className={label}>Customer</label><input name="customer" defaultValue={product.customer ?? ""} className={field} /></div>
+            <div><label className={label}>Part Name *</label><input name="partName" autoComplete="off" defaultValue={product.partName} required className={field} /></div>
+            <div><label className={label}>Customer</label><input name="customer" autoComplete="off" defaultValue={product.customer ?? ""} className={field} /></div>
             <div className="grid grid-cols-2 gap-3">
               <div><label className={label}>Start Date</label><input name="startDate" type="date" defaultValue={product.startDate ?? ""} className={field} /></div>
               <div><label className={label}>Target End</label><input name="targetEndDate" type="date" defaultValue={product.targetEndDate ?? ""} className={field} /></div>

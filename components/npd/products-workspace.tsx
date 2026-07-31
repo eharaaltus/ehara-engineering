@@ -5,8 +5,8 @@
  * own design language (premium-card, the blue→red Ehara gradient, the
  * `--color-*` tokens). Nothing invents its own hex.
  *
- *   Table   dense portfolio grid, the spreadsheet-killer (default)
- *   Gates   stage-readiness matrix — "who is ready for review?"
+ *   Gates   stage-readiness matrix — "who is ready for review?" (default)
+ *   Table   dense portfolio grid, the spreadsheet-killer
  *   Board   kanban by CURRENT STAGE — "where is the pipeline clogged?"
  *
  * Clicking a product anywhere opens the right-side drawer: its full detail plus
@@ -32,8 +32,8 @@ type Emp = { id: string; name: string };
 type View = "table" | "gates" | "board";
 
 const VIEWS: { id: View; label: string; icon: React.ReactNode; blurb: string }[] = [
-  { id: "table", label: "Table", icon: <Table2 size={15} />, blurb: "Every part, every number" },
   { id: "gates", label: "Gates", icon: <ShieldCheck size={15} />, blurb: "Who is ready for review — and what's missing?" },
+  { id: "table", label: "Table", icon: <Table2 size={15} />, blurb: "Every part, every number" },
   { id: "board", label: "Board", icon: <Columns3 size={15} />, blurb: "Where is the pipeline clogged?" },
 ];
 
@@ -60,7 +60,7 @@ function ArchivedChip() {
 }
 
 export function ProductsWorkspace({ products, employees }: { products: Product[]; employees: Emp[] }) {
-  const [view, setView] = React.useState<View>("table");
+  const [view, setView] = React.useState<View>("gates");
   const [q, setQ] = React.useState("");
   const [customer, setCustomer] = React.useState("");
   const [health, setHealth] = React.useState<Health | "">("");

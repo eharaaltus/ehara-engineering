@@ -13,7 +13,7 @@ import * as React from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import * as Dialog from "@radix-ui/react-dialog";
-import { ChevronLeft, Factory, Sparkles, CheckCircle2, ArrowRight, Plus } from "lucide-react";
+import { Factory, Sparkles, CheckCircle2, ArrowRight, Plus } from "lucide-react";
 import { createNpdProduct, type CreatedProduct } from "@/app/(app)/npd/actions";
 
 type Emp = { id: string; name: string };
@@ -51,13 +51,9 @@ export function NewProductForm({ employees }: { employees: Emp[] }) {
 
   return (
     <>
-      <Link
-        href={"/npd" as Route}
-        className="inline-flex items-center gap-1 text-[12px] font-bold text-ink-subtle transition-colors hover:text-[var(--color-brand-blue)]"
-      >
-        <ChevronLeft size={14} /> Products
-      </Link>
-      <div className="mt-1.5 flex items-center gap-3">
+      {/* No back-link here: the NPD nav pills above already carry Products, and
+          Cancel at the foot of the form returns there too. */}
+      <div className="flex items-center gap-3">
         <span
           className="inline-flex size-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg"
           style={{

@@ -5,15 +5,16 @@ import { requireAdmin } from "@/lib/auth/current";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
 import { NewProductForm } from "@/components/npd/new-product-form";
+import { nextProjectId } from "../actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function NewNpdProductPage() {
   await requireAdmin();
-  const emps = await db
-    .select({ id: employees.id, name: employees.name })
-    .from(employees)
-    .orderBy(asc(employees.name));
+  const [emps, projectId] = await Promise.all([
+    db.select({ id: employees.id, name: employees.name }).from(employees).orderBy(asc(employees.name)),
+    nextProjectId(),
+  ]);
 
   return (
     <>
@@ -31,7 +32,7 @@ export default async function NewNpdProductPage() {
 
         {/* The form is a client component so it can show the "created" dialog
             instead of redirecting away the moment the product saves. */}
-        <NewProductForm employees={emps} />
+        <NewProductForm employees={emps} nextProjectId={projectId} />
       </main>
 
       <DashboardFooter />

@@ -259,9 +259,9 @@ export function ProductsWorkspace({ products, employees }: { products: Product[]
         ) : view === "table" ? (
           <TableView products={visible} employees={employees} onOpen={openProduct} onChanged={() => setProductOpen(false)} />
         ) : view === "gates" ? (
-          <GatesView products={visible} onOpen={openProduct} />
+          <GatesView products={visible} employees={employees} onOpen={openProduct} onChanged={() => setProductOpen(false)} />
         ) : (
-          <BoardView products={visible} onOpen={openProduct} />
+          <BoardView products={visible} employees={employees} onOpen={openProduct} onChanged={() => setProductOpen(false)} />
         )}
       </div>
 
@@ -297,7 +297,7 @@ function TableView({
         <table className="w-full min-w-[1200px] border-collapse text-[14px]">
           <thead>
             <tr style={{ background: "var(--color-surface-soft)" }}>
-              <Th className="w-[54px]">#</Th>
+              <Th className="w-[64px]" hint="Project ID — assigned automatically and unique to this project.">ID</Th>
               <Th>Part</Th>
               <Th className="w-[124px]">Customer</Th>
               <Th className="w-[196px]">Stage</Th>
@@ -397,7 +397,14 @@ function ForecastCell({ p }: { p: Product }) {
 //  GATES
 // ═══════════════════════════════════════════════════════════════════════════
 
-function GatesView({ products, onOpen }: { products: Product[]; onOpen: (p: Product) => void }) {
+function GatesView({
+  products, employees, onOpen, onChanged,
+}: {
+  products: Product[];
+  employees: Emp[];
+  onOpen: (p: Product) => void;
+  onChanged: () => void;
+}) {
   return (
     <div className="space-y-3">
       <p className="text-[13px] text-ink-muted">
@@ -412,6 +419,7 @@ function GatesView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
                 <Th className="w-[200px]">Part</Th>
                 {NPD_STAGES.map((s) => <Th key={s} className="text-center">{STAGE_SHORT[s]}</Th>)}
                 <Th className="w-[128px]">Gate now</Th>
+                <Th className="w-[44px]" />
               </tr>
             </thead>
             <tbody>
@@ -438,6 +446,9 @@ function GatesView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
                     ) : (
                       <span className="text-[12px] font-bold" style={{ color: "var(--color-green-deep)" }}>✓ All passed</span>
                     )}
+                  </Td>
+                  <Td>
+                    <ProductActionsMenu product={p} employees={employees} onDeleted={onChanged} />
                   </Td>
                 </tr>
               ))}
@@ -499,7 +510,14 @@ function GateCell({ product, stage }: { product: Product; stage: Product["stages
 //  BOARD
 // ═══════════════════════════════════════════════════════════════════════════
 
-function BoardView({ products, onOpen }: { products: Product[]; onOpen: (p: Product) => void }) {
+function BoardView({
+  products, employees, onOpen, onChanged,
+}: {
+  products: Product[];
+  employees: Emp[];
+  onOpen: (p: Product) => void;
+  onChanged: () => void;
+}) {
   const cols = NPD_STAGES.map((stage) => ({ stage, items: products.filter((p) => p.currentStage === stage) }));
   const done = products.filter((p) => p.currentStage === null);
   const maxWip = Math.max(1, ...cols.map((c) => c.items.length));
@@ -518,7 +536,7 @@ function BoardView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
                 </Tip>
               </div>
               <div className="flex flex-col gap-2">
-                {c.items.map((p) => <BoardCard key={p.id} p={p} onOpen={onOpen} />)}
+                {c.items.map((p) => <BoardCard key={p.id} p={p} onOpen={onOpen} employees={employees} onChanged={onChanged} />)}
                 {c.items.length === 0 && (
                   <div className="rounded-xl border border-dashed py-7 text-center text-[11px] text-ink-subtle" style={{ borderColor: "var(--color-hairline-strong)" }}>empty</div>
                 )}
@@ -531,37 +549,55 @@ function BoardView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
             <span className="text-[11px] font-black uppercase tracking-wide" style={{ color: "var(--color-green-deep)" }}>Handed over</span>
             <span className="rounded-full bg-white px-1.5 py-0.5 text-[11px] font-black" style={{ color: "var(--color-green-deep)" }}>{done.length}</span>
           </div>
-          <div className="flex flex-col gap-2">{done.map((p) => <BoardCard key={p.id} p={p} onOpen={onOpen} />)}</div>
+          <div className="flex flex-col gap-2">{done.map((p) => <BoardCard key={p.id} p={p} onOpen={onOpen} employees={employees} onChanged={onChanged} />)}</div>
         </div>
       </div>
     </div>
   );
 }
 
-function BoardCard({ p, onOpen }: { p: Product; onOpen: (p: Product) => void }) {
+function BoardCard({
+  p, onOpen, employees, onChanged,
+}: {
+  p: Product;
+  onOpen: (p: Product) => void;
+  employees: Emp[];
+  onChanged: () => void;
+}) {
   const m = HEALTH_META[p.health];
   const blocking = p.gateBlockers.filter((a) => a.state === "Overdue").length;
   return (
-    <button
-      onClick={() => onOpen(p)}
-      className="premium-card rounded-xl border bg-white p-3 text-left transition-transform hover:-translate-y-0.5"
+    // The card was a single <button>. The actions menu is itself a button, and a
+    // button inside a button is invalid HTML — the browser drops it and the menu
+    // never opens. So the card is now a positioned wrapper: the whole body stays
+    // one big click target for the drawer, and the menu sits alongside it rather
+    // than inside it.
+    <div
+      className="premium-card relative rounded-xl border bg-white transition-transform hover:-translate-y-0.5"
       style={{ borderColor: "var(--color-hairline-strong)", borderLeft: `3px solid ${m.color}` }}
     >
-      <div className="flex min-w-0 items-start justify-between gap-1.5">
-        <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-ink-strong">{p.partName}</span>
-        {p.archived && <ArchivedChip />}
-        <HealthDot product={p} />
+      <div className="absolute right-1 top-1 z-10">
+        <ProductActionsMenu product={p} employees={employees} onDeleted={onChanged} />
       </div>
-      <div className="mt-0.5 truncate text-[11px] text-ink-subtle">{p.customer ?? "—"} · #{p.srNo ?? "—"}</div>
-      <div className="mt-2.5"><MicroGrid product={p} cell={6} /></div>
-      <div className="mt-2.5"><ProgressBar pct={p.pct} overdue={p.overdue} /></div>
-      {blocking > 0 && (
-        <div className="mt-2 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-black" style={{ background: "var(--color-red-bg)", color: "var(--color-red-deep)" }}>
-          <Lock size={10} /> {blocking} blocking this gate
+
+      {/* pr-9 keeps the health dot clear of the menu button in the corner. */}
+      <button onClick={() => onOpen(p)} className="block w-full p-3 pr-9 text-left">
+        <div className="flex min-w-0 items-start justify-between gap-1.5">
+          <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-ink-strong">{p.partName}</span>
+          {p.archived && <ArchivedChip />}
+          <HealthDot product={p} />
         </div>
-      )}
-      {p.nextUp && <div className="mt-1.5 truncate text-[11px] text-ink-subtle">Next <b className="text-ink-strong">{p.nextUp.code}</b> · {fmtDate(p.nextUp.plannedDate)}</div>}
-    </button>
+        <div className="mt-0.5 truncate text-[11px] text-ink-subtle">{p.customer ?? "—"} · #{p.srNo ?? "—"}</div>
+        <div className="mt-2.5"><MicroGrid product={p} cell={6} /></div>
+        <div className="mt-2.5"><ProgressBar pct={p.pct} overdue={p.overdue} /></div>
+        {blocking > 0 && (
+          <div className="mt-2 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-black" style={{ background: "var(--color-red-bg)", color: "var(--color-red-deep)" }}>
+            <Lock size={10} /> {blocking} blocking this gate
+          </div>
+        )}
+        {p.nextUp && <div className="mt-1.5 truncate text-[11px] text-ink-subtle">Next <b className="text-ink-strong">{p.nextUp.code}</b> · {fmtDate(p.nextUp.plannedDate)}</div>}
+      </button>
+    </div>
   );
 }
 
@@ -628,9 +664,9 @@ function Empty({ children }: { children: React.ReactNode }) {
 }
 
 function exportCsv(products: Product[]) {
-  const head = ["Sr No", "Part Name", "Part No", "Customer", "Status", "Health", "Why", "Current Stage", "Applicable", "Done", "Open", "Overdue", "On Hold", "Progress %", "Slip (workdays)", "Start", "Baseline End", "Target End", "Forecast End", "Variance vs baseline"];
+  const head = ["Project ID", "Part Name", "Part Number", "Project Description", "Customer", "Status", "Health", "Why", "Current Stage", "Applicable", "Done", "Open", "Overdue", "On Hold", "Progress %", "Slip (workdays)", "Start", "Baseline End", "End Date", "Forecast End", "Variance vs baseline"];
   const rows = products.map((p) => [
-    p.srNo ?? "", p.partName, p.partNo ?? "", p.customer ?? "", p.status, p.health, p.healthReason,
+    p.srNo ?? "", p.partName, p.partNo ?? "", p.description ?? "", p.customer ?? "", p.status, p.health, p.healthReason,
     p.currentStage ?? "Complete", p.applicable, p.done, p.open, p.overdue, p.onHold, p.pct,
     p.slipDays, p.startDate ?? "", p.baselineEndDate ?? "", p.targetEndDate ?? "", p.forecastEnd ?? "", p.varianceDays,
   ]);

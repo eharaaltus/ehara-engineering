@@ -2213,10 +2213,15 @@ export const npdSyncDirectionEnum = pgEnum("npd_sync_direction", [
 
 export const npdProducts = pgTable("npd_products", {
   id: uuid("id").primaryKey().defaultRandom(),
+  /** Project ID — auto-assigned as max(srNo)+1 and UNIQUE (migration 0078).
+   *  Never entered by hand. Deleting the highest ID frees it for reuse; a gap
+   *  left in the middle is never refilled. */
   srNo: integer("sr_no"),
   customer: text("customer"),
   partName: text("part_name").notNull(),
   partNo: text("part_no"),
+  /** Project Description — free text, optional (migration 0078). */
+  description: text("description"),
   startDate: date("start_date"),
   targetEndDate: date("target_end_date"),
   /** The ORIGINAL committed target, frozen at creation. `targetEndDate` may be
@@ -2233,7 +2238,7 @@ export const npdProducts = pgTable("npd_products", {
   /** RETIRED with the sheet mirror. NOT NULL DEFAULT 'app', so leaving it
    *  declared and unwritten is harmless; the app no longer sets it. */
   updatedSource: npdSyncSourceEnum("updated_source").notNull().default("app"),
-});
+}, (t) => [uniqueIndex("npd_products_sr_no_uq").on(t.srNo)]);
 
 export const npdTasks = pgTable(
   "npd_tasks",

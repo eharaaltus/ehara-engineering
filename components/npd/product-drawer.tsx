@@ -64,6 +64,11 @@ export function ProductDrawer({
                     <p className="mt-0.5 truncate text-[13px] text-ink-subtle">
                       {product.customer ?? "—"}{product.partNo ? ` · ${product.partNo}` : ""}
                     </p>
+                    {product.description && (
+                      <p className="mt-1.5 line-clamp-3 whitespace-pre-line text-[12.5px] leading-snug text-ink-muted">
+                        {product.description}
+                      </p>
+                    )}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <ProductActionsMenu product={product} employees={employees} size="md" onDeleted={() => onOpenChange(false)} />

@@ -167,25 +167,40 @@ export function EditProductDialog({
               them back in a dropdown that covers the next field. */}
           <form onSubmit={submit} autoComplete="off" className="mt-4 space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div><label className={label}>Product No</label><input name="srNo" type="number" autoComplete="off" defaultValue={product.srNo ?? ""} className={field} /></div>
-              <div><label className={label}>Part No</label><input name="partNo" autoComplete="off" defaultValue={product.partNo ?? ""} className={field} /></div>
+              <div><label className={label}>Customer Name</label><input name="customer" autoComplete="off" defaultValue={product.customer ?? ""} className={field} /></div>
+              <div>
+                <label className={label}>Project ID</label>
+                {/* Read-only, and not submitted. The ID is auto-assigned and
+                    unique — editing it by hand could collide with another
+                    project or re-issue a number the numbering rule has spent. */}
+                <input
+                  value={product.srNo ?? "—"}
+                  readOnly
+                  disabled
+                  className={`${field} cursor-not-allowed bg-[var(--color-surface-soft)] font-bold text-ink-muted`}
+                />
+              </div>
             </div>
             <div><label className={label}>Part Name *</label><input name="partName" autoComplete="off" defaultValue={product.partName} required className={field} /></div>
-            <div><label className={label}>Customer</label><input name="customer" autoComplete="off" defaultValue={product.customer ?? ""} className={field} /></div>
+            <div><label className={label}>Part Number</label><input name="partNo" autoComplete="off" defaultValue={product.partNo ?? ""} className={field} /></div>
+            <div>
+              <label className={label}>Project Description</label>
+              <textarea name="description" rows={3} autoComplete="off" defaultValue={product.description ?? ""} className={`${field} resize-y`} />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div><label className={label}>Start Date</label><input name="startDate" type="date" defaultValue={product.startDate ?? ""} className={field} /></div>
-              <div><label className={label}>Target End</label><input name="targetEndDate" type="date" defaultValue={product.targetEndDate ?? ""} className={field} /></div>
+              <div><label className={label}>End Date</label><input name="targetEndDate" type="date" defaultValue={product.targetEndDate ?? ""} className={field} /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={label}>Default doer</label>
+                <label className={label}>Doer</label>
                 <select name="defaultDoerId" defaultValue={employees.find((e) => e.name === product.defaultDoerName)?.id ?? ""} className={field}>
                   <option value="">—</option>
                   {employees.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}
                 </select>
               </div>
               <div>
-                <label className={label}>Default supervisor</label>
+                <label className={label}>Supervisor</label>
                 <select name="defaultSupervisorId" defaultValue={employees.find((e) => e.name === product.defaultSupervisorName)?.id ?? ""} className={field}>
                   <option value="">—</option>
                   {employees.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}

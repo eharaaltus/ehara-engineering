@@ -46,6 +46,11 @@ export function ProductDetail({ product, employees }: { product: Product; employ
                 <span className="font-bold text-ink-muted">#{product.srNo ?? "—"}</span>
                 {" · "}{product.customer ?? "—"}{product.partNo ? ` · ${product.partNo}` : ""}
               </p>
+              {product.description && (
+                <p className="mt-1.5 max-w-2xl whitespace-pre-line text-[13px] leading-snug text-ink-muted">
+                  {product.description}
+                </p>
+              )}
             </div>
           </div>
         </div>

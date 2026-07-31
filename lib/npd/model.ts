@@ -44,9 +44,12 @@ export interface ActivityInput {
 
 export interface ProductInput {
   id: string;
+  /** Project ID — auto-assigned, unique. */
   srNo: number | null;
   partName: string;
   partNo: string | null;
+  /** Project Description — free text, optional. */
+  description: string | null;
   customer: string | null;
   status: string;
   archived: boolean;

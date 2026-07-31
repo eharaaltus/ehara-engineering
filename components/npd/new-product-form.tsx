@@ -22,7 +22,16 @@ const LABEL = "mb-1.5 block text-[12.5px] font-bold text-ink-strong";
 const INPUT =
   "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[14px] text-ink-strong shadow-sm outline-none transition focus:border-[var(--color-brand-blue)] focus:ring-2 focus:ring-[rgba(30,64,175,0.10)]";
 
-export function NewProductForm({ employees }: { employees: Emp[] }) {
+export function NewProductForm({
+  employees,
+  nextProjectId,
+}: {
+  employees: Emp[];
+  /** Preview of the ID this product will get. Read on the server at page load;
+   *  the authoritative number is assigned again at save, so if someone else
+   *  creates a product first, the dialog reports the ID actually issued. */
+  nextProjectId: number;
+}) {
   const [pending, start] = React.useTransition();
   const [created, setCreated] = React.useState<CreatedProduct | null>(null);
   const [error, setError] = React.useState<string | null>(null);
@@ -96,35 +105,58 @@ export function NewProductForm({ employees }: { employees: Emp[] }) {
         style={{ borderColor: "var(--color-hairline-strong)" }}
       >
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="md:col-span-2">
+          <div>
+            <label className={LABEL}>Customer Name</label>
+            <input name="customer" autoComplete="off" className={INPUT} placeholder="e.g. M&M" />
+          </div>
+          <div>
+            <label className={LABEL}>Project ID</label>
+            {/* Display-only. The value is assigned server-side at save from
+                max(existing)+1, and is NOT read back off the form — so this
+                can't be edited into a collision, and the number shown can
+                never be the one that gets written by someone else first. */}
+            <input
+              value={nextProjectId}
+              readOnly
+              disabled
+              aria-describedby="project-id-hint"
+              className={`${INPUT} cursor-not-allowed bg-[var(--color-surface-soft)] font-bold text-ink-muted`}
+            />
+            <p id="project-id-hint" className="mt-1 text-[11px] text-ink-subtle">
+              Assigned automatically and unique.
+            </p>
+          </div>
+          <div>
             <label className={LABEL}>Part Name *</label>
             <input name="partName" required autoComplete="off" className={INPUT} placeholder="e.g. Air Filter Bracket" />
           </div>
           <div>
-            <label className={LABEL}>Part No</label>
+            <label className={LABEL}>Part Number</label>
             <input name="partNo" autoComplete="off" className={INPUT} placeholder="e.g. 2700N" />
           </div>
-          <div>
-            <label className={LABEL}>Customer</label>
-            <input name="customer" autoComplete="off" className={INPUT} placeholder="e.g. M&M" />
-          </div>
-          <div>
-            <label className={LABEL}>Product No</label>
-            <input type="number" name="srNo" autoComplete="off" className={INPUT} placeholder="auto if blank" />
+          <div className="md:col-span-2">
+            <label className={LABEL}>Project Description</label>
+            <textarea
+              name="description"
+              rows={3}
+              autoComplete="off"
+              className={`${INPUT} resize-y`}
+              placeholder="What this project covers — scope, variants, anything the team should know at a glance."
+            />
           </div>
           <div>
             <label className={LABEL}>Start Date *</label>
             <input type="date" name="startDate" required autoComplete="off" className={INPUT} />
           </div>
           <div>
-            <label className={LABEL}>Target End Date</label>
+            <label className={LABEL}>End Date</label>
             <input type="date" name="targetEndDate" autoComplete="off" className={INPUT} />
             <p className="mt-1 text-[11px] text-ink-subtle">
               Leave blank to derive it from the standard 36-activity timeline.
             </p>
           </div>
           <div>
-            <label className={LABEL}>Default Doer</label>
+            <label className={LABEL}>Doer</label>
             <select name="defaultDoerId" className={INPUT} defaultValue="">
               <option value="">Select…</option>
               {employees.map((e) => (
@@ -133,7 +165,7 @@ export function NewProductForm({ employees }: { employees: Emp[] }) {
             </select>
           </div>
           <div>
-            <label className={LABEL}>Default Supervisor</label>
+            <label className={LABEL}>Supervisor</label>
             <select name="defaultSupervisorId" className={INPUT} defaultValue="">
               <option value="">Select…</option>
               {employees.map((e) => (

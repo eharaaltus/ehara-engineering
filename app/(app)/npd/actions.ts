@@ -14,9 +14,27 @@ function str(v: FormDataEntryValue | null): string | null {
   const s = v ? String(v).trim() : "";
   return s || null;
 }
-function int(v: FormDataEntryValue | null): number | null {
-  const n = v ? parseInt(String(v), 10) : NaN;
-  return Number.isNaN(n) ? null : n;
+
+/**
+ * The next Project ID: max(existing) + 1.
+ *
+ * That single rule gives exactly the required behaviour, and it is worth being
+ * explicit about why, because the two cases look contradictory at first:
+ *
+ *   1,2,3,4,5  and 5 is deleted  ->  max is 4, next is 5   (the top ID is reused)
+ *   1,2,3,4    and 2 is deleted  ->  max is 4, next is 5   (the gap is NEVER refilled)
+ *
+ * So "reuse" is not a special case — nothing ever looks for holes. Deleting the
+ * highest ID simply lowers the maximum.
+ *
+ * A UNIQUE index on sr_no (migration 0078) is the backstop: if two creates race
+ * to the same maximum, the loser fails loudly rather than minting a duplicate.
+ */
+export async function nextProjectId(): Promise<number> {
+  const rows = await db
+    .select({ next: sql<number>`coalesce(max(${npdProducts.srNo}), 0) + 1` })
+    .from(npdProducts);
+  return rows[0]?.next ?? 1;
 }
 
 /** What the New Product form needs back to render its success dialog. */
@@ -44,15 +62,10 @@ export async function createNpdProduct(
   const doerId = str(formData.get("defaultDoerId")) ?? me.id;
   const supervisorId = str(formData.get("defaultSupervisorId")) ?? doerId;
 
-  // Product number = srNo. Auto-assign the next number if none supplied so
-  // every product is searchable by a stable number.
-  let srNo = int(formData.get("srNo"));
-  if (srNo == null) {
-    const rows = await db
-      .select({ next: sql<number>`coalesce(max(${npdProducts.srNo}), 0) + 1` })
-      .from(npdProducts);
-    srNo = rows[0]?.next ?? 1;
-  }
+  // Project ID is auto-assigned and never read from the form — the field is
+  // display-only, so a crafted POST can't choose its own ID or collide with an
+  // existing one. See nextProjectId() for the max+1 rule.
+  const srNo = await nextProjectId();
 
   // The activity template's offsets are WORKING-day offsets, so a product that
   // starts the week of a festival no longer front-loads three activities onto
@@ -69,25 +82,41 @@ export async function createNpdProduct(
   const derivedEnd = planned[planned.length - 1] ?? base;
   const targetEndDate = str(formData.get("targetEndDate")) ?? derivedEnd;
 
-  const [prod] = await db
-    .insert(npdProducts)
-    .values({
-      srNo,
-      customer: str(formData.get("customer")),
-      partName,
-      partNo: str(formData.get("partNo")),
-      startDate: start,
-      targetEndDate,
-      // Freeze the promise. `targetEndDate` can be re-planned later; this cannot.
-      // The gap between them is the product's schedule variance — and without
-      // this one column it is permanently unknowable, because re-planning
-      // overwrites the only record of what you originally committed to.
-      baselineEndDate: targetEndDate,
-      defaultDoerId: doerId,
-      defaultSupervisorId: supervisorId,
-      status: "Active",
-    })
-    .returning();
+  const row = {
+    customer: str(formData.get("customer")),
+    partName,
+    partNo: str(formData.get("partNo")),
+    description: str(formData.get("description")),
+    startDate: start,
+    targetEndDate,
+    // Freeze the promise. `targetEndDate` can be re-planned later; this cannot.
+    // The gap between them is the product's schedule variance — and without
+    // this one column it is permanently unknowable, because re-planning
+    // overwrites the only record of what you originally committed to.
+    baselineEndDate: targetEndDate,
+    defaultDoerId: doerId,
+    defaultSupervisorId: supervisorId,
+    status: "Active" as const,
+  };
+
+  // Two people creating a product at the same moment can both read the same
+  // max(sr_no); the UNIQUE index then rejects the second. Re-read and retry
+  // rather than showing a raw constraint error for something the user can do
+  // nothing about. A couple of attempts is plenty for a team this size.
+  let prod: typeof npdProducts.$inferSelect | undefined;
+  let candidate = srNo;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      [prod] = await db.insert(npdProducts).values({ ...row, srNo: candidate }).returning();
+      break;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (!msg.includes("npd_products_sr_no_uq")) {
+        return { ok: false, error: `DB: ${msg}` };
+      }
+      candidate = await nextProjectId();
+    }
+  }
 
   if (!prod) return { ok: false, error: "Could not create the product. Please try again." };
 
@@ -160,10 +189,13 @@ export async function updateNpdProduct(formData: FormData): Promise<ActionResult
     await db
       .update(npdProducts)
       .set({
-        srNo: int(formData.get("srNo")),
+        // `srNo` is deliberately absent. The Project ID is auto-assigned and
+        // unique; letting an edit set it by hand would allow collisions with
+        // an existing project and re-issue of a number the rule says is spent.
         customer: str(formData.get("customer")),
         partName,
         partNo: str(formData.get("partNo")),
+        description: str(formData.get("description")),
         startDate: str(formData.get("startDate")),
         targetEndDate: str(formData.get("targetEndDate")),
         defaultDoerId: str(formData.get("defaultDoerId")),
@@ -200,10 +232,8 @@ export async function duplicateNpdProduct(id: string): Promise<ActionResult & { 
     if (!src) return { ok: false, error: "Product not found" };
     const srcTasks = await db.select().from(npdTasks).where(eq(npdTasks.productId, id));
 
-    const nextRows = await db
-      .select({ next: sql<number>`coalesce(max(${npdProducts.srNo}), 0) + 1` })
-      .from(npdProducts);
-    const next = nextRows[0]?.next ?? null;
+    // Same rule as a fresh create — one definition of "next Project ID".
+    const next = await nextProjectId();
 
     const [copy] = await db
       .insert(npdProducts)
@@ -212,6 +242,7 @@ export async function duplicateNpdProduct(id: string): Promise<ActionResult & { 
         customer: src.customer,
         partName: `${src.partName} (copy)`,
         partNo: src.partNo,
+        description: src.description,
         startDate: src.startDate,
         targetEndDate: src.targetEndDate,
         baselineEndDate: src.baselineEndDate,

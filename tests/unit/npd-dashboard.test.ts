@@ -29,7 +29,7 @@ function act(o: Partial<ActivityInput> & { productId: string; code: string; stag
 
 function product(input: Partial<ProductInput> & { id: string; partName: string }, acts: ActivityInput[]) {
   const p: ProductInput = {
-    srNo: 1, partNo: null, customer: "M&M", status: "Active", archived: false,
+    srNo: 1, partNo: null, description: null, customer: "M&M", status: "Active", archived: false,
     startDate: today(-30), targetEndDate: today(30), baselineEndDate: today(30),
     defaultDoerName: null, defaultSupervisorName: null,
     ...input,

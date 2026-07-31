@@ -37,6 +37,28 @@ const VIEWS: { id: View; label: string; icon: React.ReactNode; blurb: string }[]
   { id: "board", label: "Board", icon: <Columns3 size={15} />, blurb: "Where is the pipeline clogged?" },
 ];
 
+/**
+ * Fold a value for matching: lower-case, and drop the separators people vary on
+ * when typing a part number. "2700-N", "2700 n" and "2700N" are the same part,
+ * and whichever one is stored, all three should find it. Widening only — a fold
+ * can never lose a match the raw substring test would have made.
+ */
+function fold(v: string | number | null | undefined): string {
+  return String(v ?? "").toLowerCase().replace(/[\s\-_/.]+/g, "");
+}
+
+/** Marks a search result that is archived, so it's never taken for a live part. */
+function ArchivedChip() {
+  return (
+    <span
+      className="inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-[2px] text-[10px] font-black uppercase tracking-wide"
+      style={{ background: "var(--color-stone-bg)", color: "var(--color-stone-deep)" }}
+    >
+      <Archive size={9} strokeWidth={2.8} /> Archived
+    </span>
+  );
+}
+
 export function ProductsWorkspace({ products, employees }: { products: Product[]; employees: Emp[] }) {
   const [view, setView] = React.useState<View>("table");
   const [q, setQ] = React.useState("");
@@ -69,22 +91,35 @@ export function ProductsWorkspace({ products, employees }: { products: Product[]
     [products],
   );
 
+  const searching = q.trim().length > 0;
+
   const visible = React.useMemo(() => {
-    const query = q.trim().toLowerCase();
+    const query = fold(q);
     return products
-      .filter((p) => (showArchived ? p.archived : !p.archived))
+      // Searching deliberately ignores the Archived toggle and looks across the
+      // WHOLE portfolio. Archived products were previously unfindable: the
+      // active/archived split ran BEFORE the text match, so searching a part
+      // number belonging to an archived part returned nothing at all and looked
+      // like the search was broken. Matches are badged "Archived" so the result
+      // is never mistaken for a live part.
+      .filter((p) => (searching ? true : showArchived ? p.archived : !p.archived))
       .filter((p) => (customer ? p.customer === customer : true))
       .filter((p) => (health ? p.health === health : true))
       .filter((p) =>
         !query
           ? true
-          : p.partName.toLowerCase().includes(query) ||
-            (p.partNo ?? "").toLowerCase().includes(query) ||
-            (p.customer ?? "").toLowerCase().includes(query) ||
-            String(p.srNo ?? "").includes(query),
+          : fold(p.partName).includes(query) ||
+            fold(p.partNo).includes(query) ||
+            fold(p.customer).includes(query) ||
+            fold(p.srNo).includes(query),
       )
       .sort((a, b) => HEALTH_ORDER[a.health] - HEALTH_ORDER[b.health] || (a.srNo ?? 1e9) - (b.srNo ?? 1e9));
-  }, [products, q, customer, health, showArchived]);
+  }, [products, q, customer, health, showArchived, searching]);
+
+  const archivedHits = React.useMemo(
+    () => (searching ? visible.filter((p) => p.archived).length : 0),
+    [visible, searching],
+  );
 
   const live = products.filter((p) => !p.archived);
   const kpi = {
@@ -199,18 +234,26 @@ export function ProductsWorkspace({ products, employees }: { products: Product[]
           })}
         </div>
         <span className="text-[12.5px] font-semibold text-ink-subtle">
-          {showArchived ? `${visible.length} archived` : `${visible.length} of ${live.length} products`}
+          {searching
+            ? `${visible.length} result${visible.length === 1 ? "" : "s"} across active + archived${
+                archivedHits ? ` · ${archivedHits} archived` : ""
+              }`
+            : showArchived
+              ? `${visible.length} archived`
+              : `${visible.length} of ${live.length} products`}
         </span>
       </div>
 
       <div className="mt-4">
         {visible.length === 0 ? (
           <Empty>
-            {showArchived
-              ? "No archived products."
-              : filtering
-                ? "No products match these filters."
-                : "No products yet. Click “New Product” — all 36 activities generate themselves on a working-day schedule."}
+            {searching
+              ? "Nothing matches that — searched every product, active and archived, by part name, part number, customer and product number."
+              : showArchived
+                ? "No archived products."
+                : filtering
+                  ? "No products match these filters."
+                  : "No products yet. Click “New Product” — all 36 activities generate themselves on a working-day schedule."}
           </Empty>
         ) : view === "table" ? (
           <TableView products={visible} employees={employees} onOpen={openProduct} onChanged={() => setProductOpen(false)} />
@@ -282,6 +325,7 @@ function TableView({
                   <div className="flex min-w-0 max-w-[280px] items-center gap-1.5 font-bold text-ink-strong">
                     <HealthDot product={p} />
                     <span className="min-w-0 flex-1 truncate group-hover:text-[var(--color-brand-blue)]">{p.partName}</span>
+                    {p.archived && <ArchivedChip />}
                   </div>
                   {p.partNo && <div className="mt-0.5 max-w-[280px] truncate text-[11px] text-ink-subtle">{p.partNo}</div>}
                 </Td>
@@ -376,6 +420,7 @@ function GatesView({ products, onOpen }: { products: Product[]; onOpen: (p: Prod
                     <button onClick={() => onOpen(p)} className="flex min-w-0 max-w-full items-center gap-1.5 text-left font-bold text-ink-strong transition-colors hover:text-[var(--color-brand-blue)]">
                       <HealthDot product={p} />
                       <span className="min-w-0 flex-1 truncate">{p.partName}</span>
+                      {p.archived && <ArchivedChip />}
                     </button>
                     <div className="truncate text-[11px] text-ink-subtle">{p.customer ?? "—"}</div>
                   </Td>
@@ -503,6 +548,7 @@ function BoardCard({ p, onOpen }: { p: Product; onOpen: (p: Product) => void }) 
     >
       <div className="flex min-w-0 items-start justify-between gap-1.5">
         <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-ink-strong">{p.partName}</span>
+        {p.archived && <ArchivedChip />}
         <HealthDot product={p} />
       </div>
       <div className="mt-0.5 truncate text-[11px] text-ink-subtle">{p.customer ?? "—"} · #{p.srNo ?? "—"}</div>

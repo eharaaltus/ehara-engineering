@@ -1,6 +1,12 @@
 """
-One-shot generator for the PWA / Web Push icons under public/, sourced from
-the A A Tech logo at the repo root.
+One-shot generator for the PWA / Web Push icons under public/, sourced from the
+Ehara Engineering mark in public/.
+
+Was sourced from an "AA_Tech_logo.png" at the repo root, left over from the app
+this one was ported from. That file is gone; more to the point, running this
+against it would have re-stamped a former brand onto the installed-app icon and
+the favicon. It now reads the same mark the header, portal and admin sidebar
+use, so regenerated icons match the app.
 
 Outputs:
   public/icon-192.png    192x192 — logo on white, maskable-safe (~78% safe zone)
@@ -17,8 +23,8 @@ import os
 
 HERE = os.path.dirname(__file__)
 PROJECT_ROOT = os.path.join(HERE, "..")
-SOURCE_LOGO = os.path.join(PROJECT_ROOT, "AA_Tech_logo.png")
 PUBLIC_DIR = os.path.join(PROJECT_ROOT, "public")
+SOURCE_LOGO = os.path.join(PUBLIC_DIR, "logo-mark.png")
 APP_DIR = os.path.join(PROJECT_ROOT, "app")
 
 WHITE = (255, 255, 255, 255)

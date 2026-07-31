@@ -2,7 +2,7 @@
 
 /**
  * The NPD Products workspace — three views over one computed model, in the app's
- * own design language (PageHero, premium-card, the blue→red Ehara gradient, the
+ * own design language (premium-card, the blue→red Ehara gradient, the
  * `--color-*` tokens). Nothing invents its own hex.
  *
  *   Table   dense portfolio grid, the spreadsheet-killer (default)
@@ -18,10 +18,9 @@ import * as React from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import {
-  Search, Table2, Columns3, ShieldCheck, Factory, Download, X, Lock,
+  Search, Table2, Columns3, ShieldCheck, Download, X, Lock,
   AlertTriangle, Boxes, Flame, ChevronRight, Archive,
 } from "lucide-react";
-import { PageHero } from "@/components/layout/page-hero";
 import { HEALTH_ORDER, HEALTH_META, BRAND, type Health, type Product } from "@/lib/npd/model";
 import { NPD_STAGES, STAGE_SHORT, fmtDate } from "@/lib/npd/status";
 import { MicroGrid, HealthDot, ProgressBar, StageChevrons, AutoRefresh, Tip, TooltipRoot } from "@/components/npd/bits";
@@ -106,15 +105,8 @@ export function ProductsWorkspace({ products, employees }: { products: Product[]
     <TooltipRoot>
       <AutoRefresh />
 
-      <PageHero
-        eyebrow="New Product Development"
-        title="Products"
-        subtitle="Every part across 6 stages and 36 activities. Click any product to open it on the right — details and its task tracker, no page change."
-        Icon={Factory}
-      />
-
       {/* ── Clickable KPI cards — each drills into the products behind it ─── */}
-      <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="mt-1 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <KpiCard label="Active parts" value={kpi.parts.length} icon={<Boxes size={16} />} from="#1e40af" to="#3b82f6"
           onClick={() => openList("Active parts", "Every product currently in development", kpi.parts)} />
         <KpiCard label="Needs attention" value={kpi.critical.length} icon={<Flame size={16} />} from="#e11d2f" to="#f43f5e"

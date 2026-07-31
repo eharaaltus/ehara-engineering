@@ -19,9 +19,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   Search, X, Download, CalendarClock, UserCog, CheckCheck, Ban, ChevronDown, ChevronRight,
-  Link2, AlertTriangle, ListChecks, Boxes, Lock, Flame, MoreHorizontal, Check,
+  Link2, AlertTriangle, Lock, MoreHorizontal, Check,
 } from "lucide-react";
-import { PageHero } from "@/components/layout/page-hero";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { fireToast } from "@/lib/toast";
 import { STATE_META, BRAND, type Activity, type Product } from "@/lib/npd/model";
@@ -215,32 +214,14 @@ export function TrackerWorkspace({
 
   const filtering = q || productId || stage || doerId;
 
-  const totals = {
-    all: counts.all,
-    overdue: counts.overdue,
-    gate: counts.gate,
-    mine: counts.mine,
-  };
-
   return (
     <TooltipRoot>
       <AutoRefresh />
-      <PageHero
-        eyebrow="New Product Development"
-        title="Task Tracker"
-        subtitle="Every activity, across every product, on one surface. Edit any cell inline — it saves to the database and mirrors into the Google Sheet."
-        Icon={ListChecks}
-        stats={[
-          { label: "Activities", value: totals.all, icon: Boxes, from: "#1e40af", to: "#3b82f6" },
-          { label: "Overdue", value: totals.overdue, icon: Flame, from: "#e11d2f", to: "#f43f5e" },
-          { label: "Blocking a gate", value: totals.gate, icon: Lock, from: "#7c3aed", to: "#a855f7" },
-          { label: "My work", value: totals.mine, icon: UserCog, from: "#0f766e", to: "#14b8a6" },
-        ]}
-      />
 
       {/* ── Quick-filter tabs: five daily ones as pills, the rest in "More". A
-             row of ten equal choices is noise; five plus a menu is a decision. ── */}
-      <div className="mt-6 flex flex-wrap items-center gap-1.5">
+             row of ten equal choices is noise; five plus a menu is a decision.
+             These pills carry the live counts, so the page needs no KPI band. ── */}
+      <div className="mt-1 flex flex-wrap items-center gap-1.5">
         {PRIMARY_TABS.map((t) => (
           <TabPill key={t.id} t={t} on={tab === t.id} n={counts[t.id]} onClick={() => setTab(t.id)} />
         ))}

@@ -17,10 +17,9 @@ import * as React from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import {
-  BarChart3, Boxes, Users, Factory, Building2, Flame, AlertTriangle, Lock, UserX,
+  Boxes, Users, Factory, Building2, Flame, AlertTriangle, Lock, UserX,
   FileWarning, Clock, TrendingUp, ChevronRight,
 } from "lucide-react";
-import { PageHero } from "@/components/layout/page-hero";
 import { STAGE_SHORT, fmtDate } from "@/lib/npd/status";
 import { HEALTH_META, type Health, type Product } from "@/lib/npd/model";
 import {
@@ -62,15 +61,9 @@ export function DashboardWorkspace({ products, employees }: { products: Product[
   return (
     <TooltipRoot>
       <AutoRefresh />
-      <PageHero
-        eyebrow="New Product Development"
-        title="Dashboard"
-        subtitle="Everything on one screen — switch the scope to see the whole portfolio, one customer, one product, or one person."
-        Icon={BarChart3}
-      />
 
       {/* Scope selector */}
-      <div className="mt-5 flex flex-wrap items-center gap-2">
+      <div className="mt-1 flex flex-wrap items-center gap-2">
         <div className="inline-flex rounded-2xl border border-slate-200 bg-white p-1 shadow-sm">
           {SCOPES.map((s) => {
             const on = scope === s.id;

@@ -23,11 +23,14 @@ export function HeaderStatusBar({ moduleCount }: { moduleCount: number }) {
     <div className="flex flex-wrap items-center justify-center gap-2.5">
       <Pill icon={<CalendarDays size={13} strokeWidth={2.3} />} text={date} />
       <Pill icon={<Clock size={13} strokeWidth={2.3} />} text={time} />
+      {/* Green, not brand red — this dot reports health, so it must read as
+          "all good" rather than borrowing the accent colour. Uses the app's
+          green tokens so a theme change carries it. */}
       <Pill
         icon={
           <span className="relative flex size-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#e11d2f] opacity-75" />
-            <span className="relative inline-flex size-2 rounded-full bg-[#e11d2f]" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-green)] opacity-75" />
+            <span className="relative inline-flex size-2 rounded-full bg-[var(--color-green-deep)]" />
           </span>
         }
         text="System Online"

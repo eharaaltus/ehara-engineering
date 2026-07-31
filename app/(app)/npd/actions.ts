@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { npdProducts, npdTasks, holidays } from "@/db/schema";
@@ -20,10 +19,26 @@ function int(v: FormDataEntryValue | null): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
-export async function createNpdProduct(formData: FormData): Promise<void> {
+/** What the New Product form needs back to render its success dialog. */
+export type CreatedProduct = {
+  id: string;
+  partName: string;
+  srNo: number | null;
+};
+
+/**
+ * Create a product and generate its 36 activities.
+ *
+ * Returns the new product rather than redirecting to it: the form shows a
+ * confirmation dialog and lets the user choose whether to open the product or
+ * stay and add another. A redirect here would take that choice away.
+ */
+export async function createNpdProduct(
+  formData: FormData,
+): Promise<{ ok: true; product: CreatedProduct } | { ok: false; error: string }> {
   const me = await requireAdmin();
   const partName = str(formData.get("partName"));
-  if (!partName) throw new Error("Part name is required");
+  if (!partName) return { ok: false, error: "Part name is required." };
 
   const start = str(formData.get("startDate"));
   const doerId = str(formData.get("defaultDoerId")) ?? me.id;
@@ -74,7 +89,7 @@ export async function createNpdProduct(formData: FormData): Promise<void> {
     })
     .returning();
 
-  if (!prod) throw new Error("Could not create the NPD product. Please try again.");
+  if (!prod) return { ok: false, error: "Could not create the product. Please try again." };
 
   await db.insert(npdTasks).values(
     NPD_ACTIVITIES.map((a, i) => ({
@@ -92,7 +107,10 @@ export async function createNpdProduct(formData: FormData): Promise<void> {
 
   revalidatePath("/npd");
   revalidatePath("/npd/tracker");
-  redirect(`/npd/${prod.id}`);
+  return {
+    ok: true,
+    product: { id: prod.id, partName: prod.partName, srNo: prod.srNo },
+  };
 }
 
 export async function updateNpdTask(formData: FormData): Promise<void> {

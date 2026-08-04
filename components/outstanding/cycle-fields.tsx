@@ -82,7 +82,20 @@ export function RowsEditor({
     ]);
   }
 
-  let cumulative = 0;
+  // Running balance per row, computed here rather than by mutating a counter
+  // from inside the JSX map. React makes no promise that a map callback runs
+  // during the render pass, so accumulating into an outer `let` produced a
+  // value that depends on when — and how many times — the callback happened to
+  // run. As a plain derivation the numbers are the same on every render.
+  const balances: number[] = [];
+  {
+    let cumulative = 0;
+    for (const r of rows) {
+      const amt = Number(r.amount);
+      cumulative += Number.isFinite(amt) ? amt : 0;
+      balances.push(t - cumulative);
+    }
+  }
 
   return (
     <div className="space-y-2.5">
@@ -93,10 +106,8 @@ export function RowsEditor({
         <span className="w-7" />
       </div>
 
-      {rows.map((r) => {
-        const amt = Number(r.amount);
-        cumulative += Number.isFinite(amt) ? amt : 0;
-        const balance = t - cumulative;
+      {rows.map((r, i) => {
+        const balance = balances[i] ?? t;
         return (
           <div
             key={r.id}

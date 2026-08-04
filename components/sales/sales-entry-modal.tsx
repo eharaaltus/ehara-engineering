@@ -364,7 +364,14 @@ function Field({
 }) {
   const id = `salesf-${col.key}`;
   const [focused, setFocused] = React.useState(false);
-  const FieldIcon = iconForCol(col);
+  // Lower-case + createElement below, rather than `const FieldIcon = …` used as
+  // <FieldIcon />. iconForCol only ever returns one of a fixed set of
+  // module-scope lucide icons, but a capitalised local bound from a call and
+  // rendered as JSX is indistinguishable from defining a component during
+  // render — which remounts the subtree on every render. Spelling it as a value
+  // says what's actually happening: picking an existing component, not making
+  // a new one.
+  const fieldIcon = iconForCol(col);
   const borderColor = error ? "#fca5a5" : focused ? accent : "#e2e8f0";
   const iconColor = error ? "#ef4444" : focused ? accent : "#94a3b8";
 
@@ -383,7 +390,11 @@ function Field({
       </span>
 
       <div className="relative">
-        <FieldIcon size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors" style={{ color: iconColor }} />
+        {React.createElement(fieldIcon, {
+          size: 16,
+          className: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors",
+          style: { color: iconColor },
+        })}
 
         {col.type === "bool" ? (
           <SelectBox

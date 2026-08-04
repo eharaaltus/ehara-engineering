@@ -70,6 +70,12 @@ vi.mock("@/lib/auth/current", () => ({
     name: "Me",
     email: "me@vp.com",
   })),
+  // createTask also calls this (the weekly-goals fill gate). The mock replaces
+  // the whole module, so omitting an export the action uses fails the test with
+  // "No export is defined on the mock" rather than anything about tasks — which
+  // is exactly what these three had been doing. It returns the employee
+  // unchanged, matching the real function's pass-through when nothing gates.
+  requireWeeklyGoalsFilled: vi.fn(async (me: unknown) => me),
 }));
 
 // M2.3 — actions now fan out via the notifications dispatcher (server-only).

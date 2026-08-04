@@ -1,15 +1,40 @@
 import { describe, it, expect } from "vitest";
-import { accentVars, resolveAccent, DEFAULT_ACCENT } from "@/lib/appearance";
+import {
+  accentVars,
+  resolveAccent,
+  DEFAULT_ACCENT,
+  DEFAULT_ACCENT_VARS,
+} from "@/lib/appearance";
 
 describe("accentVars", () => {
-  it("reproduces the exact brand tokens for the default A A Tech red", () => {
-    const v = accentVars("#0180cf");
-    expect(v["--user-accent"]).toBe("#0180cf");
-    expect(v["--color-brand-blue"]).toBe("#0180cf");
-    expect(v["--color-brand-blue-deep"]).toBe("#0069b3");
-    expect(v["--vp-cyan"]).toBe("1 128 207");
-    expect(v["--vp-cyan-deep"]).toBe("0 105 179");
-    expect(v["--vp-cyan-tint"]).toBe("rgba(1, 128, 207, 0.08)");
+  /**
+   * This asserted the previous brand's blue (#0180cf) and a darkening factor
+   * that no longer applies, so it failed on every run — and while fixing it,
+   * the failure turned out to be pointing at a real defect: deriving the deep
+   * token from #1e40af gives #163083, but globals.css declares #14245c, and the
+   * layout applies accentVars() to EVERY user. Everyone on the default accent
+   * was getting a subtly wrong shade in each gradient built on it.
+   */
+  it("reproduces globals.css exactly for the default accent", () => {
+    const v = accentVars(DEFAULT_ACCENT);
+    expect(v["--user-accent"]).toBe("#1e40af");
+    expect(v["--color-brand-blue"]).toBe("#1e40af");
+    // The value in app/globals.css — NOT r*0.747, which would be #163083.
+    expect(v["--color-brand-blue-deep"]).toBe("#14245c");
+    expect(v["--vp-cyan"]).toBe("30 64 175");
+    expect(v["--vp-cyan-deep"]).toBe("20 36 92");
+    expect(v["--vp-cyan-glow"]).toBe("rgba(30, 64, 175, 0.25)");
+    expect(v["--vp-cyan-tint"]).toBe("rgba(30, 64, 175, 0.08)");
+  });
+
+  it("is case-insensitive about the default accent", () => {
+    expect(accentVars("#1E40AF")).toEqual(DEFAULT_ACCENT_VARS);
+  });
+
+  it("keeps the exported default tokens and the derivation in agreement", () => {
+    // Pins the copy of globals.css inside lib/appearance.ts to what
+    // accentVars() actually returns, so the two can't drift apart silently.
+    expect(accentVars(DEFAULT_ACCENT)).toEqual(DEFAULT_ACCENT_VARS);
   });
 
   it("re-tints for a custom accent (green)", () => {

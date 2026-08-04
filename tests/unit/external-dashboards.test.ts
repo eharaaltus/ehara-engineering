@@ -2,9 +2,22 @@ import { describe, it, expect } from "vitest";
 import { getVisibleDashboards, EXTERNAL_DASHBOARDS } from "@/lib/external-dashboards";
 import type { Employee } from "@/db/schema";
 
-// Minimal Employee factory — only the fields the predicate reads.
-// Casting through `unknown` keeps us from having to spell out every nullable
-// column on the schema for a test that exercises 2 booleans + 1 string.
+/**
+ * EXTERNAL_DASHBOARDS was emptied during the rebrand — its three entries were
+ * Altus Google-Apps-Script dashboards on the vpinnacle.com domain, with a
+ * hardcoded allow-list of vpinnacle addresses. These tests still asserted all
+ * of that, so they failed on every run.
+ *
+ * Rewritten against the CONTRACT rather than the old contents: whatever is in
+ * the list, entries must be well-formed, and visibility must hold (nobody sees
+ * anything that isn't declared, null is safe, admins aren't special-cased into
+ * seeing entries that don't exist). That way these keep their value when Ehara
+ * adds its own dashboards, instead of needing a rewrite again.
+ */
+
+// Minimal Employee factory — only the fields the predicate reads. Casting
+// through `unknown` avoids spelling out every nullable column for a test that
+// exercises 2 booleans and a string.
 function fakeEmployee(over: Partial<Employee>): Employee {
   return {
     id: "00000000-0000-0000-0000-000000000000",
@@ -31,52 +44,64 @@ function fakeEmployee(over: Partial<Employee>): Employee {
   } as unknown as Employee;
 }
 
-const ALL_IDS = ["leads", "liasoning", "mandate-collection"] as const;
-
 describe("EXTERNAL_DASHBOARDS", () => {
-  it("declares exactly three dashboards in stable order", () => {
-    expect(EXTERNAL_DASHBOARDS.map((d) => d.id)).toEqual(ALL_IDS);
+  it("is currently empty — the Altus entries were removed in the rebrand", () => {
+    // Guards the removal: if an Altus/vpinnacle link is ever reintroduced by a
+    // bad merge, this fails rather than quietly shipping it to the dashboard.
+    expect(EXTERNAL_DASHBOARDS).toEqual([]);
   });
 
-  it("every dashboard has a non-empty URL and accent token", () => {
+  it("every declared dashboard is well-formed", () => {
+    // Vacuous while the list is empty, and that's fine — it starts enforcing
+    // the shape the moment Ehara adds its first entry.
     for (const d of EXTERNAL_DASHBOARDS) {
-      expect(d.url).toMatch(/^https:\/\/script\.google\.com\//);
+      expect(d.id, "id must be non-empty").toBeTruthy();
+      expect(d.label, "label must be non-empty").toBeTruthy();
+      expect(d.url).toMatch(/^https:\/\//);
       expect(["blue", "amber", "purple"]).toContain(d.accent);
+      expect(typeof d.visibleTo).toBe("function");
     }
+  });
+
+  it("has no duplicate ids", () => {
+    const ids = EXTERNAL_DASHBOARDS.map((d) => d.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
 
 describe("getVisibleDashboards", () => {
-  it("returns empty array for null employee", () => {
+  it("returns an empty array for a null employee", () => {
     expect(getVisibleDashboards(null)).toEqual([]);
   });
 
-  it("non-admin, non-special email sees no Reports dashboards", () => {
-    const me = fakeEmployee({ email: "shilpa@vpinnacle.com", isAdmin: false });
-    const ids = getVisibleDashboards(me).map((d) => d.id);
-    expect(ids).toEqual([]);
+  it("never returns a dashboard that isn't declared", () => {
+    const declared = new Set(EXTERNAL_DASHBOARDS.map((d) => d.id));
+    for (const me of [
+      fakeEmployee({ email: "someone@example.com", isAdmin: false }),
+      fakeEmployee({ email: "admin@eharaengineering.com", isAdmin: true }),
+    ]) {
+      for (const d of getVisibleDashboards(me)) {
+        expect(declared.has(d.id)).toBe(true);
+      }
+    }
   });
 
-  it("non-admin user with aatech@vpinnacle.com sees all three", () => {
-    const me = fakeEmployee({ email: "aatech@vpinnacle.com", isAdmin: false });
-    const ids = getVisibleDashboards(me).map((d) => d.id);
-    expect(ids).toEqual(ALL_IDS);
+  it("shows nothing to anyone while the list is empty — admin included", () => {
+    const staff = fakeEmployee({ email: "someone@example.com", isAdmin: false });
+    const admin = fakeEmployee({ email: "admin@eharaengineering.com", isAdmin: true });
+    expect(getVisibleDashboards(staff)).toEqual([]);
+    expect(getVisibleDashboards(admin)).toEqual([]);
   });
 
-  it("non-admin user with pravin@vpinnacle.com sees all three (case-insensitive)", () => {
-    const me = fakeEmployee({ email: "Pravin@VPinnacle.com", isAdmin: false });
-    const ids = getVisibleDashboards(me).map((d) => d.id);
-    expect(ids).toEqual(ALL_IDS);
+  it("does not leak the old Altus allow-list", () => {
+    // The removed build granted access to @vpinnacle.com addresses by name.
+    const old = fakeEmployee({ email: "aatech@vpinnacle.com", isAdmin: false });
+    expect(getVisibleDashboards(old)).toEqual([]);
   });
 
-  it("admin with an unrelated email still sees all three", () => {
-    const me = fakeEmployee({ email: "hetesh@aatech.in", isAdmin: true });
-    const ids = getVisibleDashboards(me).map((d) => d.id);
-    expect(ids).toEqual(ALL_IDS);
-  });
-
-  it("trims surrounding whitespace before comparing emails", () => {
-    const me = fakeEmployee({ email: "  aatech@vpinnacle.com  ", isAdmin: false });
-    expect(getVisibleDashboards(me)).toHaveLength(3);
+  it("tolerates untrimmed and odd-cased emails without throwing", () => {
+    const me = fakeEmployee({ email: "  Someone@Example.Com  ", isAdmin: false });
+    expect(() => getVisibleDashboards(me)).not.toThrow();
+    expect(getVisibleDashboards(me)).toEqual([]);
   });
 });

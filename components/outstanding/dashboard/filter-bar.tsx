@@ -82,7 +82,11 @@ export function OutstandingFilterBar({ employees, entities, modes, cycles }: Pro
     () => modes.map((m) => ({ value: m.name, label: m.name })),
     [modes],
   );
-  const years = React.useMemo(yearOptions, []);
+  // Inline arrow, not a bare `yearOptions` reference: the React Compiler can
+  // only reason about the dependencies of a function expression it can see, so
+  // passing the identifier made this un-analysable (and would silently break if
+  // yearOptions ever took an argument).
+  const years = React.useMemo(() => yearOptions(), []);
 
   // Current selections read straight from the URL — the page re-renders on
   // every navigation, so these stay the single source of truth.

@@ -1,7 +1,7 @@
 import { asc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { employees } from "@/db/schema";
-import { requireAdmin } from "@/lib/auth/current";
+import { requireModuleAccess } from "@/lib/auth/module-access";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
 import { NewProductForm } from "@/components/npd/new-product-form";
@@ -10,7 +10,7 @@ import { nextProjectId } from "../actions";
 export const dynamic = "force-dynamic";
 
 export default async function NewNpdProductPage() {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   const [emps, projectId] = await Promise.all([
     db.select({ id: employees.id, name: employees.name }).from(employees).orderBy(asc(employees.name)),
     nextProjectId(),

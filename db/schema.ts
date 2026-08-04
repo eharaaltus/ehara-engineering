@@ -2099,6 +2099,38 @@ export const indexLinks = pgTable(
   (t) => [index("index_links_section_idx").on(t.sectionId, t.sortOrder)],
 );
 
+/**
+ * Per-module access grants (migration 0079). One row = one explicit allow/deny
+ * of a workspace module to a subject. Absence of a row at a level means
+ * "inherit"; the resolution order lives in lib/access/modules.ts.
+ *
+ * `subjectId` has no FK because the target table varies by `subjectType`
+ * (departments vs employees), and is NULL for the org-wide 'everyone' rows —
+ * which is why the uniqueness is two PARTIAL indexes in the migration rather
+ * than one composite (NULLs never collide in a plain unique index).
+ */
+export const moduleAccessGrants = pgTable(
+  "module_access_grants",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    moduleId: text("module_id").notNull(),
+    subjectType: text("subject_type")
+      .$type<"everyone" | "department" | "employee">()
+      .notNull(),
+    subjectId: uuid("subject_id"),
+    allowed: boolean("allowed").notNull(),
+    updatedBy: uuid("updated_by").references(() => employees.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("module_access_grants_subject_idx").on(t.subjectType, t.subjectId)],
+);
+
+export type ModuleAccessGrant = typeof moduleAccessGrants.$inferSelect;
+export type NewModuleAccessGrant = typeof moduleAccessGrants.$inferInsert;
+
 export type IndexSection = typeof indexSections.$inferSelect;
 export type NewIndexSection = typeof indexSections.$inferInsert;
 export type IndexLink = typeof indexLinks.$inferSelect;

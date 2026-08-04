@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { npdProducts, npdTasks, holidays } from "@/db/schema";
-import { requireAdmin } from "@/lib/auth/current";
+import { requireModuleAccess } from "@/lib/auth/module-access";
 import { NPD_ACTIVITIES } from "@/lib/npd/template";
 import { addWorkdays, makeCalendar } from "@/lib/npd/workdays";
 
@@ -54,7 +54,7 @@ export type CreatedProduct = {
 export async function createNpdProduct(
   formData: FormData,
 ): Promise<{ ok: true; product: CreatedProduct } | { ok: false; error: string }> {
-  const me = await requireAdmin();
+  const me = await requireModuleAccess("npd");
   const partName = str(formData.get("partName"));
   if (!partName) return { ok: false, error: "Part name is required." };
 
@@ -143,7 +143,7 @@ export async function createNpdProduct(
 }
 
 export async function updateNpdTask(formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   const id = str(formData.get("id"));
   const productId = str(formData.get("productId"));
   if (!id) throw new Error("Missing task id");
@@ -179,7 +179,7 @@ export async function updateNpdTask(formData: FormData): Promise<void> {
 
 /** Edit a product's header fields (customer, part name/no, dates, doer/supervisor). */
 export async function updateNpdProduct(formData: FormData): Promise<ActionResult> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   const id = str(formData.get("id"));
   if (!id) return { ok: false, error: "Missing product id" };
   const partName = str(formData.get("partName"));
@@ -224,7 +224,7 @@ export async function updateNpdProduct(formData: FormData): Promise<ActionResult
  * yet."
  */
 export async function duplicateNpdProduct(id: string): Promise<ActionResult & { newId?: string }> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!id) return { ok: false, error: "Missing product id" };
 
   try {
@@ -285,7 +285,7 @@ export async function duplicateNpdProduct(id: string): Promise<ActionResult & { 
 
 /** Archive / unarchive a product (soft — its activities are kept). */
 export async function setNpdArchived(id: string, archived: boolean): Promise<ActionResult> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!id) return { ok: false, error: "Missing product id" };
   try {
     await db.update(npdProducts).set({ archived, updatedAt: new Date() }).where(eq(npdProducts.id, id));
@@ -299,7 +299,7 @@ export async function setNpdArchived(id: string, archived: boolean): Promise<Act
 /** Permanently delete a product AND its activities (FK cascade). Explicit, hard
  *  delete — the UI must confirm. Prefer Archive to avoid data loss. */
 export async function deleteNpdProduct(id: string): Promise<ActionResult> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!id) return { ok: false, error: "Missing product id" };
 
   try {

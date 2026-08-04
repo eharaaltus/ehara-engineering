@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { requireAdmin } from "@/lib/auth/current";
+import { requireModuleAccess } from "@/lib/auth/module-access";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
 import { loadPortfolio, loadEmployees } from "@/lib/npd/load";
@@ -8,7 +8,7 @@ import { TrackerWorkspace } from "@/components/npd/tracker-workspace";
 export const dynamic = "force-dynamic";
 
 export default async function TrackerPage() {
-  const me = await requireAdmin();
+  const me = await requireModuleAccess("npd");
   const [products, employees] = await Promise.all([loadPortfolio(), loadEmployees()]);
 
   return (

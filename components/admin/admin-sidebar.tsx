@@ -9,6 +9,7 @@ import {
   Activity as ActivityIcon,
   Bell,
   Users,
+  KeyRound,
   Building2,
   Briefcase,
   Tag,
@@ -44,6 +45,7 @@ interface NavItem {
 
 const NAV: ReadonlyArray<NavItem> = [
   { href: "/admin" as Route,             label: "Overview",    icon: LayoutGrid,    exact: true },
+  { href: "/admin/access" as Route,      label: "Access",      icon: KeyRound },
   { href: "/admin/activity" as Route,    label: "Activity",    icon: ActivityIcon },
   { href: "/admin/notifications" as Route, label: "Notifications", icon: Bell },
   { href: "/admin/employees" as Route,   label: "Employees",   icon: Users },

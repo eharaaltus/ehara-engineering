@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { npdTasks, npdProducts, holidays } from "@/db/schema";
-import { requireAdmin } from "@/lib/auth/current";
+import { requireModuleAccess } from "@/lib/auth/module-access";
 import { addWorkdays, makeCalendar, todayISO } from "@/lib/npd/workdays";
 
 export type Result = { ok: true; message: string } | { ok: false; error: string };
@@ -44,7 +44,7 @@ export type Field =
  * downstream keeps insisting it is Done.
  */
 export async function updateActivity(id: string, field: Field, value: string | null): Promise<Result> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
 
   const [existing] = await db.select().from(npdTasks).where(eq(npdTasks.id, id));
   if (!existing) return { ok: false, error: "Activity not found" };
@@ -98,7 +98,7 @@ export async function bulkSetResolution(
   ids: string[],
   resolution: "Open" | "Done" | "On Hold",
 ): Promise<Result> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!ids.length) return { ok: false, error: "Nothing selected" };
 
   await db
@@ -119,7 +119,7 @@ export async function bulkSetApplicability(
   applicability: "Applicable" | "N/A" | "On Hold",
   reason: string | null,
 ): Promise<Result> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!ids.length) return { ok: false, error: "Nothing selected" };
 
   // Marking something N/A or On Hold silently removes it from every denominator
@@ -147,7 +147,7 @@ export async function bulkAssign(
   role: "doer" | "supervisor",
   employeeId: string | null,
 ): Promise<Result> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!ids.length) return { ok: false, error: "Nothing selected" };
 
   await db
@@ -181,7 +181,7 @@ export async function bulkShiftDates(
   days: number,
   reason: string,
 ): Promise<Result> {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!ids.length) return { ok: false, error: "Nothing selected" };
   if (!Number.isFinite(days) || days === 0) return { ok: false, error: "Enter a non-zero number of days" };
   if (!reason.trim()) {
@@ -236,7 +236,7 @@ export async function cascadeReschedule(
   | { ok: true; preview: { id: string; code: string; activityPlan: string; from: string; to: string }[]; applied: boolean }
   | { ok: false; error: string }
 > {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   if (!Number.isFinite(days) || days === 0) return { ok: false, error: "Enter a non-zero number of days" };
 
   const [anchor] = await db.select().from(npdTasks).where(eq(npdTasks.id, anchorId));

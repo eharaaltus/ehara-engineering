@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth/current";
+import { requireModuleAccess } from "@/lib/auth/module-access";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
 import { loadPortfolio, loadEmployees } from "@/lib/npd/load";
@@ -7,7 +7,7 @@ import { DashboardWorkspace } from "@/components/npd/dashboard/dashboard-workspa
 export const dynamic = "force-dynamic";
 
 export default async function NpdDashboardPage() {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   const [products, employees] = await Promise.all([loadPortfolio(), loadEmployees()]);
 
   return (

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireAdmin } from "@/lib/auth/current";
+import { requireModuleAccess } from "@/lib/auth/module-access";
 import { DashboardHeader } from "@/components/layout/header";
 import { DashboardFooter } from "@/components/layout/footer";
 import { loadProduct, loadEmployees } from "@/lib/npd/load";
@@ -8,7 +8,7 @@ import { ProductDetail } from "@/components/npd/product-detail";
 export const dynamic = "force-dynamic";
 
 export default async function NpdDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  await requireModuleAccess("npd");
   const { id } = await params;
 
   const [product, employees] = await Promise.all([loadProduct(id), loadEmployees()]);

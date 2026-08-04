@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import type { Route } from "next";
 import { requireUser } from "@/lib/auth/current";
+import { getMyModuleAccess } from "@/lib/auth/module-access";
+import { moduleIdForPath } from "@/lib/nav-modules";
 import { hasUnfilledWeekGoals } from "@/lib/weekly-goals/gate";
 import { WeeklyGoalsFillView } from "@/components/weekly-goals/weekly-goals-fill-view";
 import { getOrgSettings } from "@/lib/queries/org-settings";
@@ -8,6 +13,23 @@ import { KeyboardShortcuts } from "@/components/layout/keyboard-shortcuts";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const me = await requireUser();
+
+  // ── Module access gate ────────────────────────────────────────────────────
+  // Every authed page renders through this layout, so typing a URL, following a
+  // deep link, using the back button or a bookmark all pass through here — the
+  // per-page guards are defence in depth, not the boundary.
+  //
+  // `moduleIdForPath` returns null for routes that belong to no module
+  // (/portal, /profile). Those stay ungated deliberately: bouncing them would
+  // redirect to /portal, which would bounce again, which is a loop.
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const moduleId = pathname ? moduleIdForPath(pathname) : null;
+  if (moduleId) {
+    const access = await getMyModuleAccess();
+    if (!access[moduleId]?.allowed) {
+      redirect(`/portal?denied=${moduleId}` as Route);
+    }
+  }
 
   // Mandatory weekly-goals fill gate (design §11). Every authed page renders
   // through this layout, so a user with any un-filled current-week goal is

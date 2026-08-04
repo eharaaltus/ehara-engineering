@@ -84,7 +84,9 @@ const WORKSPACES: WorkspaceDef[] = [
     lg: "lg:col-span-2 lg:col-start-2",
   },
   {
-    key: "user-manual",
+    // Must match the ModuleId in lib/nav-modules.ts — the portal looks the
+    // resolved grant up by this key.
+    key: "manual",
     title: "User Manual",
     desc: "Guides, walkthroughs & videos.",
     tag: "Reference",
@@ -121,13 +123,24 @@ function useGreeting() {
 export function PortalLauncher({
   firstName,
   isAdmin,
+  allowed,
+  denied,
 }: {
   name: string;
   firstName: string;
   isAdmin: boolean;
+  /** Resolved per-module access. Absent (older callers) = fall back to the
+   *  legacy adminOnly flag so nothing breaks mid-rollout. */
+  allowed?: Record<string, boolean>;
+  /** Set when the person was bounced here by the module guard. */
+  denied?: string | null;
 }) {
   const router = useRouter();
   const { now, greeting, subline } = useGreeting();
+
+  const deniedLabel = denied
+    ? WORKSPACES.find((w) => w.key === denied)?.title ?? denied
+    : null;
 
   async function signOutNow() {
     try {
@@ -231,10 +244,25 @@ export function PortalLauncher({
 
       {/* ── card grid — fills the remaining height; nothing scrolls, nothing clips ── */}
       <main className="relative z-10 mx-auto w-full min-h-0 max-w-[1320px] flex-1 px-9 pb-3 pt-2 max-md:px-4 max-md:pb-6">
+        {deniedLabel && (
+          <div
+            className="mb-3 rounded-xl px-4 py-2.5 text-[13px] font-semibold"
+            style={{ background: "rgba(225,29,47,0.10)", color: "#a8121f", border: "1px solid rgba(225,29,47,0.25)" }}
+            role="alert"
+          >
+            You don’t have access to <b>{deniedLabel}</b>. Ask an admin to open it for you.
+          </div>
+        )}
         <div className="grid h-full min-h-0 grid-cols-2 grid-rows-3 gap-4 lg:grid-cols-6 lg:grid-rows-2 max-sm:h-auto max-sm:grid-cols-1 max-sm:grid-rows-none max-sm:auto-rows-[minmax(160px,1fr)]">
-          {WORKSPACES.map((w, i) => (
-            <WorkspaceCard key={w.key} ws={w} locked={!!w.adminOnly && !isAdmin} index={i} />
-          ))}
+          {WORKSPACES.map((w, i) => {
+            // Prefer the resolved grant; fall back to the legacy adminOnly flag
+            // for the tiles that aren't access-controlled modules (Admin).
+            const locked =
+              allowed && w.key in allowed
+                ? !allowed[w.key]
+                : !!w.adminOnly && !isAdmin;
+            return <WorkspaceCard key={w.key} ws={w} locked={locked} index={i} />;
+          })}
         </div>
       </main>
 

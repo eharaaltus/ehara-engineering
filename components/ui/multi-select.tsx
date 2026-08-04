@@ -163,9 +163,13 @@ export function MultiSelect({
       {/* overflow-hidden: the inner CommandList is the single scroller — the
           PopoverContent must NOT also scroll, or you get two stacked scrollbars.
           (Same pattern subject-select / client-select already use.) */}
+      {/* hoverProps here as well as on the trigger: moving the pointer off the
+          chip and into the menu must re-arm the hover, or the close timer fires
+          while you're inside the thing you opened. */}
       <PopoverContent
         ref={setContent}
         className="w-72 p-0 overflow-hidden"
+        {...hoverProps}
         {...contentDismissProps}
       >
         <Command onKeyDown={onCommandKeyDown}>

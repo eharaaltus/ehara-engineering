@@ -3,6 +3,7 @@ import type { Route } from "next";
 import { getCurrentEmployee } from "@/lib/auth/current";
 import { getMyModuleAccess } from "@/lib/auth/module-access";
 import { MODULE_IDS, type ModuleId } from "@/lib/nav-modules";
+import { UserMenuServer } from "@/components/header/user-menu-server";
 import { PortalLauncher } from "@/components/portal/portal-launcher";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,9 @@ export default async function PortalPage({ searchParams }: PageProps) {
       isAdmin={me.isAdmin}
       allowed={allowed}
       denied={denied}
+      // Rendered here (server) and passed down as a slot: PortalLauncher is a
+      // client component and can't await the menu's own data.
+      userMenu={<UserMenuServer />}
     />
   );
 }

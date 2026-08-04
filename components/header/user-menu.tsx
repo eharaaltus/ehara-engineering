@@ -24,6 +24,10 @@ type Props = {
   avatarUrl: string | null;
   inboxUnread: number;
   archivedTasks: number;
+  /** Documents / Inbox / Archived are all WMS routes. Without access to that
+   *  module the app layout bounces them back to the portal, so offering them
+   *  would be offering a dead end. */
+  canAccessWms?: boolean;
 };
 
 export function UserMenu({
@@ -33,6 +37,7 @@ export function UserMenu({
   avatarUrl,
   inboxUnread,
   archivedTasks,
+  canAccessWms = true,
 }: Props) {
   const router = useRouter();
 
@@ -248,7 +253,11 @@ export function UserMenu({
           </DropdownMenu.Item>
 
           {/* Section: workspace — Documents / Inbox / Archived moved off the
-              top nav into here. Inbox + Archived carry their live counts. */}
+              top nav into here. Inbox + Archived carry their live counts.
+              Hidden entirely without WMS access: every link in it is a WMS
+              route, so the section would be three dead ends. */}
+          {canAccessWms && (
+          <>
           <DropdownMenu.Label className="px-3 pt-2 pb-1 text-[11px] uppercase tracking-wide text-[#94A3B8] font-bold">
             Workspace
           </DropdownMenu.Label>
@@ -299,6 +308,8 @@ export function UserMenu({
                 </span>
               </Link>
             </DropdownMenu.Item>
+          )}
+          </>
           )}
 
           <DropdownMenu.Separator className="my-1 h-px bg-[#E2E8F0]" />

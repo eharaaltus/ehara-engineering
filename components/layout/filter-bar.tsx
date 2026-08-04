@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { motion } from "motion/react";
 import { MultiSelect } from "@/components/ui/multi-select";
+import { useHoverOpen } from "@/lib/use-hover-open";
 import { PRIORITY_LABELS, type TaskPriority } from "@/db/enums";
 import { DepartmentFilter } from "./filters/department-filter";
 import { PriorityFilter } from "./filters/priority-filter";
@@ -110,6 +111,18 @@ export function FilterBar({
   const [subj, setSubj] = React.useState<string[]>(initial.subj);
   const [status, setStatus] = React.useState<string[]>(initial.status ?? []);
   const [client, setClient] = React.useState<string[]>(initial.client ?? []);
+
+  // Hover-to-open for the date chip. The MultiSelect-based chips get this from
+  // the component; this one is a bare Popover, so it registers its own anchor
+  // and content with the hook.
+  const {
+    open: dateOpen,
+    setOpen: setDateOpen,
+    setAnchor: setDateAnchor,
+    setContent: setDateContent,
+    hoverProps: dateHoverProps,
+    contentDismissProps: dateDismissProps,
+  } = useHoverOpen(true);
 
   const range: DateRange | undefined = React.useMemo(() => {
     try {
@@ -236,10 +249,16 @@ export function FilterBar({
             -mx/px padding keeps the first and last pill from clipping against
             the scroll edge. */}
         <div className="thin-scroll -mx-1 flex items-center gap-2 overflow-x-auto px-1 py-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {/* Date range */}
-          <Popover.Root>
-            <Popover.Trigger asChild>
+          {/* Date range.
+              Wired to the hover hook by hand rather than through MultiSelect —
+              this is a raw Radix Popover holding a DayPicker, not a list of
+              options, so it never went through the component that carries
+              `openOnHover`. Without this the calendar was the one chip on the
+              row that still demanded a click. */}
+          <Popover.Root open={dateOpen} onOpenChange={setDateOpen}>
+            <Popover.Trigger asChild {...dateHoverProps}>
               <FilterPill
+                ref={setDateAnchor}
                 icon={<Calendar size={16} strokeWidth={2} />}
                 value={formattedRange}
                 tint="var(--color-brand-blue)"
@@ -248,11 +267,13 @@ export function FilterBar({
             </Popover.Trigger>
             <Popover.Portal>
               <Popover.Content
+                ref={setDateContent}
                 align="start"
                 sideOffset={10}
                 collisionPadding={12}
                 className="z-[100] bg-surface-card border border-hairline-strong rounded-chip p-3 max-h-[var(--radix-popover-content-available-height)] overflow-y-auto"
                 style={{ boxShadow: "0 16px 40px rgba(15, 23, 42, 0.14)" }}
+                {...dateDismissProps}
               >
                 <DayPicker
                   mode="range"
@@ -269,6 +290,7 @@ export function FilterBar({
 
           {/* Assignee */}
           <MultiSelect
+            openOnHover
             options={employees}
             selected={emp}
             onChange={handleEmpChange}
@@ -309,8 +331,40 @@ export function FilterBar({
             <SegButton layoutId="view-seg-active" active={view === "initiator"} onClick={() => setView("initiator")}>Initiator</SegButton>
           </SegGroup>
 
-          {/* Right-pinned actions */}
-          <div className="flex items-center gap-2 ml-auto">
+          {/* Right-pinned actions.
+              The result count, the updating spinner and Reset live here rather
+              than on a second row. The old row 2 also repeated every active
+              filter as a removable chip — but the pill above already names the
+              selection ("Ehara Admin & Abhijeet…") and the dropdown unchecks it,
+              so those chips cost a whole line of vertical space to restate what
+              was directly above them. */}
+          <div className="flex shrink-0 items-center gap-2 ml-auto">
+            <span
+              aria-live="polite"
+              className="inline-flex items-center gap-1.5 text-[12.5px] text-ink-subtle transition-opacity"
+              style={{ opacity: isPending ? 1 : 0 }}
+            >
+              <Loader2 size={13} strokeWidth={2.2} className="animate-spin" />
+              Updating…
+            </span>
+            {typeof taskCount === "number" && (
+              <span
+                className="whitespace-nowrap text-[12.5px] font-semibold tabular-nums"
+                style={{ color: "var(--color-ink-soft)" }}
+              >
+                {taskCount.toLocaleString()} task{taskCount === 1 ? "" : "s"}
+              </span>
+            )}
+            {activePills.length > 0 && (
+              <button
+                type="button"
+                onClick={reset}
+                className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-hairline bg-surface-card px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors hover:border-hairline-strong"
+                style={{ color: "var(--color-brand-blue)" }}
+              >
+                <X size={13} strokeWidth={2.4} /> Reset
+              </button>
+            )}
             {(pathname === "/tasks" || pathname === "/archived") && me?.isAdmin && (() => {
               const buildExportHref = (path: string) => {
                 const exportSp = new URLSearchParams(searchParams.toString());
@@ -367,60 +421,6 @@ export function FilterBar({
           </div>
         </div>
 
-        {/* Row 2 — active filter chips + result count. Only rendered when it
-            has something to show, so an unfiltered bar stays compact. */}
-        {(activePills.length > 0 || typeof taskCount === "number" || isPending) && (
-        <div className="flex items-center gap-2 flex-wrap">
-          {activePills.map((p) => (
-            <span
-              key={p.key}
-              className="inline-flex items-center gap-1.5 rounded-full pl-2.5 pr-1.5 py-1 text-[13px] font-medium"
-              style={{
-                background: `color-mix(in srgb, ${p.color} 12%, transparent)`,
-                color: "var(--color-ink-strong)",
-              }}
-            >
-              <span className="size-2 rounded-full" style={{ background: p.color }} />
-              {p.label}
-              <button
-                type="button"
-                onClick={p.remove}
-                aria-label={`Remove ${p.label}`}
-                className="inline-flex items-center justify-center rounded-full size-4 text-ink-subtle hover:text-ink-strong hover:bg-black/5 transition-colors"
-              >
-                <X size={12} strokeWidth={2.4} />
-              </button>
-            </span>
-          ))}
-
-          {activePills.length > 0 && (
-            <button
-              type="button"
-              onClick={reset}
-              className="text-[13px] font-semibold transition-colors hover:underline"
-              style={{ color: "var(--color-brand-blue)" }}
-            >
-              Clear all
-            </button>
-          )}
-
-          <div className="ml-auto inline-flex items-center gap-2">
-            <span
-              aria-live="polite"
-              className="inline-flex items-center gap-1.5 text-[13px] text-ink-subtle transition-opacity"
-              style={{ opacity: isPending ? 1 : 0 }}
-            >
-              <Loader2 size={13} strokeWidth={2.2} className="animate-spin" />
-              Updating…
-            </span>
-            {typeof taskCount === "number" && (
-              <span className="text-[13px] font-semibold tabular-nums" style={{ color: "var(--color-ink-soft)" }}>
-                {taskCount.toLocaleString()} task{taskCount === 1 ? "" : "s"} found
-              </span>
-            )}
-          </div>
-        </div>
-        )}
       </div>
     </div>
   );

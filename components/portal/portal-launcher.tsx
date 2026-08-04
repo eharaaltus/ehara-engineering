@@ -3,9 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import type { Route } from "next";
-import { useRouter } from "next/navigation";
-import { signOut } from "firebase/auth";
-import { getFirebaseAuth } from "@/lib/firebase/client";
 import {
   LayoutDashboard,
   ShieldCheck,
@@ -13,7 +10,6 @@ import {
   BookOpen,
   Factory,
   ArrowRight,
-  LogOut,
   Lock,
   type LucideIcon,
 } from "lucide-react";
@@ -125,6 +121,7 @@ export function PortalLauncher({
   isAdmin,
   allowed,
   denied,
+  userMenu,
 }: {
   name: string;
   firstName: string;
@@ -134,23 +131,16 @@ export function PortalLauncher({
   allowed?: Record<string, boolean>;
   /** Set when the person was bounced here by the module guard. */
   denied?: string | null;
+  /** The avatar menu (Admin panel / Profile / Documents / Inbox / Archived /
+   *  Sign out), rendered on the server and slotted in — this component is a
+   *  client component and can't await its data. */
+  userMenu?: React.ReactNode;
 }) {
-  const router = useRouter();
   const { now, greeting, subline } = useGreeting();
 
   const deniedLabel = denied
     ? WORKSPACES.find((w) => w.key === denied)?.title ?? denied
     : null;
-
-  async function signOutNow() {
-    try {
-      await signOut(getFirebaseAuth());
-    } catch {
-      /* server revoke below is what matters */
-    }
-    await fetch("/api/auth/signout", { method: "POST" });
-    router.replace("/login" as Route);
-  }
 
   const clock = now ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
   const dateLabel = now
@@ -203,13 +193,12 @@ export function PortalLauncher({
           </div>
           <span className="h-8 w-px bg-slate-300/70 max-sm:hidden" aria-hidden />
           <span className="text-[13px] text-slate-500 max-sm:hidden">Hi, <b className="text-slate-900">{firstName}</b></span>
-          <button
-            type="button"
-            onClick={signOutNow}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 bg-white/80 px-3.5 text-[13px] font-bold text-slate-700 shadow-sm backdrop-blur transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f6bf6] motion-reduce:hover:translate-y-0"
-          >
-            <LogOut size={14} strokeWidth={2.4} /> Sign out
-          </button>
+          {/* The avatar menu carries Admin panel, Profile & preferences,
+              Documents / Inbox / Archived and Sign out — so the standalone
+              "Sign out" button that used to sit here was the same action twice,
+              and the portal had no route to the admin panel or the profile at
+              all without first entering a workspace. */}
+          {userMenu}
           <span className="mx-0.5 h-8 w-px bg-slate-300/70 max-lg:hidden" aria-hidden />
           <span className="flex flex-col items-center gap-1 leading-none max-lg:hidden" aria-label="Powered by Altus Corp">
             <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-slate-400">Powered by</span>

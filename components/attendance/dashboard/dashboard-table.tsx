@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import type { DashboardRow } from "@/lib/queries/attendance-status";
 import { EmployeeDetailDialog } from "./employee-detail";
 
@@ -46,6 +46,19 @@ export function AttendanceDashboardTable({
             aria-label="Search employees"
             className="w-full h-11 pl-10 pr-9 rounded-pill border border-hairline bg-surface-card text-[15px] text-ink-strong placeholder:text-ink-subtle outline-none transition-all focus:border-red-600 focus:ring-2 focus:ring-red-600/25"
           />
+          {/* This field relied on the browser's native clear button, which is
+              now suppressed app-wide (it was duplicating the app's own on other
+              screens). Without this it would have no clear control at all. */}
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-subtle transition-colors hover:text-ink-strong"
+            >
+              <X size={16} strokeWidth={2.4} />
+            </button>
+          )}
         </div>
         <span className="text-[13px] font-semibold text-ink-subtle tabular-nums">
           {filtered.length} {filtered.length === 1 ? "person" : "people"}

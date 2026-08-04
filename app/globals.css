@@ -257,6 +257,24 @@ html[data-density="compact"] body {
     text-rendering: optimizeLegibility;
   }
 
+  /* Every search field in this app draws its OWN clear button — styled, with an
+     aria-label, wired to the React state that actually drives the filter.
+     `type="search"` also makes WebKit render a second, native clear button in
+     the input's shadow DOM, so the task list and the Outstanding table each
+     showed TWO x's a few pixels apart, overlapping in the same corner and
+     competing for the click.
+     Suppressing the native one leaves exactly one control, and it's the one
+     bound to state. `type="search"` is kept for its semantics (Escape-to-clear,
+     the search role). */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+
   body {
     min-height: 100dvh;
     /* Phase 2 — calmer, cleaner canvas: a single faint brand wash (blue +
@@ -306,10 +324,19 @@ html[data-density="compact"] body {
   }
 }
 
-/* Typography utilities. Sizes match the spec §Typography table. */
+/* Typography utilities. Sizes match the spec §Typography table.
+ *
+ * Weight and tracking are tuned to the dashboard hero ("Good Evening, Ehara.")
+ * so every title in the app reads as the same voice: the display face, heavy,
+ * tightly tracked. Before this the utilities ran 400-600 with tracking between
+ * -0.015em and -0.035em, while the hero and various page headers set 900 and
+ * -0.035em inline — so a heading's weight depended on whether its author
+ * reached for the utility or wrote the style by hand.
+ *
+ * Sizes are deliberately unchanged; only the voice is unified. */
 @utility text-display-xl {
   font-family: var(--font-serif);
-  font-weight: 800;
+  font-weight: 900;
   font-size: clamp(40px, 9vw, 76px);
   line-height: 0.95;
   letter-spacing: -0.035em;
@@ -318,35 +345,35 @@ html[data-density="compact"] body {
 
 @utility text-display-lg {
   font-family: var(--font-serif);
-  font-weight: 700;
+  font-weight: 800;
   font-size: clamp(28px, 6vw, 40px);
   line-height: 1.1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.03em;
 }
 
 @utility text-display-md {
   font-family: var(--font-serif);
-  font-weight: 700;
+  font-weight: 800;
   font-size: clamp(24px, 5.2vw, 32px);
   line-height: 1;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 
 @utility text-display-sm {
   font-family: var(--font-serif);
-  font-weight: 700;
+  font-weight: 800;
   font-size: clamp(25px, 5.4vw, 34px);
   line-height: 1.05;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 @utility text-display-xs {
   font-family: var(--font-serif);
-  font-weight: 700;
+  font-weight: 800;
   font-size: clamp(21px, 4.4vw, 26px);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 

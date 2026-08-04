@@ -210,10 +210,9 @@ export function PortalLauncher({
 
       {/* ── hero (compact, centred) ── */}
       <div className="portal-fade relative z-10 mx-auto flex w-full max-w-[1320px] shrink-0 flex-col items-center px-9 pt-1 pb-1 text-center max-md:px-4" style={{ animationDelay: "80ms" }}>
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#2f6bf6]/15 bg-white/70 px-3.5 py-1.5 shadow-sm backdrop-blur" style={{ fontFamily: "var(--font-mono-display), ui-monospace, monospace" }}>
-          <span className="portal-pulse size-1.5 rounded-full" style={{ background: "linear-gradient(135deg,#2f6bf6,#12b6cf)", boxShadow: "0 0 8px rgba(47,107,246,0.6)" }} />
-          <span className="text-[10px] font-bold uppercase tracking-[0.24em]" style={{ color: "#2f6bf6" }}>Ehara Engineering · Workspaces</span>
-        </span>
+        {/* The "EHARA ENGINEERING · WORKSPACES" badge used to sit here. The top
+            bar already carries the wordmark and the "Workspaces" label three
+            inches above it, so it was the same two words a second time. */}
         <h1
           className="mt-2"
           style={{
@@ -393,16 +392,13 @@ function PortalStyles() {
       .hero-rule { width: 64px; height: 4px; background: linear-gradient(90deg,#1e40af,#e11d2f); box-shadow: 0 4px 14px rgba(30,64,175,.4); animation: heroRule .9s cubic-bezier(.2,.7,.2,1) .25s both; }
       @keyframes heroRule { from { width: 0; opacity: 0; } to { width: 64px; opacity: 1; } }
 
-      .portal-pulse { animation: portalPulse 2.4s ease-in-out infinite; }
-      @keyframes portalPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(.82); } }
-
       .portal-orb { filter: blur(48px); animation: orbDrift 22s ease-in-out infinite; will-change: transform; }
       .portal-orb--b { animation-duration: 28s; }
       .portal-orb--c { animation-duration: 25s; }
       @keyframes orbDrift { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(26px,-22px) scale(1.06); } }
 
       @media (prefers-reduced-motion: reduce) {
-        .portal-fade, .ws-link, .ws-card, .hero-name, .hero-rule, .portal-orb, .portal-pulse, .ws-ico, .ws-ghost {
+        .portal-fade, .ws-link, .ws-card, .hero-name, .hero-rule, .portal-orb, .ws-ico, .ws-ghost {
           animation: none !important; transition: none !important;
         }
         .ws-link:not(.ws-link--static):hover { transform: none; }

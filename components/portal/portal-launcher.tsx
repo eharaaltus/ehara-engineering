@@ -104,7 +104,11 @@ function useGreeting() {
   }, []);
   const hour = now?.getHours() ?? -1;
   const bucket = hour < 0 ? null : hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
-  const greeting = bucket ? `Good ${bucket}` : "Welcome back";
+  // Title case: `bucket` is lower-case because it also keys the subline below,
+  // so capitalise it here rather than duplicating the three labels.
+  const greeting = bucket
+    ? `Good ${bucket.charAt(0).toUpperCase()}${bucket.slice(1)}`
+    : "Welcome Back";
   const subline =
     bucket === "morning"
       ? "A fresh sheet. Pick where the day starts."

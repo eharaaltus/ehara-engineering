@@ -31,7 +31,8 @@ export function DashboardHero({
   }, []);
 
   const hour = now?.getHours() ?? 9;
-  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  // Title case throughout — the greeting reads as a salutation, not a sentence.
+  const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
   const dateLabel = now
     ? now.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     : "";

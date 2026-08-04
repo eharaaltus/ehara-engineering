@@ -47,7 +47,13 @@
   --color-nav-pill-bg-hover:  rgba(255, 255, 255, 0.10);
 
   /* fonts */
-  --font-serif: var(--font-roboto), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Headings lead with the display face (Bricolage Grotesque), matching JMT.
+     Every text-display-* utility keys off this token, so before it they all
+     rendered in Roboto — the same face as body copy — while individual
+     components reached for var(--font-display) inline. Headings looked
+     inconsistent depending on which route drew them. Roboto stays in the stack
+     as the fallback. */
+  --font-serif: var(--font-display), var(--font-roboto), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-sans:  var(--font-roboto), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono:  ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
@@ -303,7 +309,7 @@ html[data-density="compact"] body {
 /* Typography utilities. Sizes match the spec §Typography table. */
 @utility text-display-xl {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 800;
   font-size: clamp(40px, 9vw, 76px);
   line-height: 0.95;
   letter-spacing: -0.035em;
@@ -312,7 +318,7 @@ html[data-density="compact"] body {
 
 @utility text-display-lg {
   font-family: var(--font-serif);
-  font-weight: 400;
+  font-weight: 700;
   font-size: clamp(28px, 6vw, 40px);
   line-height: 1.1;
   letter-spacing: -0.015em;
@@ -320,7 +326,7 @@ html[data-density="compact"] body {
 
 @utility text-display-md {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 700;
   font-size: clamp(24px, 5.2vw, 32px);
   line-height: 1;
   letter-spacing: -0.025em;
@@ -329,7 +335,7 @@ html[data-density="compact"] body {
 
 @utility text-display-sm {
   font-family: var(--font-serif);
-  font-weight: 400;
+  font-weight: 700;
   font-size: clamp(25px, 5.4vw, 34px);
   line-height: 1.05;
   letter-spacing: -0.02em;
@@ -337,7 +343,7 @@ html[data-density="compact"] body {
 
 @utility text-display-xs {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 700;
   font-size: clamp(21px, 4.4vw, 26px);
   line-height: 1;
   letter-spacing: -0.02em;

@@ -38,7 +38,7 @@ export function WeeklyGoalsMondayEmail(props: WeeklyGoalsMondayProps) {
       preview={previewText({ goals: props.goals })}
       siteUrl={props.siteUrl}
     >
-      <NotificationParagraph muted>Good morning {props.recipientName},</NotificationParagraph>
+      <NotificationParagraph muted>Good Morning {props.recipientName},</NotificationParagraph>
       <NotificationHeadline>Your priorities for {props.weekLabel}.</NotificationHeadline>
 
       {props.goals.length === 0 ? (

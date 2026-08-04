@@ -42,7 +42,7 @@ export function MobileToday({
     new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "numeric", hour12: false }).format(now),
   );
   const greeting =
-    hourIst < 12 ? "Good morning" : hourIst < 17 ? "Good afternoon" : "Good evening";
+    hourIst < 12 ? "Good Morning" : hourIst < 17 ? "Good Afternoon" : "Good Evening";
   const dateLabel = new Intl.DateTimeFormat("en-IN", {
     timeZone: TZ,
     weekday: "long",

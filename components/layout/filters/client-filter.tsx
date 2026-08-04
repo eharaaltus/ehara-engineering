@@ -16,6 +16,7 @@ export function ClientFilter({
 }) {
   return (
     <MultiSelect
+      openOnHover
       options={options}
       selected={selected}
       onChange={onChange}

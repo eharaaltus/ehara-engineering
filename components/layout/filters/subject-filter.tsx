@@ -15,6 +15,7 @@ export function SubjectFilter({
   const opts = options.map((s) => ({ value: s, label: s }));
   return (
     <MultiSelect
+      openOnHover
       options={opts}
       selected={selected}
       onChange={onChange}

@@ -156,10 +156,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {me && (
                 <DashboardHero
                   firstName={me.name.split(" ")[0] ?? me.name}
-                  total={data.kpis.total.current}
-                  pending={data.kpis.pending.current}
-                  done={data.kpis.done.current}
-                  notStarted={data.kpis.notStarted.current}
                   dueToday={myDay?.dueToday ?? 0}
                   overdue={myDay?.overdue ?? 0}
                 />

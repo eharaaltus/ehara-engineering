@@ -30,36 +30,30 @@ export const FilterPill = React.forwardRef<
       ref={ref}
       type="button"
       data-active={active}
+      aria-label={name ? `${name}: ${value}` : value}
       className={`filter-pill ${className ?? ""}`}
       {...props}
     >
+      {/* Single line: icon, value, chevron.
+          The pill used to stack the value over its NAME ("All Priorities" above
+          "Priority"), with a 34px icon tile — roughly 52px tall, which is what
+          pushed the filter bar onto two rows. The value already says which
+          filter it is, so the sublabel was the same word twice at the cost of
+          the whole row. `name` is kept in the API for the aria-label only. */}
       <span
-        className="inline-flex items-center justify-center rounded-[10px] shrink-0"
-        style={{
-          width: 34,
-          height: 34,
-          background: active
-            ? `color-mix(in srgb, ${tint} 14%, transparent)`
-            : "var(--color-hairline)",
-          color: active ? tint : "var(--color-ink-subtle)",
-        }}
+        className="inline-flex items-center justify-center shrink-0"
+        style={{ color: active ? tint : "var(--color-ink-subtle)" }}
+        aria-hidden
       >
         {icon}
       </span>
-      <span className="flex flex-col min-w-0 leading-[1.15]">
-        <span
-          className="text-[14px] font-semibold truncate max-w-[170px]"
-          style={{ color: active ? "var(--color-ink-strong)" : "var(--color-ink-strong)" }}
-        >
-          {value}
-        </span>
-        {name && (
-          <span className="text-[11.5px] font-medium" style={{ color: "var(--color-ink-subtle)" }}>
-            {name}
-          </span>
-        )}
+      <span
+        className="truncate max-w-[150px] text-[13px] font-semibold"
+        style={{ color: "var(--color-ink-strong)" }}
+      >
+        {value}
       </span>
-      <ChevronDown size={15} className="text-ink-subtle shrink-0" />
+      <ChevronDown size={14} className="text-ink-subtle shrink-0" />
     </button>
   );
 });

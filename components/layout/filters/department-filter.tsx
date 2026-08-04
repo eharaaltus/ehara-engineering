@@ -22,6 +22,7 @@ export function DepartmentFilter({
 
   return (
     <MultiSelect
+      openOnHover
       options={items}
       selected={selected}
       onChange={onChange}

@@ -1,42 +1,27 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
-import type { Route } from "next";
-import {
-  ArrowRight,
-  Plus,
-  CalendarClock,
-  AlertTriangle,
-  CheckCircle2,
-  ListTodo,
-  CircleDashed,
-  type LucideIcon,
-} from "lucide-react";
-import { Counter } from "./count-up";
 
-interface Metric {
-  label: string;
-  value: number;
-  icon: LucideIcon;
-  from: string;
-  to: string;
-}
-
+/**
+ * The greeting band above the dashboard.
+ *
+ * Deliberately just a greeting now. It used to carry a four-card metric strip
+ * (Total / In Progress / Not Started / Completed), a completion bar and a pair
+ * of "Open My Day" / "New task" buttons — all of which restated something
+ * already on screen: the numbers are the KPI row directly below, and both
+ * buttons are in the header. Removing them lifts the real dashboard about a
+ * screen higher.
+ *
+ * `total`, `pending`, `done` and `notStarted` are gone from the props with the
+ * strip; `dueToday` and `overdue` stay, because the greeting line is the only
+ * place either is stated.
+ */
 export function DashboardHero({
   firstName,
-  total,
-  pending,
-  done,
-  notStarted,
   dueToday,
   overdue,
 }: {
   firstName: string;
-  total: number;
-  pending: number;
-  done: number;
-  notStarted: number;
   dueToday: number;
   overdue: number;
 }) {
@@ -50,15 +35,6 @@ export function DashboardHero({
   const dateLabel = now
     ? now.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     : "";
-
-  const completion = total > 0 ? Math.round((done / total) * 100) : 0;
-
-  const metrics: Metric[] = [
-    { label: "Total tasks", value: total, icon: ListTodo, from: "#1e40af", to: "#14245c" },
-    { label: "In progress", value: pending, icon: CircleDashed, from: "#f59e0b", to: "#d97706" },
-    { label: "Not started", value: notStarted, icon: CalendarClock, from: "#64748b", to: "#475569" },
-    { label: "Completed", value: done, icon: CheckCircle2, from: "#e11d2f", to: "#3f7a14" },
-  ];
 
   return (
     <section className="mx-auto max-w-[1600px] px-12 max-md:px-4 mt-6">
@@ -101,83 +77,22 @@ export function DashboardHero({
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
-            <Link
-              href={"/tasks/agenda" as Route}
-              className="group inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[13.5px] font-bold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-slate-50"
-            >
-              Open My Day
-              <ArrowRight size={15} strokeWidth={2.6} className="transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              href={"/tasks/new" as Route}
-              className="group inline-flex h-11 items-center gap-2 rounded-xl px-4 text-[13.5px] font-extrabold text-white shadow-lg transition-all hover:-translate-y-0.5"
-              style={{ background: "linear-gradient(135deg, #e11d2f, #1e40af)", boxShadow: "0 14px 30px -14px rgba(30, 64, 175,0.6)" }}
-            >
-              <Plus size={16} strokeWidth={2.8} /> New task
-            </Link>
-          </div>
+          {/* "Open My Day" and "New task" used to sit here. Both were already one
+              click away in the header — My Day is a primary nav pill and New Task
+              is the header's own button — so this pair was the same two actions
+              a second time, costing a full row of hero width. Removed rather than
+              restyled: a duplicate control isn't a shortcut, it's noise. */}
         </div>
 
-        {/* metric strip */}
-        <div className="relative mt-5 grid grid-cols-4 gap-3 max-lg:grid-cols-2">
-          {metrics.map((m) => (
-            <HeroMetric key={m.label} metric={m} />
-          ))}
-        </div>
-
-        {/* completion bar */}
-        <div className="relative mt-4">
-          <div className="flex items-center justify-between text-[12px] font-semibold text-slate-500">
-            <span className="inline-flex items-center gap-1.5">
-              {overdue > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-bold text-red-600 ring-1 ring-red-200">
-                  <AlertTriangle size={11} /> {overdue} overdue
-                </span>
-              )}
-              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600 ring-1 ring-slate-200">
-                <CalendarClock size={11} /> {dueToday} due today
-              </span>
-            </span>
-            <span className="tabular-nums text-slate-600">{completion}% complete</span>
-          </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-200">
-            <div
-              className="h-full rounded-full transition-[width] duration-1000 ease-out"
-              style={{ width: `${completion}%`, background: "linear-gradient(90deg, #e11d2f, #1e40af)" }}
-            />
-          </div>
-        </div>
+        {/* The Total / In Progress / Not Started / Completed strip and the
+            completion bar used to sit here. Every one of those numbers is in
+            the KPI row immediately below — Total, Pending, Not Started, Done —
+            so the hero was restating the next section in bigger type, pushing
+            the real dashboard a full screen down. The greeting line still
+            carries the only thing the KPI row doesn't say: how many are overdue
+            and due today. */}
       </div>
     </section>
   );
 }
 
-function HeroMetric({ metric }: { metric: Metric }) {
-  const Icon = metric.icon;
-  return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-      <span aria-hidden className="absolute inset-x-0 top-0 h-[3px]" style={{ background: `linear-gradient(90deg, ${metric.from}, ${metric.to})` }} />
-      <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -translate-x-[200%] -skew-x-12 bg-gradient-to-r from-transparent via-slate-100/80 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[260%]" />
-      <div className="relative flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400">{metric.label}</span>
-        {/* small pastel chip — soft tint + colour icon + inner ring */}
-        <span
-          className="inline-flex size-6 items-center justify-center rounded-[9px] transition-transform group-hover:scale-110"
-          style={{
-            background: `linear-gradient(135deg, ${metric.from}26, ${metric.to}1a)`,
-            color: metric.from,
-            boxShadow: `inset 0 0 0 1.5px ${metric.from}3d`,
-          }}
-        >
-          <Icon size={14} strokeWidth={2.7} />
-        </span>
-      </div>
-      <Counter
-        value={metric.value}
-        className="relative mt-1.5 block tabular-nums text-slate-900"
-        style={{ fontFamily: "var(--font-display), system-ui, sans-serif", fontWeight: 900, fontSize: "clamp(24px, 2.4vw, 32px)", letterSpacing: "-0.025em", lineHeight: 1 }}
-      />
-    </div>
-  );
-}

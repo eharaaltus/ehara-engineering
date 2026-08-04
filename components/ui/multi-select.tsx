@@ -15,6 +15,7 @@ import {
 } from "./command";
 import { cn } from "@/lib/utils";
 import { focusNextFrom } from "@/lib/focus-next";
+import { useHoverOpen } from "@/lib/use-hover-open";
 
 interface MultiSelectProps {
   options: { value: string; label: string }[];
@@ -26,6 +27,11 @@ interface MultiSelectProps {
    *  of the current selection + the open state. When set, replaces the default
    *  inline button trigger entirely. Must forward props/ref (Radix asChild). */
   renderTrigger?: (state: { selectedLabels: string[]; open: boolean }) => React.ReactElement;
+  /** Open on mouse hover, close shortly after the pointer leaves both the chip
+   *  and the menu. Opt-in — hovering to open suits a filter bar where you skim
+   *  several menus in a row, but is a nuisance in a form or dialog where a menu
+   *  popping open as the pointer crosses it interrupts typing. */
+  openOnHover?: boolean;
 }
 
 export function MultiSelect({
@@ -35,10 +41,54 @@ export function MultiSelect({
   placeholder = "All Employees",
   className,
   renderTrigger,
+  openOnHover = false,
 }: MultiSelectProps) {
-  const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const labelMap = new Map(options.map((o) => [o.value, o.label]));
+
+  const {
+    open,
+    setOpen,
+    setAnchor,
+    setContent,
+    enter: hoverEnter,
+    leave: hoverLeave,
+    hoverProps,
+    contentDismissProps,
+  } = useHoverOpen(openOnHover);
+
+  // Resolving the trigger element is fiddly here for a reason worth recording:
+  // when a caller passes `renderTrigger` (every filter chip does), the internal
+  // `triggerRef` is never attached — Radix's asChild owns the child's ref, and
+  // adding a second one would clobber it. So the element is tagged with a
+  // per-instance id that rides through asChild as a plain data attribute, and
+  // looked up from the DOM.
+  //
+  // The affordance the user aims at is the whole pill — icon, label, chevron —
+  // which IS the button in this app (`.filter-pill`). pointerenter/leave fire
+  // once for an element and all its descendants, so binding to it is enough.
+  const hoverId = React.useId();
+  React.useEffect(() => {
+    if (!openOnHover) return;
+    const host =
+      document.querySelector<HTMLElement>(`[data-hover-id="${CSS.escape(hoverId)}"]`) ??
+      triggerRef.current;
+    if (!host) return;
+    setAnchor(host);
+    const onEnter = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") hoverEnter();
+    };
+    const onLeave = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") hoverLeave();
+    };
+    host.addEventListener("pointerenter", onEnter);
+    host.addEventListener("pointerleave", onLeave);
+    return () => {
+      host.removeEventListener("pointerenter", onEnter);
+      host.removeEventListener("pointerleave", onLeave);
+      setAnchor(null);
+    };
+  }, [openOnHover, hoverEnter, hoverLeave, setAnchor, hoverId]);
 
   // Tab commits the highlighted option and advances to the next field, instead
   // of just dismissing the menu (cmdk only commits on Enter / click).
@@ -64,7 +114,7 @@ export function MultiSelect({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild {...hoverProps} data-hover-id={hoverId}>
         {renderTrigger ? (
           renderTrigger({
             selectedLabels: selected.map((v) => labelMap.get(v) ?? v),
@@ -113,7 +163,11 @@ export function MultiSelect({
       {/* overflow-hidden: the inner CommandList is the single scroller — the
           PopoverContent must NOT also scroll, or you get two stacked scrollbars.
           (Same pattern subject-select / client-select already use.) */}
-      <PopoverContent className="w-72 p-0 overflow-hidden">
+      <PopoverContent
+        ref={setContent}
+        className="w-72 p-0 overflow-hidden"
+        {...contentDismissProps}
+      >
         <Command onKeyDown={onCommandKeyDown}>
           <CommandInput placeholder="Search…" />
           <CommandList className="max-h-64 overflow-auto">

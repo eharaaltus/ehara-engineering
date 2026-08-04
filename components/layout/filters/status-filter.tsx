@@ -17,6 +17,7 @@ export function StatusFilter({
 }) {
   return (
     <MultiSelect
+      openOnHover
       options={options}
       selected={selected}
       onChange={onChange}

@@ -34,7 +34,6 @@ import { StatusFilter } from "./filters/status-filter";
 import { SubjectFilter } from "./filters/subject-filter";
 import { ClientFilter } from "./filters/client-filter";
 import { FilterPill, summarizeSelection } from "./filters/filter-pill";
-import { SavedViews } from "./filters/saved-views";
 
 type AssigneeMode = "default" | "all" | "specific";
 
@@ -228,9 +227,15 @@ export function FilterBar({
       className={`sticky top-0 z-40 border-b border-hairline ${className ?? ""}`}
       style={{ backgroundColor: "var(--color-surface-page, #f7f9fb)" }}
     >
-      <div className="mx-auto max-w-[1600px] px-12 py-2 max-md:px-4 flex flex-col gap-1.5">
-        {/* Row 1 — filter pill-cards */}
-        <div className="flex items-center gap-2.5 flex-wrap">
+      <div className="mx-auto max-w-[1600px] px-12 py-1.5 max-md:px-4 flex flex-col gap-1">
+        {/* Row 1 — filters, ALWAYS one line.
+            `flex-wrap` used to let this spill onto a second and third row as
+            chips were added, so the bar's height changed with the filter set and
+            pushed the page down. Now it never wraps; on a narrow screen it
+            scrolls sideways instead (thin-scroll hides the bar until hovered).
+            -mx/px padding keeps the first and last pill from clipping against
+            the scroll edge. */}
+        <div className="thin-scroll -mx-1 flex items-center gap-2 overflow-x-auto px-1 py-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* Date range */}
           <Popover.Root>
             <Popover.Trigger asChild>
@@ -355,8 +360,10 @@ export function FilterBar({
               );
             })()}
 
-            {/* Saved views — save/apply/delete named filter combos (per page). */}
-            <SavedViews />
+            {/* "Saved views" removed — it held a permanent slot in the filter row
+                for a feature used rarely, and the row is the most space-starved
+                strip in the app. The filters themselves live in the URL, so a
+                combination you want to keep is just a bookmark. */}
           </div>
         </div>
 

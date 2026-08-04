@@ -18,6 +18,7 @@ export function PriorityFilter({
 }) {
   return (
     <MultiSelect
+      openOnHover
       options={OPTIONS}
       selected={selected}
       onChange={onChange}

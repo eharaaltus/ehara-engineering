@@ -31,6 +31,14 @@ export function computeEmployeeStatusTable(
   };
 
   for (const t of tasks) {
+    // Archived tasks are out of scope for this table. It reports the period's
+    // WORK — Critical / Done / Pending / Not Approved / Cancelled — and the rest
+    // of the dashboard already treats archived separately (the status
+    // distribution gives it its own bucket, the nav totals exclude it).
+    // Counting it only here produced a Total no column could explain, pointing
+    // at a task the user couldn't open from any list.
+    if (t.archived) continue;
+
     const id = view === "doer" ? t.doerId : t.initiatorId;
     const emp = employeeById.get(id);
     if (!emp) continue;
@@ -91,8 +99,9 @@ export function computeEmployeeStatusTable(
       case "cancelled":
         row.cancelled += 1;
         break;
+      case "need_help":           // retired 2026-06-10 but still in the enum,
+                                  // so historic rows must still land somewhere
       case "need_info":           // Tier-3 — rolls into the "need" bucket
-                                  // (need_help retired 2026-06-10)
         row.needHelp += 1;
         row.pendingTotal += 1;
         break;
@@ -107,10 +116,26 @@ export function computeEmployeeStatusTable(
         row.initiated += 1;
         row.pendingTotal += 1;
         break;
+      case "dont_know":           // "Not Seen" — the status EVERY new task
+                                  // starts in. Leaving it unbucketed made
+                                  // freshly created work count toward Total
+                                  // while showing in no column at all.
       case "not_started":
         row.notStarted += 1;
         row.pendingTotal += 1;
         break;
+      case "on_hold":             // paused, but still open work
+        row.pendingTotal += 1;
+        break;
+      default: {
+        // Exhaustiveness guard. Adding a value to TASK_STATUSES without
+        // bucketing it here is now a COMPILE error rather than a row that
+        // silently inflates Total and appears in no column — which is exactly
+        // how dont_know / on_hold / need_help went unnoticed.
+        const _never: never = t.status;
+        void _never;
+        break;
+      }
     }
     }
   }

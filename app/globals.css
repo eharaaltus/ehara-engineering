@@ -110,6 +110,21 @@
      overrides via inline style="--user-accent: <hex>" once the user
      sets their pref. Components can opt in with var(--user-accent). */
   --user-accent: #1e40af;
+
+  /* Height every route's loading skeleton reserves for the app chrome.
+   *
+   * Single source of truth: the pair 96px/72px was hardcoded in eight loading
+   * files, so retuning the chrome meant finding all of them — and missing one
+   * left the skeleton a different height from the page it replaces, which
+   * shows as a jump the moment content arrives. Overridden below Tailwind's
+   * `md` breakpoint so callers don't need their own responsive variant. */
+  --app-header-h: 96px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --app-header-h: 72px;
+  }
 }
 
 /* ────────────────────────────────────────────────────────────────────
@@ -246,7 +261,15 @@ html[data-density="compact"] body {
       radial-gradient(ellipse 60% 45% at 0% 100%, rgba(225, 29, 47, 0.035), transparent 60%),
       linear-gradient(180deg, #fbfcfd 0%, #f6f8fa 100%);
     background-attachment: fixed;
+    /* Keep stray wide content from producing a horizontal scrollbar — but NOT
+       with `hidden`, which makes <body> a scroll container and is the classic
+       killer of `position: sticky` on descendants (the filter bars were
+       declaring `sticky top-0` and simply scrolling away). `clip` clips
+       identically without establishing a scroll container, so sticky works.
+       Ordered as progressive enhancement: browsers too old for `clip`
+       (Safari < 16) ignore the second declaration and keep `hidden`. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   ::selection {

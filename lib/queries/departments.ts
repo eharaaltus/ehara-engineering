@@ -114,3 +114,21 @@ export async function listActiveDepartments(): Promise<Department[]> {
     .where(eq(departments.isActive, true))
     .orderBy(asc(departments.sortOrder), asc(departments.name));
 }
+
+/**
+ * Active department NAMES, ordered like the admin list.
+ *
+ * Feeds the Department filter chip on the dashboard and every task view. The
+ * filter previously read a hardcoded 8-name list out of `db/enums.ts` that had
+ * no connection to `/admin/departments` — so a department you actually created
+ * could not be filtered by, while names that existed nowhere were offered. The
+ * options now always match exactly what an admin manages.
+ */
+export async function listActiveDepartmentNames(): Promise<string[]> {
+  const rows = await db
+    .select({ name: departments.name })
+    .from(departments)
+    .where(eq(departments.isActive, true))
+    .orderBy(asc(departments.sortOrder), asc(departments.name));
+  return rows.map((r) => r.name);
+}

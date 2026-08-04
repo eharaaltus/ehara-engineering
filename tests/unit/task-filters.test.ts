@@ -53,12 +53,31 @@ describe("parseTaskFilters", () => {
 
   it("ignores invalid values silently", () => {
     const f = parseTaskFilters(
-      { status: "made_up,need_help", prio: "fake_quad", dept: "Bogus" },
+      { status: "made_up,need_help", prio: "fake_quad" },
       false,
     );
     expect(f.statuses).toEqual(["need_help"]);
     expect(f.priorities).toEqual([]);
-    expect(f.departments).toEqual([]);
+  });
+
+  // Statuses and priorities are closed unions, so an unknown value is junk and
+  // gets dropped. Departments are NOT: they're admin-managed rows, so there is
+  // no list to check a name against. Whitelisting them against the legacy
+  // DEPARTMENTS array is what silently swallowed every department created
+  // through /admin/departments. An unknown name is passed through and simply
+  // matches no employees, which is the correct outcome — an empty result, not a
+  // filter that quietly ignores what the user asked for.
+  it("passes department names through without whitelisting them", () => {
+    const f = parseTaskFilters({ dept: "Bogus,Marketing" }, false);
+    expect(f.departments).toEqual(["Bogus", "Marketing"]);
+  });
+
+  it("still trims and bounds department names", () => {
+    const f = parseTaskFilters(
+      { dept: `  Sales  ,,${"x".repeat(81)},Design` },
+      false,
+    );
+    expect(f.departments).toEqual(["Sales", "Design"]);
   });
 
   it("round-trips through toSearchString", () => {

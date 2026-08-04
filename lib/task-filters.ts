@@ -1,16 +1,28 @@
 import {
   TASK_STATUSES,
   TASK_PRIORITIES,
-  DEPARTMENTS,
   type TaskStatus,
   type TaskPriority,
-  type Department,
 } from "@/db/enums";
 import type { TaskListFilters } from "@/lib/types";
 
 const STATUS_SET = new Set<TaskStatus>(TASK_STATUSES);
 const PRIO_SET = new Set<TaskPriority>(TASK_PRIORITIES);
-const DEPT_SET = new Set<Department>(DEPARTMENTS);
+
+/**
+ * Departments are admin-managed rows now (/admin/departments), not a fixed
+ * union, so there is nothing to validate against here — a whitelist would
+ * silently drop every department added after the code was written, which is
+ * exactly what the old DEPARTMENTS-based filter did. Names only ever feed a
+ * parameterised `in` lookup against the employees table, so trimming and
+ * bounding them is the whole safety requirement.
+ */
+const MAX_DEPT_NAME = 80;
+function cleanDepartments(values: string[]): string[] {
+  return values
+    .map((d) => d.trim())
+    .filter((d) => d.length > 0 && d.length <= MAX_DEPT_NAME);
+}
 
 const split = (v: unknown): string[] =>
   typeof v === "string" ? v.split(",").filter(Boolean) : [];
@@ -61,9 +73,7 @@ export function parseTaskFilters(
   const priorities = split(get("prio")).filter((p): p is TaskPriority =>
     PRIO_SET.has(p as TaskPriority),
   );
-  const departments = split(get("dept")).filter((d): d is Department =>
-    DEPT_SET.has(d as Department),
-  );
+  const departments = cleanDepartments(split(get("dept")));
 
   const id = get("id");
 

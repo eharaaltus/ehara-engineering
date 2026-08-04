@@ -1,21 +1,28 @@
 "use client";
+import * as React from "react";
 import { Users2 } from "lucide-react";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { FilterPill, summarizeSelection } from "./filter-pill";
-import { DEPARTMENTS } from "@/db/enums";
-
-const OPTIONS = DEPARTMENTS.map((d) => ({ value: d, label: d }));
 
 export function DepartmentFilter({
   selected,
   onChange,
+  options,
 }: {
   selected: string[];
   onChange: (v: string[]) => void;
+  /** Department names straight from the DB — whatever /admin/departments holds.
+   *  Previously a hardcoded list in db/enums.ts that drifted from reality. */
+  options: string[];
 }) {
+  const items = React.useMemo(
+    () => options.map((d) => ({ value: d, label: d })),
+    [options],
+  );
+
   return (
     <MultiSelect
-      options={OPTIONS}
+      options={items}
       selected={selected}
       onChange={onChange}
       renderTrigger={({ selectedLabels }) => (

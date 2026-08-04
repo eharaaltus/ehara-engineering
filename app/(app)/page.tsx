@@ -11,6 +11,7 @@ import { DashboardHero } from "@/components/dashboard/dashboard-hero";
 import { DashboardLoadError } from "@/components/dashboard/dashboard-load-error";
 import { listEmployees } from "@/lib/queries/employees";
 import { listDistinctSubjects } from "@/lib/queries/tasks";
+import { listActiveDepartmentNames } from "@/lib/queries/departments";
 import { loadDashboardData } from "@/lib/queries/dashboard";
 import { getStatusDisplayMap } from "@/lib/queries/status-display";
 import { getMyDayCounts, getMyTodayTasks } from "@/lib/queries/my-day";
@@ -48,11 +49,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   let myDay: Awaited<ReturnType<typeof getMyDayCounts>> | null;
   let todayTasks: Awaited<ReturnType<typeof getMyTodayTasks>> | null;
   let subjects: string[];
+  let departmentNames: string[];
   // My Day: this week's goals assigned to ME, pinned above today's tasks
   // (design §10). Display-only; never mixed into the dashboard task KPIs.
   let myGoals: Awaited<ReturnType<typeof listWeekGoalsAsTasks>>;
   try {
-    [allEmployees, data, statusDisplay, myDay, todayTasks, subjects, myGoals] = await Promise.all([
+    [allEmployees, data, statusDisplay, myDay, todayTasks, subjects, myGoals, departmentNames] = await Promise.all([
       listEmployees(),
       loadDashboardData(filters),
       getStatusDisplayMap(),
@@ -67,6 +69,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       me
         ? listWeekGoalsAsTasks({ scope: { employeeIds: [me.id] } }).catch(() => [])
         : Promise.resolve([]),
+      // Department filter options. Degrades to an empty picker rather than
+      // taking the dashboard down — same contract as the subject list above.
+      listActiveDepartmentNames().catch(() => [] as string[]),
     ]);
   } catch (err) {
     console.error("[dashboard] data load failed:", err);
@@ -112,6 +117,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         className={mobileToday ? "max-md:hidden" : undefined}
         employees={employeeOptions}
         subjects={subjects}
+        departments={departmentNames}
         initial={{
           start: isoDay(filters.startDate ?? new Date()),
           end:   isoDay(filters.endDate   ?? new Date()),

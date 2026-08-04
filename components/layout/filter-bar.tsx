@@ -54,6 +54,10 @@ interface Props {
   subjects?: string[];
   statusOptions?: { value: string; label: string }[];
   clients?: string[];
+  /** Live department names from /admin/departments. Optional so a caller that
+   *  hasn't been wired yet degrades to an empty picker rather than showing a
+   *  stale hardcoded list that doesn't match the org. */
+  departments?: string[];
   me?: { id: string; isAdmin: boolean };
   assigneeMode?: AssigneeMode;
   /** Number of tasks matching the current filters (shown in the summary row). */
@@ -82,6 +86,7 @@ export function FilterBar({
   subjects,
   statusOptions,
   clients,
+  departments = [],
   me,
   assigneeMode: initialAssigneeMode = "all",
   taskCount,
@@ -280,7 +285,7 @@ export function FilterBar({
           {clients && clients.length > 0 && (
             <ClientFilter options={clients.map((c) => ({ value: c, label: c }))} selected={client} onChange={setClient} />
           )}
-          <DepartmentFilter selected={dept} onChange={setDept} />
+          <DepartmentFilter selected={dept} onChange={setDept} options={departments} />
 
           {/* Subject — always shown */}
           {subjects && subjects.length > 0 && (

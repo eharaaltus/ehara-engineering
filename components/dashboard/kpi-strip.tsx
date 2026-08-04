@@ -56,7 +56,10 @@ export function KpiStrip({ kpis, summary }: { kpis: KpiSet; summary: WmsSummary 
           return (
             <div role="listitem" key={item.key}>
               <div
-                className="group relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
+                // h-full so a card whose label wraps to two lines doesn't grow
+                // taller than its neighbours — the grid row sets the height and
+                // every card fills it.
+                className="group relative h-full overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
                 style={{
                   background: "var(--color-surface-card)",
                   border: `1px solid ${isOpen ? `rgb(${neonDeep})` : "var(--color-hairline-strong)"}`,

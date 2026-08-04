@@ -5,6 +5,7 @@ import { TaskListPage } from "@/components/tasks/task-list-page";
 import { listEmployeeOptions } from "@/lib/queries/employees";
 import { listTasks, listDistinctSubjects } from "@/lib/queries/tasks";
 import { listActiveClientNames } from "@/lib/queries/clients";
+import { listActiveDepartmentNames } from "@/lib/queries/departments";
 import { listWeekGoalsAsTasks } from "@/lib/weekly-goals/as-task-row";
 import { parseTaskFilters } from "@/lib/task-filters";
 import { requireUser } from "@/lib/auth/current";
@@ -33,7 +34,7 @@ export default async function TasksPage({ searchParams }: PageProps) {
   const goalScope =
     filters.assigneeMode === "all" ? undefined : filters.doerIds;
 
-  const [allEmployees, rows, subjects, clients, statusDisplay, weeklyGoals] =
+  const [allEmployees, rows, subjects, clients, statusDisplay, weeklyGoals, departmentNames] =
     await Promise.all([
       listEmployeeOptions(),
       listTasks(filters),
@@ -48,6 +49,7 @@ export default async function TasksPage({ searchParams }: PageProps) {
           clients: filters.clients,
         },
       }).catch(() => []),
+      listActiveDepartmentNames(),
     ]);
 
   const statusLabels = Object.fromEntries(
@@ -88,6 +90,7 @@ export default async function TasksPage({ searchParams }: PageProps) {
         subjects={subjects}
         statusOptions={statusOptions}
         clients={clients}
+        departments={departmentNames}
         me={{ id: me.id, isAdmin: me.isAdmin }}
         assigneeMode={filters.assigneeMode}
         taskCount={rows.length}

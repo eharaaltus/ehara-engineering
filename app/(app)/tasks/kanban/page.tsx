@@ -5,6 +5,7 @@ import { KanbanBoard } from "@/components/tasks/kanban-board";
 import { listBoardTasks, listDistinctSubjects } from "@/lib/queries/tasks";
 import { listEmployeeOptions } from "@/lib/queries/employees";
 import { listActiveClientNames } from "@/lib/queries/clients";
+import { listActiveDepartmentNames } from "@/lib/queries/departments";
 import { listWeekGoalsAsTasks } from "@/lib/weekly-goals/as-task-row";
 import { getStatusDisplayMap } from "@/lib/queries/status-display";
 import { getOrgSettings } from "@/lib/queries/org-settings";
@@ -41,7 +42,7 @@ export default async function KanbanPage({ searchParams }: PageProps) {
   const goalScope =
     filters.assigneeMode === "all" ? undefined : filters.doerIds;
 
-  const [tasks, statusDisplay, employees, org, subjects, clients, weeklyGoals] =
+  const [tasks, statusDisplay, employees, org, subjects, clients, weeklyGoals, departmentNames] =
     await Promise.all([
       listBoardTasks(filters),
       getStatusDisplayMap(),
@@ -57,6 +58,7 @@ export default async function KanbanPage({ searchParams }: PageProps) {
           clients: filters.clients,
         },
       }).catch(() => []),
+      listActiveDepartmentNames(),
     ]);
   const labels = Object.fromEntries(
     Object.entries(statusDisplay).map(([k, v]) => [k, v.label]),
@@ -86,6 +88,7 @@ export default async function KanbanPage({ searchParams }: PageProps) {
         subjects={subjects}
         statusOptions={statusOptions}
         clients={clients}
+        departments={departmentNames}
         me={{ id: me.id, isAdmin: me.isAdmin }}
         assigneeMode={filters.assigneeMode}
         initial={{

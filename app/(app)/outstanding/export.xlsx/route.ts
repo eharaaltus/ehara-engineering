@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { requireUser } from "@/lib/auth/current";
+import { canAccessModule } from "@/lib/auth/module-access";
 import { parseOutstandingFilters } from "@/lib/outstanding/filters";
 import { loadOutstandingDashboard } from "@/lib/queries/outstanding";
 import { todayISO, rollingHorizon } from "@/lib/outstanding/horizon";
@@ -45,6 +46,12 @@ function xlsxResponse(wb: XLSX.WorkBook, filename: string): Response {
 export async function GET(request: Request): Promise<Response> {
   try {
     await requireUser();
+    // Route handlers do NOT render layouts, so the (app) layout module
+    // guard never runs for them. Without this an employee denied the
+    // "wms" module could still fetch this file straight from its URL.
+    if (!(await canAccessModule("wms"))) {
+      return new Response("Forbidden", { status: 403 });
+    }
   } catch {
     return new Response("Forbidden", { status: 403 });
   }

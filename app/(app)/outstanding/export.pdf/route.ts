@@ -1,6 +1,7 @@
 import PDFDocument from "pdfkit";
 import { format } from "date-fns";
 import { requireUser } from "@/lib/auth/current";
+import { canAccessModule } from "@/lib/auth/module-access";
 import { parseOutstandingFilters } from "@/lib/outstanding/filters";
 import { loadOutstandingDashboard } from "@/lib/queries/outstanding";
 import { todayISO, rollingHorizon } from "@/lib/outstanding/horizon";
@@ -29,6 +30,12 @@ export async function GET(request: Request): Promise<Response> {
   let me;
   try {
     me = await requireUser();
+    // Route handlers do NOT render layouts, so the (app) layout module
+    // guard never runs for them. Without this an employee denied the
+    // "wms" module could still fetch this file straight from its URL.
+    if (!(await canAccessModule("wms"))) {
+      return new Response("Forbidden", { status: 403 });
+    }
   } catch {
     return new Response("Forbidden", { status: 403 });
   }

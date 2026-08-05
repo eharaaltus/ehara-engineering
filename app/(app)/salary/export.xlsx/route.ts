@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { requireUser } from "@/lib/auth/current";
+import { canAccessModule } from "@/lib/auth/module-access";
 import { listRunsForMonth } from "@/lib/queries/salary";
 
 /**
@@ -38,6 +39,12 @@ export async function GET(request: Request): Promise<Response> {
   let me;
   try {
     me = await requireUser();
+    // Route handlers do NOT render layouts, so the (app) layout module
+    // guard never runs for them. Without this an employee denied the
+    // "employees" module could still fetch this file straight from its URL.
+    if (!(await canAccessModule("employees"))) {
+      return new Response("Forbidden", { status: 403 });
+    }
   } catch {
     return new Response("Forbidden", { status: 403 });
   }

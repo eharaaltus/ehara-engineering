@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { requireAdmin } from "@/lib/auth/current";
+import { canAccessModule } from "@/lib/auth/module-access";
 import { parseTaskFilters } from "@/lib/task-filters";
 import { listTasksForExport } from "@/lib/queries/tasks";
 import { MAX_EXPORT_ROWS, EXPORT_TOO_LARGE } from "@/lib/exports/csv";
@@ -26,6 +27,18 @@ export async function GET(request: Request): Promise<Response> {
   let me;
   try {
     me = await requireAdmin();
+
+    // Route handlers do NOT render layouts, so the (app) layout module
+
+    // guard never runs for them. Without this an employee denied the
+
+    // "wms" module could still fetch this file straight from its URL.
+
+    if (!(await canAccessModule("wms"))) {
+
+      return new Response("Forbidden", { status: 403 });
+
+    }
   } catch {
     return new Response("Forbidden", { status: 403 });
   }
